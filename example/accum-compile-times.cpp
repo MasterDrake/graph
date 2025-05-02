@@ -52,7 +52,7 @@ typedef graph_traits< file_dep_graph2 >::edge_descriptor edge_t;
 
 int main(int argc, const char** argv)
 {
-    std::ifstream file_in(argc >= 2 ? argv[1] : "makefile-dependencies.dat");
+    std::ifstream file_in(argc >= 2 ? argv[1] : "../../../../example/makefile-dependencies.dat");
     typedef graph_traits< file_dep_graph2 >::vertices_size_type size_type;
     size_type n_vertices;
     file_in >> n_vertices; // read in number of vertices

@@ -1,0 +1,4 @@
+rectpack2D provides CMake targets:
+
+find_package(rectpack2D CONFIG REQUIRED)
+target_link_libraries(main PRIVATE rectpack2D::rectpack2D)

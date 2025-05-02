@@ -8,14 +8,14 @@
 //=======================================================================
 #include <boost/config.hpp>
 #include <iostream>
-#include <vector>
-#include <utility>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
+#include <EASTL/algorithm.h>
 
 #include <boost/graph/adjacency_list.hpp>
 
 using namespace boost;
-using namespace std;
+using namespace eastl;
 
 typedef property< vertex_color_t, default_color_type,
     property< vertex_distance_t, int,
@@ -34,10 +34,10 @@ template < class Graph > void print(Graph& g)
     typename Graph::out_edge_iterator ei, edge_end;
     for (boost::tie(i, end) = vertices(g); i != end; ++i)
     {
-        cout << *i << " --> ";
+        std::cout << *i << " --> ";
         for (boost::tie(ei, edge_end) = out_edges(*i, g); ei != edge_end; ++ei)
-            cout << target(*ei, g) << "  ";
-        cout << endl;
+            std::cout << target(*ei, g) << "  ";
+        std::cout << std::endl;
     }
 }
 
@@ -53,7 +53,7 @@ template < class Graph > bool check_edge(Graph& g, std::size_t a, std::size_t b)
     typename Graph::adjacency_iterator vi, viend, found;
     boost::tie(vi, viend) = adjacent_vertices(vertex(a, g), g);
 
-    found = find(vi, viend, vertex(b, g));
+    found = eastl::find(vi, viend, vertex(b, g));
     if (found == viend)
         return false;
 
@@ -74,16 +74,16 @@ int main(int, char*[])
         std::size_t a = myrand(N), b = myrand(N);
         while (a == b)
             b = myrand(N);
-        cout << "edge edge (" << a << "," << b << ")" << endl;
+        std::cout << "edge edge (" << a << "," << b << ")" << std::endl;
         // add edges
         add_edge(a, b, g);
         is_failed = is_failed || (!check_edge(g, a, b));
     }
 
     if (is_failed)
-        cerr << "    Failed." << endl;
+        std::cerr << "    Failed." << std::endl;
     else
-        cerr << "           Passed." << endl;
+        std::cerr << "           Passed." << std::endl;
 
     print(g);
 
@@ -93,14 +93,14 @@ int main(int, char*[])
         std::size_t a = myrand(N), b = myrand(N);
         while (a == b)
             b = myrand(N);
-        cout << "remove edge (" << a << "," << b << ")" << endl;
+        std::cout << "remove edge (" << a << "," << b << ")" << std::endl;
         remove_edge(a, b, g);
         is_failed = is_failed || check_edge(g, a, b);
     }
     if (is_failed)
-        cerr << "    Failed." << endl;
+        std::cerr << "    Failed." << std::endl;
     else
-        cerr << "           Passed." << endl;
+        std::cerr << "           Passed." << std::endl;
 
     print(g);
 
@@ -112,9 +112,9 @@ int main(int, char*[])
 
     N = num_vertices(g);
     if ((N - 2) != old_N)
-        cerr << "    Failed." << endl;
+        std::cerr << "    Failed." << std::endl;
     else
-        cerr << "           Passed." << endl;
+        std::cerr << "           Passed." << std::endl;
 
     is_failed = false;
     for (i = 0; i < 2; ++i)
@@ -124,17 +124,17 @@ int main(int, char*[])
             a = myrand(N);
         while (b == vidp1)
             b = myrand(N);
-        cout << "add edge (" << vid << "," << a << ")" << endl;
-        cout << "add edge (" << vid << "," << vidp1 << ")" << endl;
+        std::cout << "add edge (" << vid << "," << a << ")" << std::endl;
+        std::cout << "add edge (" << vid << "," << vidp1 << ")" << std::endl;
         add_edge(vid, a, g);
         add_edge(b, vidp1, g);
         is_failed = is_failed || !check_edge(g, vid, a);
         is_failed = is_failed || !check_edge(g, b, vidp1);
     }
     if (is_failed)
-        cerr << "    Failed." << endl;
+        std::cerr << "    Failed." << std::endl;
     else
-        cerr << "           Passed." << endl;
+        std::cerr << "           Passed." << std::endl;
     print(g);
 
     // clear_vertex
@@ -145,7 +145,7 @@ int main(int, char*[])
     if (out_degree(c, g) != 0)
         is_failed = true;
 
-    cout << "Removing vertex " << c << endl;
+    std::cout << "Removing vertex " << c << std::endl;
     remove_vertex(c, g);
 
     old_N = N;
@@ -155,9 +155,9 @@ int main(int, char*[])
         is_failed = true;
 
     if (is_failed)
-        cerr << "    Failed." << endl;
+        std::cerr << "    Failed." << std::endl;
     else
-        cerr << "           Passed." << endl;
+        std::cerr << "           Passed." << std::endl;
 
     print(g);
 
