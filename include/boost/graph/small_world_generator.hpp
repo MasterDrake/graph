@@ -9,8 +9,8 @@
 #ifndef BOOST_GRAPH_SMALL_WORLD_GENERATOR_HPP
 #define BOOST_GRAPH_SMALL_WORLD_GENERATOR_HPP
 
-#include <iterator>
-#include <utility>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <boost/random/uniform_int.hpp>
@@ -25,8 +25,8 @@ template < typename RandomGenerator, typename Graph > class small_world_iterator
         typename graph_traits< Graph >::vertices_size_type vertices_size_type;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< vertices_size_type, vertices_size_type > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< vertices_size_type, vertices_size_type > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef void difference_type;

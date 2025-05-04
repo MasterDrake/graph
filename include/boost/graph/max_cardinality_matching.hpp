@@ -10,11 +10,11 @@
 #ifndef BOOST_GRAPH_MAXIMUM_CARDINALITY_MATCHING_HPP
 #define BOOST_GRAPH_MAXIMUM_CARDINALITY_MATCHING_HPP
 
-#include <vector>
-#include <list>
-#include <deque>
-#include <algorithm> // for std::sort and std::stable_sort
-#include <utility> // for std::pair
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
+#include <EASTL/deque.h>
+#include <EASTL/algorithm.h> // for eastl::sort and eastl::stable_sort
+#include <EASTL/utility.h> // for eastl::pair
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/visitors.hpp>
@@ -50,7 +50,7 @@ typename graph_traits< Graph >::vertices_size_type matching_size(
     v_size_t size_of_matching = 0;
     vertex_iterator_t vi, vi_end;
 
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         vertex_descriptor_t v = *vi;
         if (get(mate, v) != graph_traits< Graph >::null_vertex()
@@ -75,7 +75,7 @@ bool is_a_matching(const Graph& g, MateMap mate, VertexIndexMap)
     typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator_t;
 
     vertex_iterator_t vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         vertex_descriptor_t v = *vi;
         if (get(mate, v) != graph_traits< Graph >::null_vertex()
@@ -120,13 +120,13 @@ public:
     template < typename X > struct map_vertex_to_
     {
         typedef boost::iterator_property_map<
-            typename std::vector< X >::iterator, VertexIndexMap >
+            typename eastl::vector< X >::iterator, VertexIndexMap >
             type;
     };
 
     typedef
         typename graph_traits< Graph >::vertex_descriptor vertex_descriptor_t;
-    typedef typename std::pair< vertex_descriptor_t, vertex_descriptor_t >
+    typedef typename eastl::pair< vertex_descriptor_t, vertex_descriptor_t >
         vertex_pair_t;
     typedef typename graph_traits< Graph >::edge_descriptor edge_descriptor_t;
     typedef typename graph_traits< Graph >::vertices_size_type v_size_t;
@@ -134,8 +134,8 @@ public:
     typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator_t;
     typedef
         typename graph_traits< Graph >::out_edge_iterator out_edge_iterator_t;
-    typedef typename std::deque< vertex_descriptor_t > vertex_list_t;
-    typedef typename std::vector< edge_descriptor_t > edge_list_t;
+    typedef typename eastl::deque< vertex_descriptor_t > vertex_list_t;
+    typedef typename eastl::vector< edge_descriptor_t > edge_list_t;
     typedef typename map_vertex_to_< vertex_descriptor_t >::type
         vertex_to_vertex_map_t;
     typedef typename map_vertex_to_< int >::type vertex_to_int_map_t;
@@ -176,7 +176,7 @@ public:
         ds(ds_rank_map, ds_parent_map)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             mate[*vi] = get(arg_mate, *vi);
     }
 
@@ -191,7 +191,7 @@ public:
         even_edges.clear();
 
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             vertex_descriptor_t u = *vi;
 
@@ -205,7 +205,7 @@ public:
             {
                 vertex_state[u] = graph::detail::V_EVEN;
                 out_edge_iterator_t ei, ei_end;
-                for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end;
+                for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end;
                      ++ei)
                 {
                     if (target(*ei, g) != u)
@@ -244,8 +244,8 @@ public:
             // little paranoid but it could happen...
             if (vertex_state[v_prime] != graph::detail::V_EVEN)
             {
-                std::swap(v_prime, w_prime);
-                std::swap(v, w);
+                eastl::swap(v_prime, w_prime);
+                eastl::swap(v, w);
             }
 
             if (vertex_state[w_prime] == graph::detail::V_UNREACHED)
@@ -254,7 +254,7 @@ public:
                 vertex_descriptor_t w_prime_mate = mate[w_prime];
                 vertex_state[w_prime_mate] = graph::detail::V_EVEN;
                 out_edge_iterator_t ei, ei_end;
-                for (boost::tie(ei, ei_end) = out_edges(w_prime_mate, g);
+                for (eastl::tie(ei, ei_end) = out_edges(w_prime_mate, g);
                      ei != ei_end; ++ei)
                 {
                     if (target(*ei, g) != w_prime_mate)
@@ -323,9 +323,9 @@ public:
                 {
                     // shrink the blossom
                     link_and_set_bridges(
-                        w_prime, nearest_common_ancestor, std::make_pair(w, v));
+                        w_prime, nearest_common_ancestor, eastl::make_pair(w, v));
                     link_and_set_bridges(
-                        v_prime, nearest_common_ancestor, std::make_pair(v, w));
+                        v_prime, nearest_common_ancestor, eastl::make_pair(v, w));
                 }
             }
         }
@@ -355,14 +355,14 @@ public:
     template < typename PropertyMap > void get_current_matching(PropertyMap pm)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             put(pm, *vi, mate[*vi]);
     }
 
     template < typename PropertyMap > void get_vertex_state_map(PropertyMap pm)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             put(pm, *vi, vertex_state[origin[ds.find_set(*vi)]]);
     }
 
@@ -390,7 +390,7 @@ private:
             {
                 bridge[v] = the_bridge;
                 out_edge_iterator_t oei, oei_end;
-                for (boost::tie(oei, oei_end) = out_edges(v, g); oei != oei_end;
+                for (eastl::tie(oei, oei_end) = out_edges(v, g); oei != oei_end;
                      ++oei)
                 {
                     if (target(*oei, g) != v)
@@ -462,15 +462,15 @@ private:
     v_size_t n_vertices;
 
     // storage for the property maps below
-    std::vector< vertex_descriptor_t > mate_vector;
-    std::vector< e_size_t > ancestor_of_v_vector;
-    std::vector< e_size_t > ancestor_of_w_vector;
-    std::vector< int > vertex_state_vector;
-    std::vector< vertex_descriptor_t > origin_vector;
-    std::vector< vertex_descriptor_t > pred_vector;
-    std::vector< vertex_pair_t > bridge_vector;
-    std::vector< vertex_descriptor_t > ds_parent_vector;
-    std::vector< v_size_t > ds_rank_vector;
+    eastl::vector< vertex_descriptor_t > mate_vector;
+    eastl::vector< e_size_t > ancestor_of_v_vector;
+    eastl::vector< e_size_t > ancestor_of_w_vector;
+    eastl::vector< int > vertex_state_vector;
+    eastl::vector< vertex_descriptor_t > origin_vector;
+    eastl::vector< vertex_descriptor_t > pred_vector;
+    eastl::vector< vertex_pair_t > bridge_vector;
+    eastl::vector< vertex_descriptor_t > ds_parent_vector;
+    eastl::vector< v_size_t > ds_rank_vector;
 
     // iterator property maps
     vertex_to_vertex_map_t mate;
@@ -505,11 +505,11 @@ template < typename Graph, typename MateMap > struct greedy_matching
     static void find_matching(const Graph& g, MateMap mate)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             put(mate, *vi, graph_traits< Graph >::null_vertex());
 
         edge_iterator_t ei, ei_end;
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         {
             edge_descriptor_t e = *ei;
             vertex_descriptor_t u = source(e, g);
@@ -542,7 +542,7 @@ template < typename Graph, typename MateMap > struct extra_greedy_matching
     typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator_t;
     typedef typename graph_traits< Graph >::edge_descriptor edge_descriptor_t;
     typedef typename graph_traits< Graph >::edge_iterator edge_iterator_t;
-    typedef std::pair< vertex_descriptor_t, vertex_descriptor_t > vertex_pair_t;
+    typedef eastl::pair< vertex_descriptor_t, vertex_descriptor_t > vertex_pair_t;
 
     struct select_first
     {
@@ -576,32 +576,32 @@ template < typename Graph, typename MateMap > struct extra_greedy_matching
 
     static void find_matching(const Graph& g, MateMap mate)
     {
-        typedef std::vector<
-            std::pair< vertex_descriptor_t, vertex_descriptor_t > >
+        typedef eastl::vector<
+            eastl::pair< vertex_descriptor_t, vertex_descriptor_t > >
             directed_edges_vector_t;
 
         directed_edges_vector_t edge_list;
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             put(mate, *vi, graph_traits< Graph >::null_vertex());
 
         edge_iterator_t ei, ei_end;
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         {
             edge_descriptor_t e = *ei;
             vertex_descriptor_t u = source(e, g);
             vertex_descriptor_t v = target(e, g);
             if (u == v)
                 continue;
-            edge_list.push_back(std::make_pair(u, v));
-            edge_list.push_back(std::make_pair(v, u));
+            edge_list.push_back(eastl::make_pair(u, v));
+            edge_list.push_back(eastl::make_pair(v, u));
         }
 
         // sort the edges by the degree of the target, then (using a
         // stable sort) by degree of the source
-        std::sort(edge_list.begin(), edge_list.end(),
+        eastl::sort(edge_list.begin(), edge_list.end(),
             less_than_by_degree< select_second >(g));
-        std::stable_sort(edge_list.begin(), edge_list.end(),
+        eastl::stable_sort(edge_list.begin(), edge_list.end(),
             less_than_by_degree< select_first >(g));
 
         // construct the extra greedy matching
@@ -627,7 +627,7 @@ template < typename Graph, typename MateMap > struct empty_matching
     static void find_matching(const Graph& g, MateMap mate)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             put(mate, *vi, graph_traits< Graph >::null_vertex());
     }
 };
@@ -691,7 +691,7 @@ struct maximum_cardinality_matching_verifier
     template < typename X > struct map_vertex_to_
     {
         typedef boost::iterator_property_map<
-            typename std::vector< X >::iterator, VertexIndexMap >
+            typename eastl::vector< X >::iterator, VertexIndexMap >
             type;
     };
 
@@ -757,14 +757,14 @@ struct maximum_cardinality_matching_verifier
         if (augmentor.augment_matching())
             return false;
 
-        std::vector< int > vertex_state_vector(num_vertices(g));
+        eastl::vector< int > vertex_state_vector(num_vertices(g));
         vertex_to_int_map_t vertex_state(vertex_state_vector.begin(), vm);
         augmentor.get_vertex_state_map(vertex_state);
 
         // count the number of graph::detail::V_ODD vertices
         v_size_t num_odd_vertices = 0;
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             if (vertex_state[*vi] == graph::detail::V_ODD)
                 ++num_odd_vertices;
 

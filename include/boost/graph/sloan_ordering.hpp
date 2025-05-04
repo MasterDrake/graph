@@ -17,10 +17,10 @@
 #define WEIGHT2 2 // default weight for the degree in the Sloan algorithm
 
 #include <boost/config.hpp>
-#include <vector>
-#include <queue>
-#include <algorithm>
-#include <limits>
+#include <EASTL/vector.h>
+#include <EASTL/queue.h>
+#include <EASTL/algorithm.h>
+#include <EASTL/limits.h>
 #include <boost/pending/queue.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/breadth_first_search.hpp>
@@ -74,8 +74,8 @@ typename Distance::value_type RLS_max_width(Distance& d, my_int depth)
     typedef typename Distance::value_type Degree;
 
     // Searching for the maximum width of a level
-    std::vector< Degree > dummy_width(depth + 1, 0);
-    typename std::vector< Degree >::iterator my_it;
+    eastl::vector< Degree > dummy_width(depth + 1, 0);
+    typename eastl::vector< Degree >::iterator my_it;
     typename Distance::iterator iter;
     Degree w_max = 0;
 
@@ -106,7 +106,7 @@ typename graph_traits< Graph >::vertex_descriptor sloan_start_end_vertices(
 {
     typedef typename property_traits< DegreeMap >::value_type Degree;
     typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
-    typedef typename std::vector<
+    typedef typename eastl::vector<
         typename graph_traits< Graph >::vertices_size_type >::iterator vec_iter;
     typedef typename graph_traits< Graph >::vertices_size_type size_type;
 
@@ -122,10 +122,10 @@ typename graph_traits< Graph >::vertex_descriptor sloan_start_end_vertices(
 
     // Creating a std-vector for storing the distance from the start vertex in
     // dist
-    std::vector< typename graph_traits< Graph >::vertices_size_type > dist(
+    eastl::vector< typename graph_traits< Graph >::vertices_size_type > dist(
         num_vertices(G), 0);
 
-    // Wrap a property_map_iterator around the std::iterator
+    // Wrap a property_map_iterator around the eastl::iterator
     boost::iterator_property_map< vec_iter, VertexID, size_type, size_type& >
         dist_pmap(dist.begin(), get(vertex_index, G));
 
@@ -134,15 +134,15 @@ typename graph_traits< Graph >::vertex_descriptor sloan_start_end_vertices(
         = get(vertex_index, G);
 
     // Creating a priority queue
-    typedef indirect_cmp< DegreeMap, std::greater< Degree > > Compare;
+    typedef indirect_cmp< DegreeMap, eastl::greater< Degree > > Compare;
     Compare comp(degree);
-    std::priority_queue< Vertex, std::vector< Vertex >, Compare > degree_queue(
+    eastl::priority_queue< Vertex, eastl::vector< Vertex >, Compare > degree_queue(
         comp);
 
     // step 1
     // Scan for the vertex with the smallest degree and the maximum degree
     typename graph_traits< Graph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
     {
         dummy = get(degree, *ui);
 
@@ -165,7 +165,7 @@ typename graph_traits< Graph >::vertex_descriptor sloan_start_end_vertices(
 
         // step 2
         // initialize the the disance std-vector with 0
-        for (typename std::vector< typename graph_traits<
+        for (typename eastl::vector< typename graph_traits<
                  Graph >::vertices_size_type >::iterator iter
              = dist.begin();
              iter != dist.end(); ++iter)
@@ -185,8 +185,8 @@ typename graph_traits< Graph >::vertex_descriptor sloan_start_end_vertices(
         // step 4
         // pushing one node of each degree in an ascending manner into
         // degree_queue
-        std::vector< bool > shrink_trace(maximum_degree, false);
-        for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+        eastl::vector< bool > shrink_trace(maximum_degree, false);
+        for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
         {
             dummy = get(degree, *ui);
 
@@ -201,7 +201,7 @@ typename graph_traits< Graph >::vertex_descriptor sloan_start_end_vertices(
 
         // step 5
         // Initializing w
-        w_e = (std::numeric_limits< Degree >::max)();
+        w_e = (eastl::numeric_limits< Degree >::max)();
         // end 5
 
         // step 6
@@ -214,7 +214,7 @@ typename graph_traits< Graph >::vertex_descriptor sloan_start_end_vertices(
                                 // the degree queue
 
             // generating a RLS
-            for (typename std::vector< typename graph_traits<
+            for (typename eastl::vector< typename graph_traits<
                      Graph >::vertices_size_type >::iterator iter
                  = dist.begin();
                  iter != dist.end(); ++iter)
@@ -269,17 +269,17 @@ OutputIterator sloan_ordering(Graph& g,
     typedef typename property_traits< ColorMap >::value_type ColorValue;
     typedef color_traits< ColorValue > Color;
     typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
-    typedef typename std::vector<
+    typedef typename eastl::vector<
         typename graph_traits< Graph >::vertices_size_type >::iterator vec_iter;
     typedef typename graph_traits< Graph >::vertices_size_type size_type;
 
     typedef typename property_map< Graph, vertex_index_t >::const_type VertexID;
 
     // Creating a std-vector for storing the distance from the end vertex in it
-    typename std::vector< typename graph_traits< Graph >::vertices_size_type >
+    typename eastl::vector< typename graph_traits< Graph >::vertices_size_type >
         dist(num_vertices(g), 0);
 
-    // Wrap a property_map_iterator around the std::iterator
+    // Wrap a property_map_iterator around the eastl::iterator
     boost::iterator_property_map< vec_iter, VertexID, size_type, size_type& >
         dist_pmap(dist.begin(), get(vertex_index, g));
 
@@ -293,7 +293,7 @@ OutputIterator sloan_ordering(Graph& g,
     // Sets the color and priority to their initial status
     Degree cdeg;
     typename graph_traits< Graph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(color, *ui, Color::white());
         cdeg = get(degree, *ui) + 1;
@@ -301,9 +301,9 @@ OutputIterator sloan_ordering(Graph& g,
     }
 
     // Priority list
-    typedef indirect_cmp< PriorityMap, std::greater< Degree > > Compare;
+    typedef indirect_cmp< PriorityMap, eastl::greater< Degree > > Compare;
     Compare comp(priority);
-    std::list< Vertex > priority_list;
+    eastl::list< Vertex > priority_list;
 
     // Some more declarations
     typename graph_traits< Graph >::out_edge_iterator ei, ei_end, ei2, ei2_end;
@@ -326,7 +326,7 @@ OutputIterator sloan_ordering(Graph& g,
         if (get(color, u) == Color::green())
         {
             // for-loop over all out-edges of vertex u
-            for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
             {
                 v = target(*ei, g);
 
@@ -349,7 +349,7 @@ OutputIterator sloan_ordering(Graph& g,
         put(color, u, Color::black()); // Gives u an inactive status
 
         // for loop over all the adjacent vertices of u
-        for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
         {
 
             v = target(*ei, g);
@@ -362,7 +362,7 @@ OutputIterator sloan_ordering(Graph& g,
                 put(priority, v, get(priority, v) + W2); // updates the priority
 
                 // for loop over alll adjacent vertices of v
-                for (boost::tie(ei2, ei2_end) = out_edges(v, g); ei2 != ei2_end;
+                for (eastl::tie(ei2, ei2_end) = out_edges(v, g); ei2 != ei2_end;
                      ++ei2)
                 {
                     w = target(*ei2, g);

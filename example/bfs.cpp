@@ -6,12 +6,12 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //=======================================================================
-
 #include <boost/config.hpp>
 
-#include <algorithm>
-#include <vector>
-#include <utility>
+#include <EASTL/algorithm.h>
+#include <EASTL/string.h>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
 #include <iostream>
 
 #include <boost/graph/visitors.hpp>
@@ -20,6 +20,44 @@
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/graph_utility.hpp>
 
+#ifdef _WIN32
+#define CDeclFunction __cdecl
+#else
+#define CDeclFunction
+#endif
+
+void* CDeclFunction operator new[](size_t size, const char* name, int flags,
+    unsigned debugFlags, const char* file, int line)
+{
+    (void)name;
+    (void)flags;
+    (void)debugFlags;
+    (void)file;
+    (void)line;
+    return new uint8_t[size];
+}
+
+void* CDeclFunction operator new[](size_t size, size_t alignement,
+    size_t offset, const char* name, int flags, unsigned debugFlags,
+    const char* file, int line)
+{
+    (void)name;
+    (void)flags;
+    (void)debugFlags;
+    (void)file;
+    (void)line;
+    (void)alignement;
+    (void)offset;
+    return new uint8_t[size];
+}
+
+#include <cstdio>
+
+int CDeclFunction EA::StdC::Vsnprintf(char* EA_RESTRICT pDestination, size_t n,
+    const char* EA_RESTRICT pFormat, va_list arguments)
+{
+    return vsnprintf(pDestination, n, pFormat, arguments);
+}
 /*
 
   This examples shows how to use the breadth_first_search() GGCL
@@ -117,24 +155,24 @@ int main(int, char*[])
     Graph G_copy(5);
     // Array to store predecessor (parent) of each vertex. This will be
     // used as a Decorator (actually, its iterator will be).
-    std::vector< Vertex > p(boost::num_vertices(G));
-    // VC++ version of std::vector has no ::pointer, so
+    eastl::vector< Vertex > p(boost::num_vertices(G));
+    // VC++ version of eastl::vector has no ::pointer, so
     // I use ::value_type* instead.
-    typedef std::vector< Vertex >::value_type* Piter;
+    typedef eastl::vector< Vertex >::value_type* Piter;
 
     // Array to store distances from the source to each vertex .  We use
     // a built-in array here just for variety. This will also be used as
     // a Decorator.
     boost::graph_traits< Graph >::vertices_size_type d[5];
-    std::fill_n(d, 5, 0);
+    eastl::fill_n(d, 5, 0);
 
     // The source vertex
     auto s = *(boost::vertices(G).first);
     p[s] = s;
     boost::breadth_first_search(G, s,
         boost::visitor(boost::make_bfs_visitor(
-            std::make_pair(boost::record_distances(d, boost::on_tree_edge()),
-                std::make_pair(
+            eastl::make_pair(boost::record_distances(d, boost::on_tree_edge()),
+                eastl::make_pair(
                     boost::record_predecessors(&p[0], boost::on_tree_edge()),
                     copy_graph(G_copy, boost::on_examine_edge()))))));
 
@@ -145,13 +183,13 @@ int main(int, char*[])
     {
         std::cout << "distances: ";
 #ifdef BOOST_OLD_STREAM_ITERATORS
-        std::copy(d, d + 5, std::ostream_iterator< int, char >(std::cout, " "));
+        eastl::copy(d, d + 5, std::ostream_iterator< int, char >(std::cout, " "));
 #else
-        std::copy(d, d + 5, std::ostream_iterator< int >(std::cout, " "));
+        eastl::copy(d, d + 5, std::ostream_iterator< int >(std::cout, " "));
 #endif
         std::cout << std::endl;
 
-        std::for_each(boost::vertices(G).first, boost::vertices(G).second,
+        eastl::for_each(boost::vertices(G).first, boost::vertices(G).second,
             print_parent< Piter >(&p[0]));
     }
 

@@ -31,6 +31,7 @@
 #include <exception>
 #include <sstream>
 #include <typeinfo>
+#include <EASTL/string.h>
 
 namespace boost
 {
@@ -40,15 +41,15 @@ namespace boost
 /////////////////////////////////////////////////////////////////////////////
 struct BOOST_SYMBOL_VISIBLE parse_error : public graph_exception
 {
-    parse_error(const std::string& err)
+    parse_error(const eastl::string& err)
     {
         error = err;
         statement = "parse error: " + error;
     }
     ~parse_error() throw() BOOST_OVERRIDE {}
     const char* what() const throw() BOOST_OVERRIDE { return statement.c_str(); }
-    std::string statement;
-    std::string error;
+    eastl::string statement;
+    eastl::string error;
 };
 
 class mutate_graph
@@ -58,20 +59,20 @@ public:
     virtual bool is_directed() const = 0;
 
     virtual boost::any do_add_vertex() = 0;
-    virtual std::pair< boost::any, bool > do_add_edge(
+    virtual eastl::pair< boost::any, bool > do_add_edge(
         boost::any source, boost::any target)
         = 0;
 
-    virtual void set_graph_property(const std::string& name,
-        const std::string& value, const std::string& value_type)
+    virtual void set_graph_property(const eastl::string& name,
+        const eastl::string& value, const eastl::string& value_type)
         = 0;
 
-    virtual void set_vertex_property(const std::string& name, boost::any vertex,
-        const std::string& value, const std::string& value_type)
+    virtual void set_vertex_property(const eastl::string& name, boost::any vertex,
+        const eastl::string& value, const eastl::string& value_type)
         = 0;
 
-    virtual void set_edge_property(const std::string& name, boost::any edge,
-        const std::string& value, const std::string& value_type)
+    virtual void set_edge_property(const eastl::string& name, boost::any edge,
+        const eastl::string& value, const eastl::string& value_type)
         = 0;
 };
 
@@ -97,16 +98,16 @@ public:
 
     any do_add_vertex() BOOST_OVERRIDE { return any(add_vertex(m_g)); }
 
-    std::pair< any, bool > do_add_edge(any source, any target) BOOST_OVERRIDE
+    eastl::pair< any, bool > do_add_edge(any source, any target) BOOST_OVERRIDE
     {
-        std::pair< edge_descriptor, bool > retval
+        eastl::pair< edge_descriptor, bool > retval
             = add_edge(any_cast< vertex_descriptor >(source),
                 any_cast< vertex_descriptor >(target), m_g);
-        return std::make_pair(any(retval.first), retval.second);
+        return eastl::make_pair(any(retval.first), retval.second);
     }
 
-    void set_graph_property(const std::string& name,
-        const std::string& value, const std::string& value_type) BOOST_OVERRIDE
+    void set_graph_property(const eastl::string& name,
+        const eastl::string& value, const eastl::string& value_type) BOOST_OVERRIDE
     {
         bool type_found = false;
         try
@@ -127,8 +128,8 @@ public:
         }
     }
 
-    void set_vertex_property(const std::string& name, any vertex,
-        const std::string& value, const std::string& value_type) BOOST_OVERRIDE
+    void set_vertex_property(const eastl::string& name, any vertex,
+        const eastl::string& value, const eastl::string& value_type) BOOST_OVERRIDE
     {
         bool type_found = false;
         try
@@ -150,8 +151,8 @@ public:
         }
     }
 
-    void set_edge_property(const std::string& name, any edge,
-        const std::string& value, const std::string& value_type) BOOST_OVERRIDE
+    void set_edge_property(const eastl::string& name, any edge,
+        const eastl::string& value, const eastl::string& value_type) BOOST_OVERRIDE
     {
         bool type_found = false;
         try
@@ -176,9 +177,9 @@ public:
     template < typename Key, typename ValueVector > class put_property
     {
     public:
-        put_property(const std::string& name, dynamic_properties& dp,
-            const Key& key, const std::string& value,
-            const std::string& value_type, const char** type_names,
+        put_property(const eastl::string& name, dynamic_properties& dp,
+            const Key& key, const eastl::string& value,
+            const eastl::string& value_type, const char** type_names,
             bool& type_found)
         : m_name(name)
         , m_dp(dp)
@@ -201,11 +202,11 @@ public:
         }
 
     private:
-        const std::string& m_name;
+        const eastl::string& m_name;
         dynamic_properties& m_dp;
         const Key& m_key;
-        const std::string& m_value;
-        const std::string& m_value_type;
+        const eastl::string& m_value;
+        const eastl::string& m_value_type;
         const char** m_type_names;
         bool& m_type_found;
     };
@@ -213,7 +214,7 @@ public:
 protected:
     MutableGraph& m_g;
     dynamic_properties& m_dp;
-    typedef mpl::vector< bool, int, long, float, double, std::string >
+    typedef mpl::vector< bool, int, long, float, double, eastl::string >
         value_types;
     static const char* m_type_names[];
 };
@@ -237,7 +238,7 @@ template < typename Types > class get_type_name
 {
 public:
     get_type_name(const std::type_info& type, const char** type_names,
-        std::string& type_name)
+        eastl::string& type_name)
     : m_type(type), m_type_names(type_names), m_type_name(type_name)
     {
     }
@@ -251,7 +252,7 @@ public:
 private:
     const std::type_info& m_type;
     const char** m_type_names;
-    std::string& m_type_name;
+    eastl::string& m_type_name;
 };
 
 template < typename Graph, typename VertexIndexMap >
@@ -277,19 +278,19 @@ void write_graphml(std::ostream& out, const Graph& g,
 
     typedef mpl::vector< bool, short, unsigned short, int, unsigned int, long,
         unsigned long, long long, unsigned long long, float, double,
-        long double, std::string >
+        long double, eastl::string >
         value_types;
     const char* type_names[] = { "boolean", "int", "int", "int", "int", "long",
         "long", "long", "long", "float", "double", "double", "string" };
-    std::map< std::string, std::string > graph_key_ids;
-    std::map< std::string, std::string > vertex_key_ids;
-    std::map< std::string, std::string > edge_key_ids;
+    eastl::map< eastl::string, eastl::string > graph_key_ids;
+    eastl::map< eastl::string, eastl::string > vertex_key_ids;
+    eastl::map< eastl::string, eastl::string > edge_key_ids;
     int key_count = 0;
 
     // Output keys
     for (dynamic_properties::const_iterator i = dp.begin(); i != dp.end(); ++i)
     {
-        std::string key_id = "key" + lexical_cast< std::string >(key_count++);
+        eastl::string key_id = "key" + lexical_cast< eastl::string >(key_count++);
         if (i->second->key() == typeid(Graph*))
             graph_key_ids[i->first] = key_id;
         else if (i->second->key() == typeid(vertex_descriptor))
@@ -298,7 +299,7 @@ void write_graphml(std::ostream& out, const Graph& g,
             edge_key_ids[i->first] = key_id;
         else
             continue;
-        std::string type_name = "string";
+        eastl::string type_name = "string";
         mpl::for_each< value_types >(get_type_name< value_types >(
             i->second->value(), type_names, type_name));
         out << "  <key id=\"" << encode_char_entities(key_id) << "\" for=\""
@@ -335,7 +336,7 @@ void write_graphml(std::ostream& out, const Graph& g,
 
     typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator;
     vertex_iterator v, v_end;
-    for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+    for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
     {
         out << "    <node id=\"n" << get(vertex_index, *v) << "\">\n";
         // Output data
@@ -355,7 +356,7 @@ void write_graphml(std::ostream& out, const Graph& g,
     typedef typename graph_traits< Graph >::edge_iterator edge_iterator;
     edge_iterator e, e_end;
     typename graph_traits< Graph >::edges_size_type edge_count = 0;
-    for (boost::tie(e, e_end) = edges(g); e != e_end; ++e)
+    for (eastl::tie(e, e_end) = edges(g); e != e_end; ++e)
     {
         out << "    <edge id=\"e" << edge_count++ << "\" source=\"n"
             << get(vertex_index, source(*e, g)) << "\" target=\"n"

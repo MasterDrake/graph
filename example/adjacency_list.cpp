@@ -67,7 +67,7 @@ int main(int, char*[])
     boost::graph_traits< Graph >::vertex_iterator vi, viend;
     int vnum = 0;
 
-    for (boost::tie(vi, viend) = vertices(g); vi != viend; ++vi)
+    for (eastl::tie(vi, viend) = vertices(g); vi != viend; ++vi)
         id[*vi] = vnum++;
 
     add_edge(vertex(0, g), vertex(1, g), EdgeProperties("joe"), g);
@@ -78,10 +78,10 @@ int main(int, char*[])
 
     graph_traits< Graph >::vertex_iterator i, end;
     graph_traits< Graph >::out_edge_iterator ei, edge_end;
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         cout << id[*i] << " ";
-        for (boost::tie(ei, edge_end) = out_edges(*i, g); ei != edge_end; ++ei)
+        for (eastl::tie(ei, edge_end) = out_edges(*i, g); ei != edge_end; ++ei)
             cout << " --" << name[*ei] << "--> " << id[target(*ei, g)] << "  ";
         cout << endl;
     }
@@ -95,10 +95,10 @@ int main(int, char*[])
          << ")" << endl;
     remove_edge(ei, g);
 
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         cout << id[*i] << " ";
-        for (boost::tie(ei, edge_end) = out_edges(*i, g); ei != edge_end; ++ei)
+        for (eastl::tie(ei, edge_end) = out_edges(*i, g); ei != edge_end; ++ei)
             cout << " --" << name[*ei] << "--> " << id[target(*ei, g)] << "  ";
         cout << endl;
     }

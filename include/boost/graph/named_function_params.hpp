@@ -10,8 +10,8 @@
 #ifndef BOOST_GRAPH_NAMED_FUNCTION_PARAMS_HPP
 #define BOOST_GRAPH_NAMED_FUNCTION_PARAMS_HPP
 
-#include <functional>
-#include <vector>
+#include <EASTL/functional.h>
+#include <EASTL/vector.h>
 #include <boost/limits.hpp>
 #include <boost/core/enable_if.hpp>
 #include <boost/core/ref.hpp>
@@ -865,7 +865,7 @@ namespace detail
     struct priority_queue_maker_helper< false, Graph, ArgPack, KeyT, ValueT,
         KeyMapTag, IndexInHeapMapTag, Compare, Q >
     {
-        typedef typename std::vector< ValueT >::size_type
+        typedef typename eastl::vector< ValueT >::size_type
             default_index_in_heap_type;
         typedef typename map_maker< Graph, ArgPack, IndexInHeapMapTag,
             default_index_in_heap_type >::helper::map_type index_in_heap_map;
@@ -918,7 +918,7 @@ namespace detail
     };
 
     template < class PriorityQueueTag, class KeyT, class ValueT,
-        class Compare = std::less< KeyT >,
+        class Compare = eastl::less< KeyT >,
         class KeyMapTag = boost::graph::keywords::tag::distance_map,
         class IndexInHeapMapTag
         = boost::graph::keywords::tag::index_in_heap_map >
@@ -967,7 +967,7 @@ namespace detail
     typename boost::graph_traits< G >::vertex_descriptor
     get_default_starting_vertex(const G& g)
     {
-        std::pair< typename boost::graph_traits< G >::vertex_iterator,
+        eastl::pair< typename boost::graph_traits< G >::vertex_iterator,
             typename boost::graph_traits< G >::vertex_iterator >
             iters = vertices(g);
         return (iters.first == iters.second)
@@ -991,7 +991,7 @@ namespace detail
     // distance_inf value manually
     template < typename T > struct get_max
     {
-        T operator()() const { return (std::numeric_limits< T >::max)(); }
+        T operator()() const { return (eastl::numeric_limits< T >::max)(); }
         typedef T result_type;
     };
 

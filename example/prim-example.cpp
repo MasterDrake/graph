@@ -28,7 +28,7 @@ int main()
     {
         graph_traits< Graph >::edge_descriptor e;
         bool inserted;
-        boost::tie(e, inserted) = add_edge(edges[j].first, edges[j].second, g);
+        eastl::tie(e, inserted) = add_edge(edges[j].first, edges[j].second, g);
         weightmap[e] = weights[j];
     }
 #else

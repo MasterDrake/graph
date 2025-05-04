@@ -14,7 +14,7 @@
 #include <boost/graph/properties.hpp>
 #include <boost/graph/random.hpp>
 #include <boost/next_prior.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/assert.hpp>
 
 namespace boost
@@ -46,7 +46,7 @@ template < typename Graph, typename ColorMap, typename NextEdge >
 void loop_erased_random_walk(const Graph& g,
     typename boost::graph_traits< Graph >::vertex_descriptor s,
     NextEdge next_edge, ColorMap color,
-    std::vector< typename boost::graph_traits< Graph >::vertex_descriptor >&
+    eastl::vector< typename boost::graph_traits< Graph >::vertex_descriptor >&
         path)
 {
     typedef typename boost::graph_traits< Graph >::vertex_descriptor
@@ -75,11 +75,11 @@ void loop_erased_random_walk(const Graph& g,
         {
             // Found a loop; delete from path from the first occurrence of t to
             // the end, coloring vertices white.
-            typename std::vector< vertex_descriptor >::iterator it
-                = std::find(path.begin(), path.end(), t);
+            typename eastl::vector< vertex_descriptor >::iterator it
+                = eastl::find(path.begin(), path.end(), t);
             BOOST_ASSERT(it != path.end());
             ++it;
-            for (typename std::vector< vertex_descriptor >::iterator j = it;
+            for (typename eastl::vector< vertex_descriptor >::iterator j = it;
                  j != path.end(); ++j)
             {
                 put(color, *j, color_gen::white());

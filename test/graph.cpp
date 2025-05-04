@@ -55,10 +55,10 @@ template < class Graph, class Vertex, class ID >
 bool check_vertex_cleared(Graph& g, Vertex v, ID id)
 {
     typename graph_traits< Graph >::vertex_iterator vi, viend;
-    for (boost::tie(vi, viend) = vertices(g); vi != viend; ++vi)
+    for (eastl::tie(vi, viend) = vertices(g); vi != viend; ++vi)
     {
         typename graph_traits< Graph >::adjacency_iterator ai, aiend, found;
-        boost::tie(ai, aiend) = adjacent_vertices(*vi, g);
+        eastl::tie(ai, aiend) = adjacent_vertices(*vi, g);
         boost::indirect_cmp< ID, std::equal_to< std::size_t > > cmp(id);
 
 #if (defined(BOOST_MSVC) && BOOST_MSVC <= 1300) && defined(__SGI_STL_PORT)
@@ -148,7 +148,7 @@ template < class Graph > std::size_t count_edges(Graph& g)
 {
     std::size_t e = 0;
     typename boost::graph_traits< Graph >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         ++e;
     return e;
 }
@@ -201,7 +201,7 @@ int main(int, char*[])
 #endif
             Edge e;
             bool inserted;
-            boost::tie(e, inserted) = add_edge(a, b, current_edge_id++, g);
+            eastl::tie(e, inserted) = add_edge(a, b, current_edge_id++, g);
 #if VERBOSE
             std::cout << "inserted: " << inserted << std::endl;
             std::cout << "source(e,g)" << source(e, g) << endl;
@@ -234,7 +234,7 @@ int main(int, char*[])
             Vertex a, b;
 
             Edge e = random_edge(g, gen);
-            boost::tie(a, b) = boost::incident(e, g);
+            eastl::tie(a, b) = boost::incident(e, g);
             --E;
 #if VERBOSE
             cerr << "remove_edge(" << vertex_id_map[a] << ","
@@ -277,7 +277,7 @@ int main(int, char*[])
 #endif
             Vertex a, b;
             Edge e = random_edge(g, gen);
-            boost::tie(a, b) = boost::incident(e, g);
+            eastl::tie(a, b) = boost::incident(e, g);
             --E;
 #if VERBOSE
             cerr << "remove_edge(" << vertex_id_map[a] << ","
@@ -353,7 +353,7 @@ int main(int, char*[])
         // make sure the vertices do not have any out edges yet
         {
             graph_traits< Graph >::out_edge_iterator e, e_end;
-            boost::tie(e, e_end) = out_edges(vid, g);
+            eastl::tie(e, e_end) = out_edges(vid, g);
             if (e != e_end)
             {
 #if VERBOSE
@@ -363,7 +363,7 @@ int main(int, char*[])
                 ret = -1;
                 break;
             }
-            boost::tie(e, e_end) = out_edges(vidp1, g);
+            eastl::tie(e, e_end) = out_edges(vidp1, g);
             if (e != e_end)
             {
 #if VERBOSE
@@ -378,7 +378,7 @@ int main(int, char*[])
         // make sure the vertices do not yet appear in any of the edges
         {
             graph_traits< Graph >::edge_iterator e, e_end;
-            for (boost::tie(e, e_end) = edges(g); e != e_end; ++e)
+            for (eastl::tie(e, e_end) = edges(g); e != e_end; ++e)
             {
                 if (source(*e, g) == vid || target(*e, g) == vid)
                 {
@@ -436,7 +436,7 @@ int main(int, char*[])
             cerr << "add_edge(" << vertex_id_map[vid] << "," << vertex_id_map[a]
                  << ")" << endl;
 #endif
-            boost::tie(e, inserted)
+            eastl::tie(e, inserted)
                 = add_edge(vid, a, EdgeID(current_edge_id++), g);
 
             if (!check_edge_added(
@@ -451,7 +451,7 @@ int main(int, char*[])
                  << vertex_id_map[vidp1] << ")" << endl;
 #endif
             // add_edge without plugin
-            boost::tie(e, inserted) = add_edge(b, vidp1, g);
+            eastl::tie(e, inserted) = add_edge(b, vidp1, g);
             if (inserted)
                 edge_id_map[e] = current_edge_id;
             ++current_edge_id;
@@ -513,7 +513,7 @@ int main(int, char*[])
         // one fewer vertex
         {
             graph_traits< Graph >::vertex_iterator v, v_end;
-            boost::tie(v, v_end) = vertices(g);
+            eastl::tie(v, v_end) = vertices(g);
             for (N = 0; v != v_end; ++v)
                 ++N; // N = std::distance(v, v_end);
             if (N != old_N - 1)

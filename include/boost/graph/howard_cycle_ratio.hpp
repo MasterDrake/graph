@@ -7,11 +7,11 @@
 #ifndef BOOST_GRAPH_CYCLE_RATIO_HOWARD_HPP
 #define BOOST_GRAPH_CYCLE_RATIO_HOWARD_HPP
 
-#include <vector>
-#include <list>
-#include <algorithm>
-#include <functional>
-#include <limits>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
+#include <EASTL/algorithm.h>
+#include <EASTL/functional.h>
+#include <EASTL/numeric_limits.h>
 
 #include <boost/tuple/tuple.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -45,7 +45,7 @@ template < typename Float = double > struct mcr_float
 
     static Float infinity()
     {
-        return std::numeric_limits< value_type >::infinity();
+        return eastl::numeric_limits< value_type >::infinity();
     }
 
     static Float epsilon() { return Float(-0.005); }
@@ -56,13 +56,13 @@ namespace detail
 
     template < typename FloatTraits > struct min_comparator_props
     {
-        typedef std::greater< typename FloatTraits::value_type > comparator;
+        typedef eastl::greater< typename FloatTraits::value_type > comparator;
         static const int multiplier = 1;
     };
 
     template < typename FloatTraits > struct max_comparator_props
     {
-        typedef std::less< typename FloatTraits::value_type > comparator;
+        typedef eastl::less< typename FloatTraits::value_type > comparator;
         static const int multiplier = -1;
     };
 
@@ -106,13 +106,13 @@ namespace detail
         typedef typename graph_traits< Graph >::vertex_descriptor vertex_t;
         typedef typename graph_traits< Graph >::edge_descriptor edge_t;
         typedef typename graph_traits< Graph >::vertices_size_type vn_t;
-        typedef std::vector< float_t > vp_t;
+        typedef eastl::vector< float_t > vp_t;
         typedef typename boost::iterator_property_map< typename vp_t::iterator,
             VertexIndexMap >
             distance_map_t; // V -> float_t
 
-        typedef typename std::vector< edge_t > ve_t;
-        typedef std::vector< my_color_type > vcol_t;
+        typedef typename eastl::vector< edge_t > ve_t;
+        typedef eastl::vector< my_color_type > vcol_t;
         typedef
             typename ::boost::iterator_property_map< typename ve_t::iterator,
                 VertexIndexMap >
@@ -122,18 +122,18 @@ namespace detail
                 VertexIndexMap >
                 color_map_t;
 
-        typedef typename std::list< vertex_t >
+        typedef typename eastl::list< vertex_t >
             pinel_t; // The in_edges list of the policy graph
-        typedef typename std::vector< pinel_t > inedges1_t;
+        typedef typename eastl::vector< pinel_t > inedges1_t;
         typedef typename ::boost::iterator_property_map<
             typename inedges1_t::iterator, VertexIndexMap >
             inedges_t;
-        typedef typename std::vector< edge_t > critical_cycle_t;
+        typedef typename eastl::vector< edge_t > critical_cycle_t;
 
         // Bad  vertex flag. If true, then the vertex is "bad".
         // Vertex is "bad" if its out_degree is equal to zero.
         typedef
-            typename boost::iterator_property_map< std::vector< int >::iterator,
+            typename boost::iterator_property_map< eastl::vector< int >::iterator,
                 VertexIndexMap >
                 badv_t;
 
@@ -210,17 +210,17 @@ namespace detail
         {
             typename graph_traits< Graph >::vertex_iterator vi, vie;
             typename graph_traits< Graph >::out_edge_iterator oei, oeie;
-            float_t cz = (std::numeric_limits< float_t >::max)(); // Closest to
+            float_t cz = (eastl::numeric_limits< float_t >::max)(); // Closest to
                                                                   // zero value
             float_t s = 0;
-            const float_t eps_ = std::numeric_limits< float_t >::epsilon();
-            for (boost::tie(vi, vie) = vertices(m_g); vi != vie; ++vi)
+            const float_t eps_ = eastl::numeric_limits< float_t >::epsilon();
+            for (eastl::tie(vi, vie) = vertices(m_g); vi != vie; ++vi)
             {
-                for (boost::tie(oei, oeie) = out_edges(*vi, m_g); oei != oeie;
+                for (eastl::tie(oei, oeie) = out_edges(*vi, m_g); oei != oeie;
                      ++oei)
                 {
-                    s += std::abs(m_ew1m[*oei]);
-                    float_t a = std::abs(m_ew2m[*oei]);
+                    s += eastl::abs(m_ew1m[*oei]);
+                    float_t a = eastl::abs(m_ew2m[*oei]);
                     if (a > eps_ && a < cz)
                     {
                         cz = a;
@@ -238,9 +238,9 @@ namespace detail
             m_sink = graph_traits< Graph >().null_vertex();
             typename graph_traits< Graph >::vertex_iterator vi, vie;
             typename graph_traits< Graph >::out_edge_iterator oei, oeie;
-            for (boost::tie(vi, vie) = vertices(m_g); vi != vie; ++vi)
+            for (eastl::tie(vi, vie) = vertices(m_g); vi != vie; ++vi)
             {
-                boost::tie(oei, oeie) = out_edges(*vi, m_g);
+                eastl::tie(oei, oeie) = out_edges(*vi, m_g);
                 auto mei = boost::first_max_element(oei, oeie,
                     [this](const auto& first, const auto& second)
                     { return m_cmp(m_ew1m[first], m_ew1m[second]); });
@@ -303,7 +303,7 @@ namespace detail
         vertex_t find_cycle_vertex(vertex_t sv)
         {
             vertex_t gv = sv;
-            std::fill(m_colcv.begin(), m_colcv.end(), my_white);
+            eastl::fill(m_colcv.begin(), m_colcv.end(), my_white);
             color_map_t cm(m_colcv.begin(), m_vim);
             do
             {
@@ -327,7 +327,7 @@ namespace detail
         {
             if (sv == m_sink)
                 return m_bound;
-            std::pair< float_t, float_t > sums_(float_t(0), float_t(0));
+            eastl::pair< float_t, float_t > sums_(float_t(0), float_t(0));
             vertex_t v = sv;
             critical_cycle_t cc;
             do
@@ -351,15 +351,15 @@ namespace detail
          */
         float_t policy_mcr()
         {
-            std::fill(m_col_bfs.begin(), m_col_bfs.end(), my_white);
+            eastl::fill(m_col_bfs.begin(), m_col_bfs.end(), my_white);
             color_map_t vcm_ = color_map_t(m_col_bfs.begin(), m_vim);
             typename graph_traits< Graph >::vertex_iterator uv_itr, vie;
-            boost::tie(uv_itr, vie) = vertices(m_g);
+            eastl::tie(uv_itr, vie) = vertices(m_g);
             float_t mcr = m_bound;
-            while ((uv_itr = std::find_if(uv_itr, vie,
+            while ((uv_itr = eastl::find_if(uv_itr, vie,
                         [this, &vcm_](const auto& uv)
                         {
-                            return std::equal_to< my_color_type >()(
+                            return eastl::equal_to< my_color_type >()(
                                 my_white, vcm_[uv]);
                         }))
                 != vie)
@@ -384,7 +384,7 @@ namespace detail
             typename property_traits< VertexIndexMap >::value_type ti
                 = m_vim[t];
             m_inelc[ti].erase(
-                std::find(m_inelc[ti].begin(), m_inelc[ti].end(), s));
+                eastl::find(m_inelc[ti].begin(), m_inelc[ti].end(), s));
             m_policy[s] = new_edge;
             t = target(new_edge, m_g);
             m_inel[t].push_back(s); /// Maintain in_edge list
@@ -399,11 +399,11 @@ namespace detail
             typename graph_traits< Graph >::vertex_iterator vi, vie;
             typename graph_traits< Graph >::out_edge_iterator oei, oeie;
             const float_t eps_ = FloatTraits::epsilon();
-            for (boost::tie(vi, vie) = vertices(m_g); vi != vie; ++vi)
+            for (eastl::tie(vi, vie) = vertices(m_g); vi != vie; ++vi)
             {
                 if (!m_badv[*vi])
                 {
-                    for (boost::tie(oei, oeie) = out_edges(*vi, m_g);
+                    for (eastl::tie(oei, oeie) = out_edges(*vi, m_g);
                          oei != oeie; ++oei)
                     {
                         vertex_t t = target(*oei, m_g);
@@ -450,7 +450,7 @@ namespace detail
         inedges1_t m_inelc; //>Container fot in edges list
         inedges_t m_inel; //>Policy graph, input edges list
 
-        std::vector< int > m_badvc;
+        eastl::vector< int > m_badvc;
         badv_t m_badv; // Marks "bad" vertices
 
         vcol_t m_colcv, m_col_bfs; // Color maps
@@ -542,7 +542,7 @@ template < typename FloatTraits, typename Graph, typename VertexIndexMap,
     typename EdgeWeight1Map, typename EdgeWeight2Map >
 inline typename FloatTraits::value_type maximum_cycle_ratio(const Graph& g,
     VertexIndexMap vim, EdgeWeight1Map ew1m, EdgeWeight2Map ew2m,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
     FloatTraits = FloatTraits())
 {
     typedef detail::float_wrapper< FloatTraits,
@@ -555,7 +555,7 @@ template < typename Graph, typename VertexIndexMap, typename EdgeWeight1Map,
     typename EdgeWeight2Map >
 inline double maximum_cycle_ratio(const Graph& g, VertexIndexMap vim,
     EdgeWeight1Map ew1m, EdgeWeight2Map ew2m,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
 {
     return maximum_cycle_ratio(g, vim, ew1m, ew2m, pcc, mcr_float<>());
 }
@@ -566,7 +566,7 @@ template < typename FloatTraits, typename Graph, typename VertexIndexMap,
     typename EdgeWeight1Map, typename EdgeWeight2Map >
 typename FloatTraits::value_type minimum_cycle_ratio(const Graph& g,
     VertexIndexMap vim, EdgeWeight1Map ew1m, EdgeWeight2Map ew2m,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
     FloatTraits = FloatTraits())
 {
     typedef detail::float_wrapper< FloatTraits,
@@ -579,7 +579,7 @@ template < typename Graph, typename VertexIndexMap, typename EdgeWeight1Map,
     typename EdgeWeight2Map >
 inline double minimum_cycle_ratio(const Graph& g, VertexIndexMap vim,
     EdgeWeight1Map ew1m, EdgeWeight2Map ew2m,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
 {
     return minimum_cycle_ratio(g, vim, ew1m, ew2m, pcc, mcr_float<>());
 }
@@ -590,12 +590,12 @@ template < typename FloatTraits, typename Graph, typename VertexIndexMap,
     typename EdgeWeightMap, typename EdgeIndexMap >
 inline typename FloatTraits::value_type maximum_cycle_mean(const Graph& g,
     VertexIndexMap vim, EdgeWeightMap ewm, EdgeIndexMap eim,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
     FloatTraits ft = FloatTraits())
 {
     typedef typename remove_const<
         typename property_traits< EdgeWeightMap >::value_type >::type Weight;
-    typename std::vector< Weight > ed_w2(boost::num_edges(g), 1);
+    typename eastl::vector< Weight > ed_w2(boost::num_edges(g), 1);
     return maximum_cycle_ratio(
         g, vim, ewm, make_iterator_property_map(ed_w2.begin(), eim), pcc, ft);
 }
@@ -604,7 +604,7 @@ template < typename Graph, typename VertexIndexMap, typename EdgeWeightMap,
     typename EdgeIndexMap >
 inline double maximum_cycle_mean(const Graph& g, VertexIndexMap vim,
     EdgeWeightMap ewm, EdgeIndexMap eim,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
 {
     return maximum_cycle_mean(g, vim, ewm, eim, pcc, mcr_float<>());
 }
@@ -615,12 +615,12 @@ template < typename FloatTraits, typename Graph, typename VertexIndexMap,
     typename EdgeWeightMap, typename EdgeIndexMap >
 inline typename FloatTraits::value_type minimum_cycle_mean(const Graph& g,
     VertexIndexMap vim, EdgeWeightMap ewm, EdgeIndexMap eim,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0,
     FloatTraits ft = FloatTraits())
 {
     typedef typename remove_const<
         typename property_traits< EdgeWeightMap >::value_type >::type Weight;
-    typename std::vector< Weight > ed_w2(boost::num_edges(g), 1);
+    typename eastl::vector< Weight > ed_w2(boost::num_edges(g), 1);
     return minimum_cycle_ratio(
         g, vim, ewm, make_iterator_property_map(ed_w2.begin(), eim), pcc, ft);
 }
@@ -629,7 +629,7 @@ template < typename Graph, typename VertexIndexMap, typename EdgeWeightMap,
     typename EdgeIndexMap >
 inline double minimum_cycle_mean(const Graph& g, VertexIndexMap vim,
     EdgeWeightMap ewm, EdgeIndexMap eim,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >* pcc = 0)
 {
     return minimum_cycle_mean(g, vim, ewm, eim, pcc, mcr_float<>());
 }

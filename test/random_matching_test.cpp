@@ -63,7 +63,7 @@ int main(int argc, char** argv)
         if (u != v)
         {
             if (!edge(u, v, g).second)
-                boost::tie(tuples::ignore, success) = add_edge(u, v, g);
+                eastl::tie(tuples::ignore, success) = add_edge(u, v, g);
             else
                 success = false;
 
@@ -83,13 +83,13 @@ int main(int argc, char** argv)
         std::cout << "Graph has edges: ";
         typedef graph_traits< undirected_graph >::edge_iterator edge_iterator_t;
         edge_iterator_t ei, ei_end;
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
             std::cout << *ei << ", ";
         std::cout << std::endl;
 
         std::cout << "Matching is: ";
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             if (mate[*vi] != graph_traits< undirected_graph >::null_vertex()
                 && *vi < mate[*vi])
                 std::cout << "{" << *vi << "," << mate[*vi] << "}, ";
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 
     // Now remove an edge from the random_mate matching.
     vertex_iterator_t vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         if (mate[*vi] != graph_traits< undirected_graph >::null_vertex())
             break;
 

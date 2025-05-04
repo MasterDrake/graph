@@ -107,7 +107,7 @@ int main(int, char*[])
 
     // Creating a property_map with the degrees of the degrees of each vertex
     auto deg = get(vertex_degree, G);
-    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
         deg[*ui] = degree(*ui, G);
 
     // Creating a property_map for the indices of a vertex

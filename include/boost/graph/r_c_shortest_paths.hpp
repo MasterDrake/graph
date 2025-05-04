@@ -8,10 +8,10 @@
 #ifndef BOOST_GRAPH_R_C_SHORTEST_PATHS_HPP
 #define BOOST_GRAPH_R_C_SHORTEST_PATHS_HPP
 
-#include <map>
-#include <queue>
-#include <vector>
-#include <list>
+#include <EASTL/map.h>
+#include <EASTL/queue.h>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
 
 #include <boost/make_shared.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -172,10 +172,10 @@ namespace detail
         typename graph_traits< Graph >::vertex_descriptor s,
         typename graph_traits< Graph >::vertex_descriptor t,
         // each inner vector corresponds to a pareto-optimal path
-        std::vector<
-            std::vector< typename graph_traits< Graph >::edge_descriptor > >&
+        eastl::vector<
+            eastl::vector< typename graph_traits< Graph >::edge_descriptor > >&
             pareto_optimal_solutions,
-        std::vector< Resource_Container >& pareto_optimal_resource_containers,
+        eastl::vector< Resource_Container >& pareto_optimal_resource_containers,
         bool b_all_pareto_optimal_solutions,
         // to initialize the first label/resource container
         // and to carry the type information
@@ -203,8 +203,8 @@ namespace detail
         typedef boost::shared_ptr<
             r_c_shortest_paths_label< Graph, Resource_Container > >
             Splabel;
-        std::priority_queue< Splabel, std::vector< Splabel >,
-            std::greater< Splabel > >
+        eastl::priority_queue< Splabel, eastl::vector< Splabel >,
+            eastl::greater< Splabel > >
             unprocessed_labels;
 
         bool b_feasible = true;
@@ -216,14 +216,14 @@ namespace detail
             typename graph_traits< Graph >::edge_descriptor(), s);
 
         unprocessed_labels.push(splabel_first_label);
-        std::vector< std::list< Splabel > > vec_vertex_labels_data(
+        eastl::vector< eastl::list< Splabel > > vec_vertex_labels_data(
             num_vertices(g));
         iterator_property_map<
-            typename std::vector< std::list< Splabel > >::iterator,
+            typename eastl::vector< eastl::list< Splabel > >::iterator,
             VertexIndexMap >
             vec_vertex_labels(vec_vertex_labels_data.begin(), vertex_index_map);
         vec_vertex_labels[s].push_back(splabel_first_label);
-        typedef std::vector< typename std::list< Splabel >::iterator >
+        typedef eastl::vector< typename eastl::list< Splabel >::iterator >
             vec_last_valid_positions_for_dominance_data_type;
         vec_last_valid_positions_for_dominance_data_type
             vec_last_valid_positions_for_dominance_data(num_vertices(g));
@@ -238,15 +238,15 @@ namespace detail
             put(vec_last_valid_positions_for_dominance, v,
                 vec_vertex_labels[v].begin());
         }
-        std::vector< size_t > vec_last_valid_index_for_dominance_data(
+        eastl::vector< size_t > vec_last_valid_index_for_dominance_data(
             num_vertices(g), 0);
-        iterator_property_map< std::vector< size_t >::iterator, VertexIndexMap >
+        iterator_property_map< eastl::vector< size_t >::iterator, VertexIndexMap >
             vec_last_valid_index_for_dominance(
                 vec_last_valid_index_for_dominance_data.begin(),
                 vertex_index_map);
-        std::vector< bool > b_vec_vertex_already_checked_for_dominance_data(
+        eastl::vector< bool > b_vec_vertex_already_checked_for_dominance_data(
             num_vertices(g), false);
-        iterator_property_map< std::vector< bool >::iterator, VertexIndexMap >
+        iterator_property_map< eastl::vector< bool >::iterator, VertexIndexMap >
             b_vec_vertex_already_checked_for_dominance(
                 b_vec_vertex_already_checked_for_dominance_data.begin(),
                 vertex_index_map);
@@ -274,20 +274,20 @@ namespace detail
                 typename boost::graph_traits< Graph >::vertex_descriptor
                     i_cur_resident_vertex
                     = cur_label->resident_vertex;
-                std::list< Splabel >& list_labels_cur_vertex
+                eastl::list< Splabel >& list_labels_cur_vertex
                     = get(vec_vertex_labels, i_cur_resident_vertex);
                 if (list_labels_cur_vertex.size() >= 2
                     && vec_last_valid_index_for_dominance[i_cur_resident_vertex]
                         < list_labels_cur_vertex.size())
                 {
-                    typename std::list< Splabel >::iterator outer_iter
+                    typename eastl::list< Splabel >::iterator outer_iter
                         = list_labels_cur_vertex.begin();
                     bool b_outer_iter_at_or_beyond_last_valid_pos_for_dominance
                         = false;
                     while (outer_iter != list_labels_cur_vertex.end())
                     {
                         Splabel cur_outer_splabel = *outer_iter;
-                        typename std::list< Splabel >::iterator inner_iter
+                        typename eastl::list< Splabel >::iterator inner_iter
                             = outer_iter;
                         if (!b_outer_iter_at_or_beyond_last_valid_pos_for_dominance
                             && outer_iter
@@ -317,7 +317,7 @@ namespace detail
                                     cur_inner_splabel
                                         ->cumulated_resource_consumption))
                             {
-                                typename std::list< Splabel >::iterator buf
+                                typename eastl::list< Splabel >::iterator buf
                                     = inner_iter;
                                 ++inner_iter;
                                 list_labels_cur_vertex.erase(buf);
@@ -336,7 +336,7 @@ namespace detail
                                     cur_outer_splabel
                                         ->cumulated_resource_consumption))
                             {
-                                typename std::list< Splabel >::iterator buf
+                                typename eastl::list< Splabel >::iterator buf
                                     = outer_iter;
                                 ++outer_iter;
                                 list_labels_cur_vertex.erase(buf);
@@ -396,7 +396,7 @@ namespace detail
                 typename graph_traits< Graph >::vertex_descriptor cur_vertex
                     = cur_label->resident_vertex;
                 typename graph_traits< Graph >::out_edge_iterator oei, oei_end;
-                for (boost::tie(oei, oei_end) = out_edges(cur_vertex, g);
+                for (eastl::tie(oei, oei_end) = out_edges(cur_vertex, g);
                      oei != oei_end; ++oei)
                 {
                     b_feasible = true;
@@ -430,19 +430,19 @@ namespace detail
                 cur_label.reset();
             }
         }
-        std::list< Splabel > dsplabels = get(vec_vertex_labels, t);
+        eastl::list< Splabel > dsplabels = get(vec_vertex_labels, t);
         if(!b_all_pareto_optimal_solutions)
         {
             dsplabels.sort();
         }
-        typename std::list< Splabel >::const_iterator csi = dsplabels.begin();
-        typename std::list< Splabel >::const_iterator csi_end = dsplabels.end();
+        typename eastl::list< Splabel >::const_iterator csi = dsplabels.begin();
+        typename eastl::list< Splabel >::const_iterator csi_end = dsplabels.end();
         // if d could be reached from o
         if (!dsplabels.empty())
         {
             for (; csi != csi_end; ++csi)
             {
-                std::vector< typename graph_traits< Graph >::edge_descriptor >
+                eastl::vector< typename graph_traits< Graph >::edge_descriptor >
                     cur_pareto_optimal_path;
                 boost::shared_ptr<
                     r_c_shortest_paths_label< Graph, Resource_Container > >
@@ -480,10 +480,10 @@ namespace detail
 
         BGL_FORALL_VERTICES_T(i, g, Graph)
         {
-            std::list< Splabel >& list_labels_cur_vertex = vec_vertex_labels[i];
-            typename std::list< Splabel >::iterator si
+            eastl::list< Splabel >& list_labels_cur_vertex = vec_vertex_labels[i];
+            typename eastl::list< Splabel >::iterator si
                 = list_labels_cur_vertex.begin();
-            const typename std::list< Splabel >::iterator si_end
+            const typename eastl::list< Splabel >::iterator si_end
                 = list_labels_cur_vertex.end();
             for (; si != si_end; ++si)
             {
@@ -525,7 +525,7 @@ struct default_r_c_shortest_paths_visitor
 }; // default_r_c_shortest_paths_visitor
 
 // default_r_c_shortest_paths_allocator
-typedef std::allocator< int > default_r_c_shortest_paths_allocator;
+typedef eastl::allocator< int > default_r_c_shortest_paths_allocator;
 // default_r_c_shortest_paths_allocator
 
 // r_c_shortest_paths functions (handle/interface)
@@ -540,10 +540,10 @@ void r_c_shortest_paths(const Graph& g, const VertexIndexMap& vertex_index_map,
     typename graph_traits< Graph >::vertex_descriptor s,
     typename graph_traits< Graph >::vertex_descriptor t,
     // each inner vector corresponds to a pareto-optimal path
-    std::vector<
-        std::vector< typename graph_traits< Graph >::edge_descriptor > >&
+    eastl::vector<
+        eastl::vector< typename graph_traits< Graph >::edge_descriptor > >&
         pareto_optimal_solutions,
-    std::vector< Resource_Container >& pareto_optimal_resource_containers,
+    eastl::vector< Resource_Container >& pareto_optimal_resource_containers,
     // to initialize the first label/resource container
     // and to carry the type information
     const Resource_Container& rc, const Resource_Extension_Function& ref,
@@ -566,7 +566,7 @@ void r_c_shortest_paths(const Graph& g, const VertexIndexMap& vertex_index_map,
     const EdgeIndexMap& edge_index_map,
     typename graph_traits< Graph >::vertex_descriptor s,
     typename graph_traits< Graph >::vertex_descriptor t,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >&
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >&
         pareto_optimal_solution,
     Resource_Container& pareto_optimal_resource_container,
     // to initialize the first label/resource container
@@ -577,10 +577,10 @@ void r_c_shortest_paths(const Graph& g, const VertexIndexMap& vertex_index_map,
     Label_Allocator la, Visitor vis)
 {
     // each inner vector corresponds to a pareto-optimal path
-    std::vector<
-        std::vector< typename graph_traits< Graph >::edge_descriptor > >
+    eastl::vector<
+        eastl::vector< typename graph_traits< Graph >::edge_descriptor > >
         pareto_optimal_solutions;
-    std::vector< Resource_Container > pareto_optimal_resource_containers;
+    eastl::vector< Resource_Container > pareto_optimal_resource_containers;
     r_c_shortest_paths_dispatch(g, vertex_index_map, edge_index_map, s, t,
         pareto_optimal_solutions, pareto_optimal_resource_containers, false, rc,
         ref, dominance, la, vis);
@@ -603,10 +603,10 @@ void r_c_shortest_paths(const Graph& g, const VertexIndexMap& vertex_index_map,
     typename graph_traits< Graph >::vertex_descriptor s,
     typename graph_traits< Graph >::vertex_descriptor t,
     // each inner vector corresponds to a pareto-optimal path
-    std::vector<
-        std::vector< typename graph_traits< Graph >::edge_descriptor > >&
+    eastl::vector<
+        eastl::vector< typename graph_traits< Graph >::edge_descriptor > >&
         pareto_optimal_solutions,
-    std::vector< Resource_Container >& pareto_optimal_resource_containers,
+    eastl::vector< Resource_Container >& pareto_optimal_resource_containers,
     // to initialize the first label/resource container
     // and to carry the type information
     const Resource_Container& rc, const Resource_Extension_Function& ref,
@@ -628,7 +628,7 @@ void r_c_shortest_paths(const Graph& g, const VertexIndexMap& vertex_index_map,
     const EdgeIndexMap& edge_index_map,
     typename graph_traits< Graph >::vertex_descriptor s,
     typename graph_traits< Graph >::vertex_descriptor t,
-    std::vector< typename graph_traits< Graph >::edge_descriptor >&
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >&
         pareto_optimal_solution,
     Resource_Container& pareto_optimal_resource_container,
     // to initialize the first label/resource container
@@ -637,10 +637,10 @@ void r_c_shortest_paths(const Graph& g, const VertexIndexMap& vertex_index_map,
     const Dominance_Function& dominance)
 {
     // each inner vector corresponds to a pareto-optimal path
-    std::vector<
-        std::vector< typename graph_traits< Graph >::edge_descriptor > >
+    eastl::vector<
+        eastl::vector< typename graph_traits< Graph >::edge_descriptor > >
         pareto_optimal_solutions;
-    std::vector< Resource_Container > pareto_optimal_resource_containers;
+    eastl::vector< Resource_Container > pareto_optimal_resource_containers;
     r_c_shortest_paths_dispatch(g, vertex_index_map, edge_index_map, s, t,
         pareto_optimal_solutions, pareto_optimal_resource_containers, false, rc,
         ref, dominance, default_r_c_shortest_paths_allocator(),
@@ -658,7 +658,7 @@ void r_c_shortest_paths(const Graph& g, const VertexIndexMap& vertex_index_map,
 template < class Graph, class Resource_Container,
     class Resource_Extension_Function >
 void check_r_c_path(const Graph& g,
-    const std::vector< typename graph_traits< Graph >::edge_descriptor >&
+    const eastl::vector< typename graph_traits< Graph >::edge_descriptor >&
         ed_vec_path,
     const Resource_Container& initial_resource_levels,
     // if true, computed accumulated final resource levels must
@@ -673,7 +673,7 @@ void check_r_c_path(const Graph& g,
     typename graph_traits< Graph >::edge_descriptor& ed_last_extended_arc)
 {
     size_t i_size_ed_vec_path = ed_vec_path.size();
-    std::vector< typename graph_traits< Graph >::edge_descriptor > buf_path;
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor > buf_path;
     if (i_size_ed_vec_path == 0)
         b_feasible = true;
     else

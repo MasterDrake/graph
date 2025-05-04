@@ -233,7 +233,7 @@ it depends on.
       if (in_degree (*i, g) &gt; 0) {
         Graph::in_edge_iterator j, j_end;
         int maxdist = 0;
-        for (boost::tie(j, j_end) = in_edges(*i, g); j != j_end; ++j)
+        for (eastl::tie(j, j_end) = in_edges(*i, g); j != j_end; ++j)
           maxdist = std::max(time[source(*j, g)], maxdist);
         time[*i]=maxdist+1;
       }
@@ -248,7 +248,7 @@ Last, we output the time-slot that we've calculated for each vertex.
   std::cout &lt;&lt; "parallel make ordering, " &lt;&lt; std::endl
        &lt;&lt; "  vertices with same group number" &lt;&lt; std::endl
        &lt;&lt; "  can be made in parallel" &lt;&lt; std::endl &lt;&lt; std::endl;
-  for (boost::tie(i, iend) = vertices(g); i != iend; ++i)
+  for (eastl::tie(i, iend) = vertices(g); i != iend; ++i)
     std::cout &lt;&lt; "time_slot[" &lt;&lt; name[*i] &lt;&lt; "] = " &lt;&lt; time[*i] &lt;&lt; std::endl;
 </PRE>
 The output is:

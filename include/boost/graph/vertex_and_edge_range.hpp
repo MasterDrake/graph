@@ -11,7 +11,7 @@
 #define BOOST_GRAPH_VERTEX_AND_EDGE_RANGE_HPP
 
 #include <boost/graph/graph_traits.hpp>
-#include <iterator>
+#include <EASTL/iterator.h>
 
 namespace boost
 {
@@ -34,11 +34,11 @@ namespace graph
 
         typedef std::size_t vertices_size_type;
         typedef VertexIterator vertex_iterator;
-        typedef typename std::iterator_traits< VertexIterator >::value_type
+        typedef typename eastl::iterator_traits< VertexIterator >::value_type
             vertex_descriptor;
 
         typedef EdgeIterator edge_iterator;
-        typedef typename std::iterator_traits< EdgeIterator >::value_type
+        typedef typename eastl::iterator_traits< EdgeIterator >::value_type
             edge_descriptor;
 
         typedef std::size_t edges_size_type;
@@ -74,8 +74,8 @@ namespace graph
         , first_edge(first_e)
         , last_edge(last_e)
         {
-            m_num_vertices = std::distance(first_v, last_v);
-            m_num_edges = std::distance(first_e, last_e);
+            m_num_vertices = eastl::distance(first_v, last_v);
+            m_num_edges = eastl::distance(first_e, last_e);
         }
 
         const Graph* g;
@@ -88,10 +88,10 @@ namespace graph
     };
 
     template < typename Graph, typename VertexIterator, typename EdgeIterator >
-    inline std::pair< VertexIterator, VertexIterator > vertices(
+    inline eastl::pair< VertexIterator, VertexIterator > vertices(
         const vertex_and_edge_range< Graph, VertexIterator, EdgeIterator >& g)
     {
-        return std::make_pair(g.first_vertex, g.last_vertex);
+        return eastl::make_pair(g.first_vertex, g.last_vertex);
     }
 
     template < typename Graph, typename VertexIterator, typename EdgeIterator >
@@ -104,10 +104,10 @@ namespace graph
     }
 
     template < typename Graph, typename VertexIterator, typename EdgeIterator >
-    inline std::pair< EdgeIterator, EdgeIterator > edges(
+    inline eastl::pair< EdgeIterator, EdgeIterator > edges(
         const vertex_and_edge_range< Graph, VertexIterator, EdgeIterator >& g)
     {
-        return std::make_pair(g.first_edge, g.last_edge);
+        return eastl::make_pair(g.first_edge, g.last_edge);
     }
 
     template < typename Graph, typename VertexIterator, typename EdgeIterator >

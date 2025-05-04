@@ -23,8 +23,8 @@
    with least degree in the subgraph spanned by the un-ordered
    columns.
  */
-#include <vector>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h>
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
@@ -68,7 +68,7 @@ void smallest_last_vertex_ordering(const VertexListGraph& G, Order order,
     const size_type num = num_vertices(G);
 
     typename GraphTraits::vertex_iterator v, vend;
-    for (boost::tie(v, vend) = vertices(G); v != vend; ++v)
+    for (eastl::tie(v, vend) = vertices(G); v != vend; ++v)
     {
         put(marker, *v, num);
         put(degree, *v, out_degree(*v, G));
@@ -95,7 +95,7 @@ void smallest_last_vertex_ordering(const VertexListGraph& G, Order order,
         put(marker, node, 0); // node has been ordered.
 
         typename GraphTraits::adjacency_iterator v, vend;
-        for (boost::tie(v, vend) = adjacent_vertices(node, G); v != vend; ++v)
+        for (eastl::tie(v, vend) = adjacent_vertices(node, G); v != vend; ++v)
 
             if (get(marker, *v) > current_order)
             { //*v is unordered vertex
@@ -137,10 +137,10 @@ void smallest_last_vertex_ordering(const VertexListGraph& G, Order order)
 }
 
 template < class VertexListGraph >
-std::vector< typename graph_traits< VertexListGraph >::vertex_descriptor >
+eastl::vector< typename graph_traits< VertexListGraph >::vertex_descriptor >
 smallest_last_vertex_ordering(const VertexListGraph& G)
 {
-    std::vector< typename graph_traits< VertexListGraph >::vertex_descriptor >
+    eastl::vector< typename graph_traits< VertexListGraph >::vertex_descriptor >
         o(num_vertices(G));
     smallest_last_vertex_ordering(G,
         make_iterator_property_map(

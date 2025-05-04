@@ -22,7 +22,7 @@ template < typename Graph > void reset_edge_index(Graph& g)
         = get(edge_index, g);
     typename graph_traits< Graph >::edge_iterator ei, ei_end;
     typename graph_traits< Graph >::edges_size_type cnt = 0;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         put(index, *ei, cnt++);
 }
 
@@ -32,7 +32,7 @@ template < typename Graph > void reset_vertex_index(Graph& g)
         = get(vertex_index, g);
     typename graph_traits< Graph >::vertex_iterator vi, vi_end;
     typename graph_traits< Graph >::vertices_size_type cnt = 0;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         put(index, *vi, cnt++);
 }
 

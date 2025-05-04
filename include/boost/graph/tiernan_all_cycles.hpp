@@ -7,7 +7,7 @@
 #ifndef BOOST_GRAPH_CYCLE_HPP
 #define BOOST_GRAPH_CYCLE_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
 
 #include <boost/config.hpp>
 #include <boost/graph/graph_concepts.hpp>
@@ -123,7 +123,7 @@ namespace detail
     inline bool is_vertex_in_path(const Graph&,
         typename graph_traits< Graph >::vertex_descriptor v, const Path& p)
     {
-        return (std::find(p.begin(), p.end(), v) != p.end());
+        return (eastl::find(p.begin(), p.end(), v) != p.end());
     }
 
     template < typename Graph, typename ClosedMatrix >
@@ -181,7 +181,7 @@ namespace detail
         // stringent requirements that we do in can_extend_path().
         Vertex u = p.back(), v = p.front();
         OutIterator i, end;
-        for (boost::tie(i, end) = out_edges(u, g); i != end; ++i)
+        for (eastl::tie(i, end) = out_edges(u, g); i != end; ++i)
         {
             if ((target(*i, g) == v))
             {
@@ -205,7 +205,7 @@ namespace detail
 
         // AdjacencyIterator i, end;
         OutIterator i, end;
-        for (boost::tie(i, end) = out_edges(u, g); i != end; ++i)
+        for (eastl::tie(i, end) = out_edges(u, g); i != end; ++i)
         {
             Vertex v = target(*i, g);
 
@@ -259,10 +259,10 @@ namespace detail
     {
         BOOST_CONCEPT_ASSERT((VertexListGraphConcept< Graph >));
         typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
-        typedef std::vector< Vertex > Path;
+        typedef eastl::vector< Vertex > Path;
         BOOST_CONCEPT_ASSERT((CycleVisitorConcept< Visitor, Path, Graph >));
-        typedef std::vector< Vertex > VertexList;
-        typedef std::vector< VertexList > ClosedMatrix;
+        typedef eastl::vector< Vertex > VertexList;
+        typedef eastl::vector< VertexList > ClosedMatrix;
 
         Path p;
         ClosedMatrix closed(num_vertices(g), VertexList());
@@ -321,7 +321,7 @@ inline void tiernan_all_cycles(
     typedef typename graph_traits< Graph >::vertex_iterator VertexIterator;
 
     VertexIterator i, end;
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         detail::all_cycles_from_vertex(g, *i, vis, minlen, maxlen);
     }
@@ -339,21 +339,21 @@ inline void tiernan_all_cycles(const Graph& g, Visitor vis)
 {
     typedef typename graph_traits< Graph >::directed_category Dir;
     tiernan_all_cycles(g, vis, detail::min_cycles< Dir >::value,
-        (std::numeric_limits< std::size_t >::max)());
+        (eastl::numeric_limits< std::size_t >::max)());
 }
 
 template < typename Graph >
-inline std::pair< std::size_t, std::size_t > tiernan_girth_and_circumference(
+inline eastl::pair< std::size_t, std::size_t > tiernan_girth_and_circumference(
     const Graph& g)
 {
-    std::size_t min_ = (std::numeric_limits< std::size_t >::max)(), max_ = 0;
+    std::size_t min_ = (eastl::numeric_limits< std::size_t >::max)(), max_ = 0;
     tiernan_all_cycles(g, find_min_max_cycle(min_, max_));
 
     // if this is the case, the graph is acyclic...
     if (max_ == 0)
         max_ = min_;
 
-    return std::make_pair(min_, max_);
+    return eastl::make_pair(min_, max_);
 }
 
 template < typename Graph > inline std::size_t tiernan_girth(const Graph& g)

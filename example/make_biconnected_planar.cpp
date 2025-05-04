@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     auto e_index = get(edge_index, g);
     graph_traits< graph >::edges_size_type edge_count = 0;
     graph_traits< graph >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         put(e_index, *ei, edge_count++);
 
     // Test for planarity; compute the planar embedding as a side-effect
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 
     // Re-initialize the edge index, since we just added a few edges
     edge_count = 0;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         put(e_index, *ei, edge_count++);
 
     // Re-size the storage for the biconnected components, since we

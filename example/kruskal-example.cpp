@@ -31,7 +31,7 @@ int main()
     {
         Edge e;
         bool inserted;
-        boost::tie(e, inserted)
+        eastl::tie(e, inserted)
             = add_edge(edge_array[j].first, edge_array[j].second, g);
         weightmap[e] = weights[j];
     }
@@ -59,7 +59,7 @@ int main()
          << " edge[style=\"bold\"]\n"
          << " node[shape=\"circle\"]\n";
     graph_traits< Graph >::edge_iterator eiter, eiter_end;
-    for (boost::tie(eiter, eiter_end) = edges(g); eiter != eiter_end; ++eiter)
+    for (eastl::tie(eiter, eiter_end) = edges(g); eiter != eiter_end; ++eiter)
     {
         fout << source(*eiter, g) << " -- " << target(*eiter, g);
         if (std::find(spanning_tree.begin(), spanning_tree.end(), *eiter)

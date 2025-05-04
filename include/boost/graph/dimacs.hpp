@@ -9,14 +9,14 @@
 #ifndef BOOST_GRAPH_DIMACS_HPP
 #define BOOST_GRAPH_DIMACS_HPP
 
-#include <string>
+#include <EASTL/string.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <iterator>
+#include <EASTL/iterator.h>
 #include <exception>
-#include <vector>
-#include <queue>
+#include <EASTL/vector.h>
+#include <EASTL/queue.h>
 #include <boost/assert.hpp>
 #include <boost/throw_exception.hpp>
 
@@ -36,7 +36,7 @@ namespace graph
         typedef std::size_t edges_size_type;
         typedef double vertex_weight_type;
         typedef double edge_weight_type;
-        typedef std::pair< vertices_size_type, vertices_size_type > edge_type;
+        typedef eastl::pair< vertices_size_type, vertices_size_type > edge_type;
         enum incr_mode
         {
             edge,
@@ -55,7 +55,7 @@ namespace graph
             }
 
             std::stringstream instr(buf);
-            std::string junk;
+            eastl::string junk;
 
             instr >> junk >> junk >> num_vertices >> num_edges;
             read_edge_weights.push(-1);
@@ -236,11 +236,11 @@ namespace graph
             return true;
         }
 
-        std::queue< edge_type > read_edges;
-        std::queue< edge_weight_type > read_edge_weights;
+        eastl::queue< edge_type > read_edges;
+        eastl::queue< edge_weight_type > read_edge_weights;
 
         std::istream& inpt;
-        std::string buf;
+        eastl::string buf;
         vertices_size_type num_vertices, num_edges, seen_edges;
         bool want_weights;
     };
@@ -251,7 +251,7 @@ namespace graph
         typedef dimacs_basic_reader::edge_type edge_type;
         typedef dimacs_basic_reader::incr_mode incr_mode;
 
-        typedef std::input_iterator_tag iterator_category;
+        typedef eastl::input_iterator_tag iterator_category;
         typedef edge_type value_type;
         typedef value_type reference;
         typedef edge_type* pointer;

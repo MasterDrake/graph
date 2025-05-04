@@ -12,10 +12,10 @@
 
 #include <boost/config.hpp>
 #include <boost/assert.hpp>
-#include <vector>
-#include <list>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
 #include <iosfwd>
-#include <algorithm> // for std::min and std::max
+#include <EASTL/algorithm.h> // for eastl::min and eastl::max
 
 #include <boost/pending/queue.hpp>
 #include <boost/limits.hpp>
@@ -45,8 +45,8 @@ namespace detail
 
     template < class Vertex > struct preflow_layer
     {
-        std::list< Vertex > active_vertices;
-        std::list< Vertex > inactive_vertices;
+        eastl::list< Vertex > active_vertices;
+        eastl::list< Vertex > inactive_vertices;
     };
 
     template < class Graph,
@@ -66,7 +66,7 @@ namespace detail
         typedef typename Traits::edges_size_type edges_size_type;
 
         typedef preflow_layer< vertex_descriptor > Layer;
-        typedef std::vector< Layer > LayerArray;
+        typedef eastl::vector< Layer > LayerArray;
         typedef typename LayerArray::iterator layer_iterator;
         typedef typename LayerArray::size_type distance_size_type;
 
@@ -91,7 +91,7 @@ namespace detail
         //=======================================================================
         // Layer List Management Functions
 
-        typedef typename std::list< vertex_descriptor >::iterator list_iterator;
+        typedef typename eastl::list< vertex_descriptor >::iterator list_iterator;
 
         void add_to_active_list(vertex_descriptor u, Layer& layer)
         {
@@ -159,15 +159,15 @@ namespace detail
             // Initialize flow to zero which means initializing
             // the residual capacity to equal the capacity.
             out_edge_iterator ei, e_end;
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
-                for (boost::tie(ei, e_end) = out_edges(*u_iter, g); ei != e_end;
+                for (eastl::tie(ei, e_end) = out_edges(*u_iter, g); ei != e_end;
                      ++ei)
                 {
                     put(residual_capacity, *ei, get(capacity, *ei));
                 }
 
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
             {
                 vertex_descriptor u = *u_iter;
@@ -179,20 +179,20 @@ namespace detail
             FlowValue test_excess = 0;
 
             out_edge_iterator a_iter, a_end;
-            for (boost::tie(a_iter, a_end) = out_edges(src, g); a_iter != a_end;
+            for (eastl::tie(a_iter, a_end) = out_edges(src, g); a_iter != a_end;
                  ++a_iter)
                 if (target(*a_iter, g) != src)
                     test_excess += get(residual_capacity, *a_iter);
-            if (test_excess > (std::numeric_limits< FlowValue >::max)())
+            if (test_excess > (eastl::numeric_limits< FlowValue >::max)())
                 overflow_detected = true;
 
             if (overflow_detected)
                 put(excess_flow, src,
-                    (std::numeric_limits< FlowValue >::max)());
+                    (eastl::numeric_limits< FlowValue >::max)());
             else
             {
                 put(excess_flow, src, 0);
-                for (boost::tie(a_iter, a_end) = out_edges(src, g);
+                for (eastl::tie(a_iter, a_end) = out_edges(src, g);
                      a_iter != a_end; ++a_iter)
                 {
                     edge_descriptor a = *a_iter;
@@ -214,7 +214,7 @@ namespace detail
             max_active = 0;
             min_active = n;
 
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
             {
                 vertex_descriptor u = *u_iter;
@@ -247,7 +247,7 @@ namespace detail
             BOOST_USING_STD_MAX();
             ++update_count;
             vertex_iterator u_iter, u_end;
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
             {
                 put(color, *u_iter, ColorTraits::white());
@@ -273,7 +273,7 @@ namespace detail
                 distance_size_type d_v = get(distance, u) + 1;
 
                 out_edge_iterator ai, a_end;
-                for (boost::tie(ai, a_end) = out_edges(u, g); ai != a_end; ++ai)
+                for (eastl::tie(ai, a_end) = out_edges(u, g); ai != a_end; ++ai)
                 {
                     edge_descriptor a = *ai;
                     vertex_descriptor v = target(a, g);
@@ -306,7 +306,7 @@ namespace detail
             while (1)
             {
                 out_edge_iterator ai, ai_end;
-                for (boost::tie(ai, ai_end) = current[u]; ai != ai_end; ++ai)
+                for (eastl::tie(ai, ai_end) = current[u]; ai != ai_end; ++ai)
                 {
                     edge_descriptor a = *ai;
                     if (is_residual_edge(a))
@@ -389,7 +389,7 @@ namespace detail
             // Examine the residual out-edges of vertex i, choosing the
             // edge whose target vertex has the minimal distance.
             out_edge_iterator ai, a_end, min_edge_iter;
-            for (boost::tie(ai, a_end) = out_edges(u, g); ai != a_end; ++ai)
+            for (eastl::tie(ai, a_end) = out_edges(u, g); ai != a_end; ++ai)
             {
                 ++work_since_last_update;
                 edge_descriptor a = *ai;
@@ -486,23 +486,23 @@ namespace detail
 
             vertex_descriptor r, restart, u;
 
-            std::vector< vertex_descriptor > parent(n);
-            std::vector< vertex_descriptor > topo_next(n);
+            eastl::vector< vertex_descriptor > parent(n);
+            eastl::vector< vertex_descriptor > topo_next(n);
 
             vertex_descriptor tos(parent[0]),
                 bos(parent[0]); // bogus initialization, just to avoid warning
             bool bos_null = true;
 
             // handle self-loops
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
-                for (boost::tie(ai, a_end) = out_edges(*u_iter, g); ai != a_end;
+                for (eastl::tie(ai, a_end) = out_edges(*u_iter, g); ai != a_end;
                      ++ai)
                     if (target(*ai, g) == *u_iter)
                         put(residual_capacity, *ai, get(capacity, *ai));
 
             // initialize
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
             {
                 u = *u_iter;
@@ -511,7 +511,7 @@ namespace detail
                 current[u] = out_edges(u, g);
             }
             // eliminate flow cycles and topologically order the vertices
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
             {
                 u = *u_iter;
@@ -636,7 +636,7 @@ namespace detail
             {
                 for (u = tos; u != bos; u = topo_next[get(index, u)])
                 {
-                    boost::tie(ai, a_end) = out_edges(u, g);
+                    eastl::tie(ai, a_end) = out_edges(u, g);
                     while (get(excess_flow, u) > 0 && ai != a_end)
                     {
                         if (get(capacity, *ai) == 0 && is_residual_edge(*ai))
@@ -646,7 +646,7 @@ namespace detail
                 }
                 // do the bottom
                 u = bos;
-                boost::tie(ai, a_end) = out_edges(u, g);
+                eastl::tie(ai, a_end) = out_edges(u, g);
                 while (get(excess_flow, u) > 0 && ai != a_end)
                 {
                     if (get(capacity, *ai) == 0 && is_residual_edge(*ai))
@@ -664,10 +664,10 @@ namespace detail
             out_edge_iterator ai, a_end;
 
             // check edge flow values
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
             {
-                for (boost::tie(ai, a_end) = out_edges(*u_iter, g); ai != a_end;
+                for (eastl::tie(ai, a_end) = out_edges(*u_iter, g); ai != a_end;
                      ++ai)
                 {
                     edge_descriptor a = *ai;
@@ -686,7 +686,7 @@ namespace detail
 
             // check conservation
             FlowValue sum;
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
             {
                 vertex_descriptor u = *u_iter;
@@ -695,7 +695,7 @@ namespace detail
                     if (get(excess_flow, u) != 0)
                         return false;
                     sum = 0;
-                    for (boost::tie(ai, a_end) = out_edges(u, g); ai != a_end;
+                    for (eastl::tie(ai, a_end) = out_edges(u, g); ai != a_end;
                          ++ai)
                         if (get(capacity, *ai) > 0)
                             sum -= get(capacity, *ai)
@@ -733,9 +733,9 @@ namespace detail
             os << "flow values" << std::endl;
             vertex_iterator u_iter, u_end;
             out_edge_iterator ei, e_end;
-            for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
+            for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end;
                  ++u_iter)
-                for (boost::tie(ei, e_end) = out_edges(*u_iter, g); ei != e_end;
+                for (eastl::tie(ei, e_end) = out_edges(*u_iter, g); ei != e_end;
                      ++ei)
                     if (get(capacity, *ei) > 0)
                         os << *u_iter << " " << target(*ei, g) << " "
@@ -755,24 +755,24 @@ namespace detail
         VertexIndexMap index;
 
         // will need to use random_access_property_map with these
-        std::vector< FlowValue > excess_flow_data;
-        iterator_property_map< typename std::vector< FlowValue >::iterator,
+        eastl::vector< FlowValue > excess_flow_data;
+        iterator_property_map< typename eastl::vector< FlowValue >::iterator,
             VertexIndexMap >
             excess_flow;
-        std::vector< std::pair< out_edge_iterator, out_edge_iterator > >
+        eastl::vector< eastl::pair< out_edge_iterator, out_edge_iterator > >
             current_data;
         iterator_property_map<
-            typename std::vector<
-                std::pair< out_edge_iterator, out_edge_iterator > >::iterator,
+            typename eastl::vector<
+                eastl::pair< out_edge_iterator, out_edge_iterator > >::iterator,
             VertexIndexMap >
             current;
-        std::vector< distance_size_type > distance_data;
+        eastl::vector< distance_size_type > distance_data;
         iterator_property_map<
-            typename std::vector< distance_size_type >::iterator,
+            typename eastl::vector< distance_size_type >::iterator,
             VertexIndexMap >
             distance;
-        std::vector< default_color_type > color_data;
-        iterator_property_map< std::vector< default_color_type >::iterator,
+        eastl::vector< default_color_type > color_data;
+        iterator_property_map< eastl::vector< default_color_type >::iterator,
             VertexIndexMap >
             color;
 
@@ -781,8 +781,8 @@ namespace detail
         ResidualCapacityEdgeMap residual_capacity;
 
         LayerArray layers;
-        std::vector< list_iterator > layer_list_ptr_data;
-        iterator_property_map< typename std::vector< list_iterator >::iterator,
+        eastl::vector< list_iterator > layer_list_ptr_data;
+        iterator_property_map< typename eastl::vector< list_iterator >::iterator,
             VertexIndexMap >
             layer_list_ptr;
         distance_size_type max_distance; // maximal distance

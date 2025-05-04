@@ -71,11 +71,11 @@ int main(int argc, char* argv[])
     int r, d;
     EccentricityContainer eccs(num_vertices(g));
     EccentricityMap em(eccs, g);
-    boost::tie(r, d) = all_eccentricities(g, dm, em);
+    eastl::tie(r, d) = all_eccentricities(g, dm, em);
 
     // Print the closeness centrality of each vertex.
     graph_traits< Graph >::vertex_iterator i, end;
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         cout << setw(12) << setiosflags(ios::left) << g[*i].name << get(em, *i)
              << endl;

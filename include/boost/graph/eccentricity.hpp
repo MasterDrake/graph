@@ -39,7 +39,7 @@ inline typename property_traits< DistanceMap >::value_type eccentricity(
 }
 
 template < typename Graph, typename DistanceMatrix, typename EccentricityMap >
-inline std::pair< typename property_traits< EccentricityMap >::value_type,
+inline eastl::pair< typename property_traits< EccentricityMap >::value_type,
     typename property_traits< EccentricityMap >::value_type >
 all_eccentricities(
     const Graph& g, const DistanceMatrix& dist, EccentricityMap ecc)
@@ -60,8 +60,8 @@ all_eccentricities(
     Eccentricity r = numeric_values< Eccentricity >::infinity(),
                  d = numeric_values< Eccentricity >::zero();
     VertexIterator i, end;
-    boost::tie(i, end) = vertices(g);
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    eastl::tie(i, end) = vertices(g);
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         DistanceMap dm = get(dist, *i);
         Eccentricity e = eccentricity(g, dm);
@@ -71,11 +71,11 @@ all_eccentricities(
         r = min BOOST_PREVENT_MACRO_SUBSTITUTION(r, e);
         d = max BOOST_PREVENT_MACRO_SUBSTITUTION(d, e);
     }
-    return std::make_pair(r, d);
+    return eastl::make_pair(r, d);
 }
 
 template < typename Graph, typename EccentricityMap >
-inline std::pair< typename property_traits< EccentricityMap >::value_type,
+inline eastl::pair< typename property_traits< EccentricityMap >::value_type,
     typename property_traits< EccentricityMap >::value_type >
 radius_and_diameter(const Graph& g, EccentricityMap ecc)
 {
@@ -90,7 +90,7 @@ radius_and_diameter(const Graph& g, EccentricityMap ecc)
     BOOST_USING_STD_MAX();
 
     VertexIterator i, end;
-    boost::tie(i, end) = vertices(g);
+    eastl::tie(i, end) = vertices(g);
     Eccentricity radius = get(ecc, *i);
     Eccentricity diameter = get(ecc, *i);
     for (i = boost::next(i); i != end; ++i)
@@ -99,7 +99,7 @@ radius_and_diameter(const Graph& g, EccentricityMap ecc)
         radius = min BOOST_PREVENT_MACRO_SUBSTITUTION(radius, cur);
         diameter = max BOOST_PREVENT_MACRO_SUBSTITUTION(diameter, cur);
     }
-    return std::make_pair(radius, diameter);
+    return eastl::make_pair(radius, diameter);
 }
 
 template < typename Graph, typename EccentricityMap >

@@ -90,7 +90,7 @@ int main(int argc, const char** argv)
     // Get the vertex for Kevin Bacon
     Vertex src;
     graph_traits< Graph >::vertex_iterator i, end;
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
         if (g[*i].name == "Kevin Bacon")
             src = *i;
 
@@ -101,7 +101,7 @@ int main(int argc, const char** argv)
     breadth_first_search(
         g, src, visitor(bacon_number_recorder(&bacon_number[0])));
 
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
         std::cout << g[*i].name << " has a Bacon number of " << bacon_number[*i]
                   << std::endl;
 

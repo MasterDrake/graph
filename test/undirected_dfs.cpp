@@ -166,17 +166,17 @@ template < typename Graph > struct dfs_test
                     g, visitor(vis).color_map(color).edge_color_map(e_color));
 
                 // all vertices should be black
-                for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+                for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
                     BOOST_TEST(get(color, *vi) == Color::black());
 
                 // all edges should be black
-                for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+                for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
                     BOOST_TEST(get(e_color, *ei) == EColor::black());
 
                 // check parenthesis structure of discover/finish times
                 // See CLR p.480
-                for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
-                    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end;
+                for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+                    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end;
                          ++vi)
                     {
                         vertex_descriptor u = *ui, v = *vi;

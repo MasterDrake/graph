@@ -14,7 +14,7 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <boost/pending/indirect_cmp.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/property_map/property_map.hpp>
 
 namespace boost
@@ -122,7 +122,7 @@ void betweenness_centrality_clustering(MutableGraph& g, Done done,
         return;
 
     // Function object that compares the centrality of edges
-    indirect_cmp< EdgeCentralityMap, std::less< centrality_type > > cmp(
+    indirect_cmp< EdgeCentralityMap, eastl::less< centrality_type > > cmp(
         edge_centrality);
 
     bool is_done;
@@ -131,7 +131,7 @@ void betweenness_centrality_clustering(MutableGraph& g, Done done,
         brandes_betweenness_centrality(g,
             edge_centrality_map(edge_centrality)
                 .vertex_index_map(vertex_index));
-        std::pair< edge_iterator, edge_iterator > edges_iters = edges(g);
+        eastl::pair< edge_iterator, edge_iterator > edges_iters = edges(g);
         edge_descriptor e
             = *boost::first_max_element(edges_iters.first, edges_iters.second, cmp);
         is_done = done(get(edge_centrality, e), e, g);
@@ -158,7 +158,7 @@ template < typename MutableGraph, typename Done >
 void betweenness_centrality_clustering(MutableGraph& g, Done done)
 {
     typedef typename Done::centrality_type centrality_type;
-    std::vector< centrality_type > edge_centrality(num_edges(g));
+    eastl::vector< centrality_type > edge_centrality(num_edges(g));
     betweenness_centrality_clustering(g, done,
         make_iterator_property_map(edge_centrality.begin(), get(edge_index, g)),
         get(vertex_index, g));

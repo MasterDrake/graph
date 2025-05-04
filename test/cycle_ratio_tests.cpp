@@ -331,7 +331,7 @@ int main(int argc, char* argv[])
         GraphMInt gm(10);
         typedef graph_traits< GraphMInt >::vertex_iterator VertexItM;
         VertexItM vi1, vi2, vi_end;
-        for (boost::tie(vi1, vi_end) = vertices(gm); vi1 != vi_end; ++vi1)
+        for (eastl::tie(vi1, vi_end) = vertices(gm); vi1 != vi_end; ++vi1)
         {
             for (vi2 = vertices(gm).first; vi2 != vi_end; ++vi2)
                 add_edge(*vi1, *vi2, gm);

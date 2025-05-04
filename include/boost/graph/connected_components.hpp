@@ -42,7 +42,7 @@ namespace detail
 
         template < class Vertex, class Graph > void start_vertex(Vertex, Graph&)
         {
-            if (m_count == (std::numeric_limits< comp_type >::max)())
+            if (m_count == (eastl::numeric_limits< comp_type >::max)())
                 m_count = 0; // start counting components at zero
             else
                 ++m_count;
@@ -79,7 +79,7 @@ connected_components(const Graph& g, ComponentMap c,
 
     typedef typename property_traits< ComponentMap >::value_type comp_type;
     // c_count initialized to "nil" (with nil represented by (max)())
-    comp_type c_count((std::numeric_limits< comp_type >::max)());
+    comp_type c_count((eastl::numeric_limits< comp_type >::max)());
     detail::components_recorder< ComponentMap > vis(c, c_count);
     depth_first_search(g, params.visitor(vis));
     return c_count + 1;
@@ -101,7 +101,7 @@ connected_components(const Graph& g,
 
     typedef typename property_traits< ComponentMap >::value_type comp_type;
     // c_count initialized to "nil" (with nil represented by (max)())
-    comp_type c_count((std::numeric_limits< comp_type >::max)());
+    comp_type c_count((eastl::numeric_limits< comp_type >::max)());
     detail::components_recorder< ComponentMap > vis(c, c_count);
     depth_first_search(g, visitor(vis));
     return c_count + 1;

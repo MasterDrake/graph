@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
     cout << "Edges number: " << num_edges(tgr) << endl;
     int i = 0;
     graph_traits< grap_real_t >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(tgr); vi != vi_end; vi++)
+    for (eastl::tie(vi, vi_end) = vertices(tgr); vi != vi_end; vi++)
     {
         vim[*vi] = i++; /// Initialize vertex index property
     }

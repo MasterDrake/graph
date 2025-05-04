@@ -484,20 +484,20 @@ int main(int argc, char const* argv[])
     // 5 vertices
     std::cout << "Vertices, outgoing edges, and adjacent vertices" << std::endl;
     vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; vi++)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; vi++)
     {
         vertex_descriptor u = *vi;
         std::cout << "Vertex " << u << ": ";
         // Adjacenct edges
         out_edge_iterator ei, ei_end;
-        for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ei++)
+        for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ei++)
             std::cout << *ei << "  ";
         std::cout << " Adjacent vertices ";
         // Adjacent vertices
         // Here we want our adjacency_iterator and not
         // boost::adjacency_iterator.
         ::adjacency_iterator ai, ai_end;
-        for (boost::tie(ai, ai_end) = adjacent_vertices(u, g); ai != ai_end;
+        for (eastl::tie(ai, ai_end) = adjacent_vertices(u, g); ai != ai_end;
              ai++)
         {
             std::cout << *ai << " ";
@@ -518,7 +518,7 @@ int main(int argc, char const* argv[])
     // 5 edges
     std::cout << "Edges and weights" << std::endl;
     edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ei++)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ei++)
     {
         edge_descriptor e = *ei;
         std::cout << e << " weight " << get(edge_weight, g, e) << std::endl;
@@ -551,7 +551,7 @@ int main(int argc, char const* argv[])
             g, source, predecessor_map(pred_pm).distance_map(dist_pm));
 
         std::cout << "Dijkstra search from vertex " << source << std::endl;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             vertex_descriptor u = *vi;
             std::cout << "Vertex " << u << ": "

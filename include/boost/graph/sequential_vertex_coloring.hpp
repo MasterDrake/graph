@@ -10,15 +10,12 @@
 #ifndef BOOST_GRAPH_SEQUENTIAL_VERTEX_COLORING_HPP
 #define BOOST_GRAPH_SEQUENTIAL_VERTEX_COLORING_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
+#include <EASTL/iterator.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/property_map/property_map.hpp>
 #include <boost/limits.hpp>
-
-#ifdef BOOST_NO_TEMPLATED_ITERATOR_CONSTRUCTORS
-#include <iterator>
-#endif
 
 /* This algorithm is to find coloring of a graph
 
@@ -56,13 +53,13 @@ typename property_traits< ColorMap >::value_type sequential_vertex_coloring(
     // for each color. The length of mark is the
     // number of vertices since the maximum possible number of colors
     // is the number of vertices.
-    std::vector< size_type > mark(V,
-        std::numeric_limits< size_type >::max
+    eastl::vector< size_type > mark(V,
+        eastl::numeric_limits< size_type >::max
             BOOST_PREVENT_MACRO_SUBSTITUTION());
 
     // Initialize colors
     typename GraphTraits::vertex_iterator v, vend;
-    for (boost::tie(v, vend) = vertices(G); v != vend; ++v)
+    for (eastl::tie(v, vend) = vertices(G); v != vend; ++v)
         put(color, *v, V - 1);
 
     // Determine the color for every vertex one by one
@@ -73,7 +70,7 @@ typename property_traits< ColorMap >::value_type sequential_vertex_coloring(
 
         // Mark the colors of vertices adjacent to current.
         // i can be the value for marking since i increases successively
-        for (boost::tie(v, vend) = adjacent_vertices(current, G); v != vend;
+        for (eastl::tie(v, vend) = adjacent_vertices(current, G); v != vend;
              ++v)
             mark[get(color, *v)] = i;
 
@@ -107,15 +104,15 @@ typename property_traits< ColorMap >::value_type sequential_vertex_coloring(
     typedef typename graph_traits< VertexListGraph >::vertex_iterator
         vertex_iterator;
 
-    std::pair< vertex_iterator, vertex_iterator > v = vertices(G);
-#ifndef BOOST_NO_TEMPLATED_ITERATOR_CONSTRUCTORS
-    std::vector< vertex_descriptor > order(v.first, v.second);
-#else
-    std::vector< vertex_descriptor > order;
-    order.reserve(std::distance(v.first, v.second));
-    while (v.first != v.second)
-        order.push_back(*v.first++);
-#endif
+    eastl::pair< vertex_iterator, vertex_iterator > v = vertices(G);
+//#ifndef BOOST_NO_TEMPLATED_ITERATOR_CONSTRUCTORS
+    eastl::vector< vertex_descriptor > order(v.first, v.second);
+//#else
+//    eastl::vector< vertex_descriptor > order;
+//    order.reserve(eastl::distance(v.first, v.second));
+//    while (v.first != v.second)
+//        order.push_back(*v.first++);
+//#endif
     return sequential_vertex_coloring(G,
         make_iterator_property_map(order.begin(), identity_property_map(),
             graph_traits< VertexListGraph >::null_vertex()),

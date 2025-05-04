@@ -108,7 +108,7 @@ int main(int argc, const char** argv)
     while (edge_iter != end)
     {
         int i, j;
-        boost::tie(i, j) = *edge_iter++;
+        eastl::tie(i, j) = *edge_iter++;
         boost::add_edge(i, j, G);
     }
 #else

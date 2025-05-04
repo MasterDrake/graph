@@ -9,9 +9,9 @@
 #ifndef __PLANAR_FACE_TRAVERSAL_HPP__
 #define __PLANAR_FACE_TRAVERSAL_HPP__
 
-#include <vector>
-#include <set>
-#include <map>
+#include <EASTL/vector.h>
+#include <EASTL/set.h>
+#include <EASTL/map.h>
 #include <boost/next_prior.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
@@ -47,9 +47,9 @@ void planar_face_traversal(const Graph& g, PlanarEmbedding embedding,
         embedding_value_t;
     typedef typename embedding_value_t::const_iterator embedding_iterator_t;
 
-    typedef typename std::vector< std::set< vertex_t > >
+    typedef typename eastl::vector< eastl::set< vertex_t > >
         distinguished_edge_storage_t;
-    typedef typename std::vector< std::map< vertex_t, edge_t > >
+    typedef typename eastl::vector< eastl::map< vertex_t, edge_t > >
         distinguished_edge_to_edge_storage_t;
 
     typedef typename boost::iterator_property_map<
@@ -67,7 +67,7 @@ void planar_face_traversal(const Graph& g, PlanarEmbedding embedding,
     distinguished_edge_to_edge_map_t next_edge(next_edge_vector.begin(), em);
 
     vertex_iterator_t vi, vi_end;
-    typename std::vector< edge_t >::iterator ei, ei_end;
+    typename eastl::vector< edge_t >::iterator ei, ei_end;
     edge_iterator_t fi, fi_end;
     embedding_iterator_t pi, pi_begin, pi_end;
 
@@ -77,7 +77,7 @@ void planar_face_traversal(const Graph& g, PlanarEmbedding embedding,
     // PlanarEmbedding so that get(next_edge, e)[v] is the edge that comes
     // after e in the clockwise embedding around vertex v.
 
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         vertex_t v(*vi);
         pi_begin = embedding[v].begin();
@@ -85,7 +85,7 @@ void planar_face_traversal(const Graph& g, PlanarEmbedding embedding,
         for (pi = pi_begin; pi != pi_end; ++pi)
         {
             edge_t e(*pi);
-            std::map< vertex_t, edge_t > m = get(next_edge, e);
+            eastl::map< vertex_t, edge_t > m = get(next_edge, e);
             m[v] = boost::next(pi) == pi_end ? *pi_begin : *boost::next(pi);
             put(next_edge, e, m);
         }
@@ -97,11 +97,11 @@ void planar_face_traversal(const Graph& g, PlanarEmbedding embedding,
     // Also, while iterating over all edges in the graph, we single out
     // any self-loops, which need some special treatment in the face traversal.
 
-    std::vector< edge_t > self_loops;
-    std::vector< edge_t > edges_cache;
-    std::vector< vertex_t > vertices_in_edge;
+    eastl::vector< edge_t > self_loops;
+    eastl::vector< edge_t > edges_cache;
+    eastl::vector< vertex_t > vertices_in_edge;
 
-    for (boost::tie(fi, fi_end) = edges(g); fi != fi_end; ++fi)
+    for (eastl::tie(fi, fi_end) = edges(g); fi != fi_end; ++fi)
     {
         edge_t e(*fi);
         edges_cache.push_back(e);
@@ -119,7 +119,7 @@ void planar_face_traversal(const Graph& g, PlanarEmbedding embedding,
         vertices_in_edge.push_back(source(e, g));
         vertices_in_edge.push_back(target(e, g));
 
-        typename std::vector< vertex_t >::iterator vi, vi_end;
+        typename eastl::vector< vertex_t >::iterator vi, vi_end;
         vi_end = vertices_in_edge.end();
 
         // Iterate over both vertices in the current edge
@@ -127,8 +127,8 @@ void planar_face_traversal(const Graph& g, PlanarEmbedding embedding,
         {
 
             vertex_t v(*vi);
-            std::set< vertex_t > e_visited = get(visited, e);
-            typename std::set< vertex_t >::iterator e_visited_found
+            eastl::set< vertex_t > e_visited = get(visited, e);
+            typename eastl::set< vertex_t >::iterator e_visited_found
                 = e_visited.find(v);
 
             if (e_visited_found == e_visited.end())

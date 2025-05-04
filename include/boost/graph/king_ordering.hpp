@@ -11,9 +11,9 @@
 #ifndef BOOST_GRAPH_KING_HPP
 #define BOOST_GRAPH_KING_HPP
 
-#include <deque>
-#include <vector>
-#include <algorithm>
+#include <EASTL/deque.h>
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h>
 #include <boost/config.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/graph/detail/sparse_ordering.hpp>
@@ -33,7 +33,7 @@ namespace detail
     {
     public:
         bfs_king_visitor(OutputIterator* iter, Buffer* b, Compare compare,
-            PseudoDegreeMap deg, std::vector< int > loc, VecMap color,
+            PseudoDegreeMap deg, eastl::vector< int > loc, VecMap color,
             VertexIndexMap vertices)
         : permutation(iter)
         , Qptr(b)
@@ -51,14 +51,14 @@ namespace detail
             typename graph_traits< Graph >::out_edge_iterator ei, ei_end;
             Vertex v, w;
 
-            typedef typename std::deque< Vertex >::reverse_iterator
+            typedef typename eastl::deque< Vertex >::reverse_iterator
                 reverse_iterator;
 
             reverse_iterator rend = Qptr->rend() - index_begin;
             reverse_iterator rbegin = Qptr->rbegin();
 
             // heap the vertices already there
-            std::make_heap(rbegin, rend, [this](const auto& first, const auto& second) { return comp(second, first); });
+            eastl::make_heap(rbegin, rend, [this](const auto& first, const auto& second) { return comp(second, first); });
 
             unsigned i = 0;
 
@@ -74,7 +74,7 @@ namespace detail
             {
                 percolate_down< Vertex >(i);
                 w = (*Qptr)[index_begin + i];
-                for (boost::tie(ei, ei_end) = out_edges(w, g); ei != ei_end;
+                for (eastl::tie(ei, ei_end) = out_edges(w, g); ei != ei_end;
                      ++ei)
                 {
                     v = target(*ei, g);
@@ -108,10 +108,10 @@ namespace detail
 
             // pop_heap functionality:
             // swap first, last
-            std::swap((*Qptr)[heap_last], (*Qptr)[heap_first]);
+            eastl::swap((*Qptr)[heap_last], (*Qptr)[heap_first]);
 
             // swap in the location queue
-            std::swap(Qlocation[heap_first], Qlocation[heap_last]);
+            eastl::swap(Qlocation[heap_first], Qlocation[heap_last]);
 
             // set drifter, children
             int drifter = heap_first;
@@ -139,8 +139,8 @@ namespace detail
             {
 
                 // if smallest child smaller than drifter, swap them
-                std::swap((*Qptr)[smallest_child], (*Qptr)[drifter]);
-                std::swap(Qlocation[drifter], Qlocation[smallest_child]);
+                eastl::swap((*Qptr)[smallest_child], (*Qptr)[drifter]);
+                eastl::swap(Qlocation[drifter], Qlocation[smallest_child]);
 
                 // update the values, run again, as necessary
                 drifter = smallest_child;
@@ -181,10 +181,10 @@ namespace detail
             {
 
                 // swap in the heap
-                std::swap((*Qptr)[child_location], (*Qptr)[parent_location]);
+                eastl::swap((*Qptr)[child_location], (*Qptr)[parent_location]);
 
                 // swap in the location queue
-                std::swap(
+                eastl::swap(
                     Qlocation[child_location], Qlocation[parent_location]);
 
                 child_location = parent_location;
@@ -201,7 +201,7 @@ namespace detail
         Buffer* Qptr;
         PseudoDegreeMap degree;
         Compare comp;
-        std::vector< int > Qlocation;
+        eastl::vector< int > Qlocation;
         VecMap colors;
         VertexIndexMap vertex_map;
     };
@@ -211,7 +211,7 @@ namespace detail
 template < class Graph, class OutputIterator, class ColorMap, class DegreeMap,
     typename VertexIndexMap >
 OutputIterator king_ordering(const Graph& g,
-    std::deque< typename graph_traits< Graph >::vertex_descriptor >
+    eastl::deque< typename graph_traits< Graph >::vertex_descriptor >
         vertex_queue,
     OutputIterator permutation, ColorMap color, DegreeMap degree,
     VertexIndexMap index_map)
@@ -220,36 +220,36 @@ OutputIterator king_ordering(const Graph& g,
     typedef typename property_traits< ColorMap >::value_type ColorValue;
     typedef color_traits< ColorValue > Color;
     typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
-    typedef iterator_property_map< typename std::vector< ds_type >::iterator,
+    typedef iterator_property_map< typename eastl::vector< ds_type >::iterator,
         VertexIndexMap, ds_type, ds_type& >
         PseudoDegreeMap;
-    typedef indirect_cmp< PseudoDegreeMap, std::less< ds_type > > Compare;
+    typedef indirect_cmp< PseudoDegreeMap, eastl::less< ds_type > > Compare;
     typedef typename boost::sparse::sparse_ordering_queue< Vertex > queue;
     typedef typename detail::bfs_king_visitor< OutputIterator, queue, Compare,
-        PseudoDegreeMap, std::vector< int >, VertexIndexMap >
+        PseudoDegreeMap, eastl::vector< int >, VertexIndexMap >
         Visitor;
     typedef
         typename graph_traits< Graph >::vertices_size_type vertices_size_type;
-    std::vector< ds_type > pseudo_degree_vec(num_vertices(g));
+    eastl::vector< ds_type > pseudo_degree_vec(num_vertices(g));
     PseudoDegreeMap pseudo_degree(pseudo_degree_vec.begin(), index_map);
 
     typename graph_traits< Graph >::vertex_iterator ui, ui_end;
     queue Q;
     // Copy degree to pseudo_degree
     // initialize the color map
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(pseudo_degree, *ui, get(degree, *ui));
         put(color, *ui, Color::white());
     }
 
     Compare comp(pseudo_degree);
-    std::vector< int > colors(num_vertices(g));
+    eastl::vector< int > colors(num_vertices(g));
 
     for (vertices_size_type i = 0; i < num_vertices(g); i++)
         colors[i] = 0;
 
-    std::vector< int > loc(num_vertices(g));
+    eastl::vector< int > loc(num_vertices(g));
 
     // create the visitor
     Visitor vis(&permutation, &Q, comp, pseudo_degree, loc, colors, index_map);
@@ -275,7 +275,7 @@ OutputIterator king_ordering(const Graph& g,
     VertexIndexMap index_map)
 {
 
-    std::deque< typename graph_traits< Graph >::vertex_descriptor >
+    eastl::deque< typename graph_traits< Graph >::vertex_descriptor >
         vertex_queue;
     vertex_queue.push_front(s);
     return king_ordering(
@@ -294,7 +294,7 @@ OutputIterator king_ordering(const Graph& G, OutputIterator permutation,
     typedef typename property_traits< ColorMap >::value_type ColorValue;
     typedef color_traits< ColorValue > Color;
 
-    std::deque< Vertex > vertex_queue;
+    eastl::deque< Vertex > vertex_queue;
 
     // Mark everything white
     BGL_FORALL_VERTICES_T(v, G, Graph) put(color, v, Color::white());
@@ -311,7 +311,7 @@ OutputIterator king_ordering(const Graph& G, OutputIterator permutation,
 
     // Find starting nodes for all vertices
     // TBD: How to do this with a directed graph?
-    for (typename std::deque< Vertex >::iterator i = vertex_queue.begin();
+    for (typename eastl::deque< Vertex >::iterator i = vertex_queue.begin();
          i != vertex_queue.end(); ++i)
         *i = find_starting_node(G, *i, color, degree);
 
@@ -326,7 +326,7 @@ OutputIterator king_ordering(
     if (has_no_vertices(G))
         return permutation;
 
-    std::vector< default_color_type > colors(num_vertices(G));
+    eastl::vector< default_color_type > colors(num_vertices(G));
     return king_ordering(G, permutation,
         make_iterator_property_map(&colors[0], index_map, colors[0]),
         make_out_degree_map(G), index_map);

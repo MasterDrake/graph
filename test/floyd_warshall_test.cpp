@@ -36,7 +36,7 @@ template < typename Graph > bool acceptance_test(Graph& g, int vec, int e)
         typename boost::graph_traits< Graph >::vertex_iterator firstv, lastv,
             firstv2, lastv2;
         int x = 0;
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             boost::put(index, *firstv, x);
@@ -52,7 +52,7 @@ template < typename Graph > bool acceptance_test(Graph& g, int vec, int e)
         typename boost::property_map< Graph, boost::edge_weight_t >::type
             local_edge_map
             = boost::get(boost::edge_weight, g);
-        for (boost::tie(first, last) = boost::edges(g); first != last; first++)
+        for (eastl::tie(first, last) = boost::edges(g); first != last; first++)
         {
             if (ran() % vec != 0)
             {
@@ -73,25 +73,25 @@ template < typename Graph > bool acceptance_test(Graph& g, int vec, int e)
         typedef typename boost::property_map< Graph,
             boost::vertex_distance_t >::type distance_type;
         distance_type distance_row = boost::get(boost::vertex_distance, g);
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             boost::put(distance_row, *firstv, int_inf);
             matrixRow[*firstv] = int_inf;
         }
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             matrix[*firstv] = matrixRow;
         }
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             matrix[*firstv][*firstv] = 0;
         }
         std::map< vertex_des, std::map< vertex_des, int > > matrix3(matrix);
         std::map< vertex_des, std::map< vertex_des, int > > matrix4(matrix);
-        for (boost::tie(first, last) = boost::edges(g); first != last; first++)
+        for (eastl::tie(first, last) = boost::edges(g); first != last; first++)
         {
             if (matrix[boost::source(*first, g)][boost::target(*first, g)]
                 != int_inf)
@@ -112,7 +112,7 @@ template < typename Graph > bool acceptance_test(Graph& g, int vec, int e)
             boost::undirected_tag >::value;
         if (is_undirected)
         {
-            for (boost::tie(first, last) = boost::edges(g); first != last;
+            for (eastl::tie(first, last) = boost::edges(g); first != last;
                  first++)
             {
                 if (matrix[boost::target(*first, g)][boost::source(*first, g)]
@@ -145,7 +145,7 @@ template < typename Graph > bool acceptance_test(Graph& g, int vec, int e)
 
         boost::dummy_property_map dummy_map;
         std::map< vertex_des, std::map< vertex_des, int > > matrix2;
-        for (boost::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
+        for (eastl::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
         {
             boost::put(distance_row, *firstv, 0);
             bellman = boost::bellman_ford_shortest_paths(g, vec,
@@ -153,7 +153,7 @@ template < typename Graph > bool acceptance_test(Graph& g, int vec, int e)
                     .distance_map(boost::get(boost::vertex_distance, g))
                     .predecessor_map(dummy_map));
             distance_row = boost::get(boost::vertex_distance, g);
-            for (boost::tie(firstv2, lastv2) = vertices(g); firstv2 != lastv2;
+            for (eastl::tie(firstv2, lastv2) = vertices(g); firstv2 != lastv2;
                  firstv2++)
             {
                 matrix2[*firstv][*firstv2] = boost::get(distance_row, *firstv2);
@@ -181,10 +181,10 @@ template < typename Graph > bool acceptance_test(Graph& g, int vec, int e)
         {
             typename boost::graph_traits< Graph >::vertex_iterator first1,
                 first2, last1, last2;
-            for (boost::tie(first1, last1) = boost::vertices(g);
+            for (eastl::tie(first1, last1) = boost::vertices(g);
                  first1 != last1; first1++)
             {
-                for (boost::tie(first2, last2) = boost::vertices(g);
+                for (eastl::tie(first2, last2) = boost::vertices(g);
                      first2 != last2; first2++)
                 {
                     if (matrix2[*first1][*first2] != matrix[*first1][*first2])
@@ -235,7 +235,7 @@ template < typename Graph > bool acceptance_test2(Graph& g, int vec, int e)
         typename boost::graph_traits< Graph >::vertex_iterator firstv, lastv,
             firstv2, lastv2;
         int x = 0;
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             boost::put(index, *firstv, x);
@@ -248,7 +248,7 @@ template < typename Graph > bool acceptance_test2(Graph& g, int vec, int e)
         typename boost::property_map< Graph, boost::edge_weight_t >::type
             local_edge_map
             = boost::get(boost::edge_weight, g);
-        for (boost::tie(first, last) = boost::edges(g); first != last; first++)
+        for (eastl::tie(first, last) = boost::edges(g); first != last; first++)
         {
             if (ran() % vec != 0)
             {
@@ -269,25 +269,25 @@ template < typename Graph > bool acceptance_test2(Graph& g, int vec, int e)
         typedef typename boost::property_map< Graph,
             boost::vertex_distance_t >::type distance_type;
         distance_type distance_row = boost::get(boost::vertex_distance, g);
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             boost::put(distance_row, *firstv, int_inf);
             matrixRow[*firstv] = int_inf;
         }
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             matrix[*firstv] = matrixRow;
         }
-        for (boost::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
+        for (eastl::tie(firstv, lastv) = boost::vertices(g); firstv != lastv;
              firstv++)
         {
             matrix[*firstv][*firstv] = 0;
         }
         std::map< vertex_des, std::map< vertex_des, int > > matrix3(matrix);
         std::map< vertex_des, std::map< vertex_des, int > > matrix4(matrix);
-        for (boost::tie(first, last) = boost::edges(g); first != last; first++)
+        for (eastl::tie(first, last) = boost::edges(g); first != last; first++)
         {
             if (matrix[boost::source(*first, g)][boost::target(*first, g)]
                 != int_inf)
@@ -308,7 +308,7 @@ template < typename Graph > bool acceptance_test2(Graph& g, int vec, int e)
             boost::undirected_tag >::value;
         if (is_undirected)
         {
-            for (boost::tie(first, last) = boost::edges(g); first != last;
+            for (eastl::tie(first, last) = boost::edges(g); first != last;
                  first++)
             {
                 if (matrix[boost::target(*first, g)][boost::source(*first, g)]
@@ -341,7 +341,7 @@ template < typename Graph > bool acceptance_test2(Graph& g, int vec, int e)
 
         boost::dummy_property_map dummy_map;
         std::map< vertex_des, std::map< vertex_des, int > > matrix2;
-        for (boost::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
+        for (eastl::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
         {
             boost::put(distance_row, *firstv, 0);
             bellman = boost::bellman_ford_shortest_paths(g, vec,
@@ -349,7 +349,7 @@ template < typename Graph > bool acceptance_test2(Graph& g, int vec, int e)
                     .distance_map(boost::get(boost::vertex_distance, g))
                     .predecessor_map(dummy_map));
             distance_row = boost::get(boost::vertex_distance, g);
-            for (boost::tie(firstv2, lastv2) = vertices(g); firstv2 != lastv2;
+            for (eastl::tie(firstv2, lastv2) = vertices(g); firstv2 != lastv2;
                  firstv2++)
             {
                 matrix2[*firstv][*firstv2] = boost::get(distance_row, *firstv2);
@@ -377,10 +377,10 @@ template < typename Graph > bool acceptance_test2(Graph& g, int vec, int e)
         {
             typename boost::graph_traits< Graph >::vertex_iterator first1,
                 first2, last1, last2;
-            for (boost::tie(first1, last1) = boost::vertices(g);
+            for (eastl::tie(first1, last1) = boost::vertices(g);
                  first1 != last1; first1++)
             {
-                for (boost::tie(first2, last2) = boost::vertices(g);
+                for (eastl::tie(first2, last2) = boost::vertices(g);
                      first2 != last2; first2++)
                 {
                     if (matrix2[*first1][*first2] != matrix[*first1][*first2])

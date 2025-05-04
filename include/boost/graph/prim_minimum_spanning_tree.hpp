@@ -10,7 +10,7 @@
 #ifndef BOOST_GRAPH_MST_PRIM_HPP
 #define BOOST_GRAPH_MST_PRIM_HPP
 
-#include <functional>
+#include <eSATL/functional.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 
@@ -38,7 +38,7 @@ namespace detail
         const bgl_named_params< P, T, R >& params, Weight)
     {
         typedef typename property_traits< Weight >::value_type W;
-        std::less< W > compare;
+        eastl::less< W > compare;
         detail::_project2nd< W, W > combine;
         dijkstra_shortest_paths(
             G, s, params.distance_compare(compare).distance_combine(combine));
@@ -53,10 +53,10 @@ inline void prim_minimum_spanning_tree(const VertexListGraph& g,
     IndexMap index_map, DijkstraVisitor vis)
 {
     typedef typename property_traits< WeightMap >::value_type W;
-    std::less< W > compare;
+    eastl::less< W > compare;
     detail::_project2nd< W, W > combine;
     dijkstra_shortest_paths(g, s, predecessor, distance, weight, index_map,
-        compare, combine, (std::numeric_limits< W >::max)(), 0, vis);
+        compare, combine, (eastl::numeric_limits< W >::max)(), 0, vis);
 }
 
 template < class VertexListGraph, class PredecessorMap, class P, class T,

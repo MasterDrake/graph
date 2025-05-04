@@ -32,12 +32,12 @@
 #include <boost/property_map/dynamic_property_map.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/detail/workaround.hpp>
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <set>
-#include <utility>
-#include <map>
+#include <EASTL/algorithm.h>
+#include <EASTL/string.h>
+#include <EASTL/vector.h>
+#include <EASTL/set.h>
+#include <EASTL/utility.h>
+#include <EASTL/map.h>
 #include <iostream>
 #include <cstdlib>
 
@@ -46,16 +46,16 @@ namespace boost
 
 namespace read_graphviz_detail
 {
-    typedef std::string node_name;
-    typedef std::string subgraph_name;
+    typedef eastl::string node_name;
+    typedef eastl::string subgraph_name;
 
-    typedef std::map< std::string, std::string > properties;
+    typedef eastl::map< eastl::string, eastl::string > properties;
 
     struct node_and_port
     {
         node_name name;
-        std::string angle; // Or empty if no angle
-        std::vector< std::string > location; // Up to two identifiers
+        eastl::string angle; // Or empty if no angle
+        eastl::vector< eastl::string > location; // Up to two identifiers
 
         friend inline bool operator==(
             const node_and_port& a, const node_and_port& b)
@@ -86,14 +86,14 @@ namespace read_graphviz_detail
     {
         bool graph_is_directed;
         bool graph_is_strict;
-        std::map< node_name, properties > nodes; // Global set
-        std::vector< edge_info > edges;
-        std::map< subgraph_name, properties > graph_props; // Root and subgraphs
+        eastl::map< node_name, properties > nodes; // Global set
+        eastl::vector< edge_info > edges;
+        eastl::map< subgraph_name, properties > graph_props; // Root and subgraphs
     };
 
     // The actual parser, from libs/graph/src/read_graphviz_new.cpp
     void parse_graphviz_from_string(
-        const std::string& str, parser_result& result, bool want_directed);
+        const eastl::string& str, parser_result& result, bool want_directed);
 
     // Translate from those results to a graph
     void translate_results_to_graph(
@@ -106,13 +106,13 @@ namespace detail
     namespace graph
     {
         BOOST_GRAPH_DECL bool read_graphviz_new(
-            const std::string& str, boost::detail::graph::mutate_graph* mg);
+            const eastl::string& str, boost::detail::graph::mutate_graph* mg);
     } // end namespace graph
 } // end namespace detail
 
 template < typename MutableGraph >
-bool read_graphviz_new(const std::string& str, MutableGraph& graph,
-    boost::dynamic_properties& dp, std::string const& node_id = "node_id")
+bool read_graphviz_new(const eastl::string& str, MutableGraph& graph,
+    boost::dynamic_properties& dp, eastl::string const& node_id = "node_id")
 {
     boost::detail::graph::mutate_graph_impl< MutableGraph > mg(
         graph, dp, node_id);

@@ -9,7 +9,7 @@
 #ifndef __FACE_HANDLES_HPP__
 #define __FACE_HANDLES_HPP__
 
-#include <list>
+#include <EASTL/list.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -30,7 +30,7 @@
 // in the case no embedding is needed (for example, if one just wants to use
 // the Boyer-Myrvold algorithm as a true/false test for planarity, the
 // no_embedding class can be passed as the StoreEmbedding policy. Otherwise,
-// either std_list (which uses as std::list) or recursive_lazy_list can be
+// either std_list (which uses as eastl::list) or recursive_lazy_list can be
 // passed as this policy. recursive_lazy_list has the best theoretical
 // performance (O(n) for a sequence of interleaved concatenations and reversals
 // of the underlying list), but I've noticed little difference between std_list
@@ -198,7 +198,7 @@ namespace graph
 
         template < typename Edge > struct edge_list_storage< std_list, Edge >
         {
-            typedef std::list< Edge > type;
+            typedef eastl::list< Edge > type;
             type value;
 
             void push_back(Edge e) { value.push_back(e); }
@@ -220,7 +220,7 @@ namespace graph
             template < typename OutputIterator >
             void get_list(OutputIterator out)
             {
-                std::copy(value.begin(), value.end(), out);
+                eastl::copy(value.begin(), value.end(), out);
             }
         };
 
@@ -404,10 +404,10 @@ namespace graph
             void flip()
             {
                 pimpl->edge_list.reverse();
-                std::swap(pimpl->true_first_vertex, pimpl->true_second_vertex);
-                std::swap(
+                eastl::swap(pimpl->true_first_vertex, pimpl->true_second_vertex);
+                eastl::swap(
                     pimpl->cached_first_vertex, pimpl->cached_second_vertex);
-                std::swap(pimpl->cached_first_edge, pimpl->cached_second_edge);
+                eastl::swap(pimpl->cached_first_edge, pimpl->cached_second_edge);
             }
 
             template < typename OutputIterator >

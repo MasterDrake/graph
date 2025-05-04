@@ -11,8 +11,8 @@
 #ifndef BOOST_ARRAY_BINARY_TREE_HPP
 #define BOOST_ARRAY_BINARY_TREE_HPP
 
-#include <iterator>
-#include <functional>
+#include <EASTL/iterator.h>
+#include <EASTL/functional.h>
 #include <boost/config.hpp>
 
 namespace boost
@@ -33,9 +33,9 @@ public:
     typedef RandomAccessIterator rep_iterator;
 #if !defined BOOST_NO_STD_ITERATOR_TRAITS
     typedef
-        typename std::iterator_traits< RandomAccessIterator >::difference_type
+        typename eastl::iterator_traits< RandomAccessIterator >::difference_type
             difference_type;
-    typedef typename std::iterator_traits< RandomAccessIterator >::value_type
+    typedef typename eastl::iterator_traits< RandomAccessIterator >::value_type
         value_type;
 #else
     typedef int difference_type;
@@ -47,7 +47,7 @@ public:
     {
         struct iterator
         { // replace with iterator_adaptor implementation -JGS
-            typedef std::bidirectional_iterator_tag iterator_category;
+            typedef eastl::bidirectional_iterator_tag iterator_category;
             typedef ArrayBinaryTreeNode value_type;
             typedef size_type difference_type;
             typedef array_binary_tree_node* pointer;
@@ -213,7 +213,7 @@ public:
 };
 
 template < class RandomAccessContainer,
-    class Compare = std::less< typename RandomAccessContainer::value_type > >
+    class Compare = eastl::less< typename RandomAccessContainer::value_type > >
 struct compare_array_node
 {
     typedef typename RandomAccessContainer::value_type value_type;

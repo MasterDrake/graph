@@ -84,21 +84,21 @@ template < class Graph > void print_network(const Graph& G)
     auto flow = get(edge_myflow, G);
 
     Viter ui, uiend;
-    boost::tie(ui, uiend) = vertices(G);
+    eastl::tie(ui, uiend) = vertices(G);
 
     for (; ui != uiend; ++ui)
     {
         OutEdgeIter out, out_end;
         cout << *ui << "\t";
 
-        boost::tie(out, out_end) = out_edges(*ui, G);
+        eastl::tie(out, out_end) = out_edges(*ui, G);
         for (; out != out_end; ++out)
             cout << "--(" << capacity[*out] << ", " << flow[*out] << ")--> "
                  << target(*out, G) << "\t";
 
         InEdgeIter in, in_end;
         cout << endl << "\t";
-        boost::tie(in, in_end) = in_edges(*ui, G);
+        eastl::tie(in, in_end) = in_edges(*ui, G);
         for (; in != in_end; ++in)
             cout << "<--(" << capacity[*in] << "," << flow[*in] << ")-- "
                  << source(*in, G) << "\t";
@@ -150,8 +150,8 @@ int main(int, char*[])
     boost::graph_traits< Graph >::vertex_iterator v, v_end;
     boost::graph_traits< Graph >::out_edge_iterator e, e_end;
     int f = 0;
-    for (boost::tie(v, v_end) = vertices(G); v != v_end; ++v)
-        for (boost::tie(e, e_end) = out_edges(*v, G); e != e_end; ++e)
+    for (eastl::tie(v, v_end) = vertices(G); v != v_end; ++v)
+        for (eastl::tie(e, e_end) = out_edges(*v, G); e != e_end; ++e)
             flow[*e] = ++f;
     cout << endl << endl;
 

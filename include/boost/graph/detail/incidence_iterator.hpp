@@ -11,8 +11,8 @@
 #ifndef BOOST_GRAPH_DETAIL_INCIDENCE_ITERATOR_HPP
 #define BOOST_GRAPH_DETAIL_INCIDENCE_ITERATOR_HPP
 
-#include <utility>
-#include <iterator>
+#include <EASTL/utility.h>
+#include <EASTL/iterator.h>
 
 // OBSOLETE
 
@@ -38,7 +38,7 @@ namespace detail
 
     public:
         typedef int difference_type;
-        typedef std::forward_iterator_tag iterator_category;
+        typedef eastl::forward_iterator_tag iterator_category;
         typedef edge_type reference;
         typedef edge_type value_type;
         typedef value_type* pointer;

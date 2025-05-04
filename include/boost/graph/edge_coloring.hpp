@@ -12,9 +12,9 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/graph/properties.hpp>
-#include <algorithm>
-#include <limits>
-#include <vector>
+#include <EASTL/algorithm.h>
+#include <EASTL/numerical_limits.h>
+#include <EASTL/vector.h>
 
 /* This algorithm is to find coloring of an edges
 
@@ -34,7 +34,7 @@ namespace detail
         typename boost::property_traits< ColorMap >::value_type free_color)
     {
         typedef typename boost::property_traits< ColorMap >::value_type color_t;
-        if (free_color == (std::numeric_limits< color_t >::max)())
+        if (free_color == (eastl::numeric_limits< color_t >::max)())
             return false;
         BGL_FORALL_OUTEDGES_T(u, e, g, Graph)
         {
@@ -47,14 +47,14 @@ namespace detail
     }
 
     template < typename Graph, typename ColorMap >
-    std::vector< typename boost::graph_traits< Graph >::vertex_descriptor >
+    eastl::vector< typename boost::graph_traits< Graph >::vertex_descriptor >
     maximal_fan(const Graph& g, ColorMap color,
         typename boost::graph_traits< Graph >::vertex_descriptor x,
         typename boost::graph_traits< Graph >::vertex_descriptor y)
     {
         typedef
             typename boost::graph_traits< Graph >::vertex_descriptor vertex_t;
-        std::vector< vertex_t > fan;
+        eastl::vector< vertex_t > fan;
         fan.push_back(y);
         bool extended;
         do
@@ -64,7 +64,7 @@ namespace detail
             {
                 vertex_t v = target(e, g);
                 if (is_free(g, color, fan.back(), get(color, e))
-                    && std::find(fan.begin(), fan.end(), v) == fan.end())
+                    && eastl::find(fan.begin(), fan.end(), v) == fan.end())
                 {
                     fan.push_back(v);
                     extended = true;
@@ -166,18 +166,18 @@ typename boost::property_traits< ColorMap >::value_type color_edge(
 {
     typedef typename boost::graph_traits< Graph >::vertex_descriptor vertex_t;
     typedef typename boost::property_traits< ColorMap >::value_type color_t;
-    typedef typename std::vector< vertex_t >::iterator fan_iterator;
+    typedef typename eastl::vector< vertex_t >::iterator fan_iterator;
     using namespace detail;
     vertex_t x = source(e, g), y = target(e, g);
-    std::vector< vertex_t > fan = maximal_fan(g, color, x, y);
+    eastl::vector< vertex_t > fan = maximal_fan(g, color, x, y);
     color_t c = find_free_color(g, color, x);
     color_t d = find_free_color(g, color, fan.back());
     invert_cd_path(g, color, x, c, d);
-    fan_iterator w = std::find_if(fan.begin(), fan.end(),
+    fan_iterator w = eastl::find_if(fan.begin(), fan.end(),
         find_free_in_fan< Graph, ColorMap >(g, color, d));
     rotate_fan(g, color, x, fan.begin(), w + 1);
     put(color, edge(x, *w, g).first, d);
-    return (std::max)(c, d);
+    return (eastl::max)(c, d);
 }
 
 template < typename Graph, typename ColorMap >
@@ -187,12 +187,12 @@ typename boost::property_traits< ColorMap >::value_type edge_coloring(
     typedef typename boost::property_traits< ColorMap >::value_type color_t;
     BGL_FORALL_EDGES_T(e, g, Graph)
     {
-        put(color, e, (std::numeric_limits< color_t >::max)());
+        put(color, e, (eastl::numeric_limits< color_t >::max)());
     }
     color_t colors = 0;
     BGL_FORALL_EDGES_T(e, g, Graph)
     {
-        colors = (std::max)(colors, color_edge(g, color, e) + 1);
+        colors = (eastl::max)(colors, color_edge(g, color, e) + 1);
     }
     return colors;
 }

@@ -56,7 +56,7 @@ target, then this function returns the source vertex.
 edge_descriptor e;
 ...
 vertex_descriptor u, v;
-boost::tie(u, v) = incident(e, g);
+eastl::tie(u, v) = incident(e, g);
 assert(v == opposite(e, u, g));
 assert(u == opposite(e, v, g));
 </pre>

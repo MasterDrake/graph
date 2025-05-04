@@ -304,29 +304,29 @@ make_filtered_graph(const Graph& g, EdgePredicate ep, VertexPredicate vp)
 }
 
 template < typename G, typename EP, typename VP >
-std::pair< typename filtered_graph< G, EP, VP >::vertex_iterator,
+eastl::pair< typename filtered_graph< G, EP, VP >::vertex_iterator,
     typename filtered_graph< G, EP, VP >::vertex_iterator >
 vertices(const filtered_graph< G, EP, VP >& g)
 {
     typedef filtered_graph< G, EP, VP > Graph;
     typename graph_traits< G >::vertex_iterator f, l;
-    boost::tie(f, l) = vertices(g.m_g);
+    eastl::tie(f, l) = vertices(g.m_g);
     typedef typename Graph::vertex_iterator iter;
-    return std::make_pair(
+    return eastl::make_pair(
         iter(g.m_vertex_pred, f, l), iter(g.m_vertex_pred, l, l));
 }
 
 template < typename G, typename EP, typename VP >
-std::pair< typename filtered_graph< G, EP, VP >::edge_iterator,
+eastl::pair< typename filtered_graph< G, EP, VP >::edge_iterator,
     typename filtered_graph< G, EP, VP >::edge_iterator >
 edges(const filtered_graph< G, EP, VP >& g)
 {
     typedef filtered_graph< G, EP, VP > Graph;
     typename Graph::EdgePred pred(g.m_edge_pred, g.m_vertex_pred, g);
     typename graph_traits< G >::edge_iterator f, l;
-    boost::tie(f, l) = edges(g.m_g);
+    eastl::tie(f, l) = edges(g.m_g);
     typedef typename Graph::edge_iterator iter;
-    return std::make_pair(iter(pred, f, l), iter(pred, l, l));
+    return eastl::make_pair(iter(pred, f, l), iter(pred, l, l));
 }
 
 // An alternative for num_vertices() and num_edges() would be to
@@ -339,8 +339,8 @@ edges(const filtered_graph< G, EP, VP >& g)
 //
 // However, the current solution is still unsatisfactory because
 // the following semantic constraints no longer hold:
-// boost::tie(vi, viend) = vertices(g);
-// assert(std::distance(vi, viend) == num_vertices(g));
+// eastl::tie(vi, viend) = vertices(g);
+// assert(eastl::distance(vi, viend) == num_vertices(g));
 
 template < typename G, typename EP, typename VP >
 typename filtered_graph< G, EP, VP >::vertices_size_type num_vertices(
@@ -373,7 +373,7 @@ typename filtered_graph_base< G >::vertex_descriptor target(
 }
 
 template < typename G, typename EP, typename VP >
-std::pair< typename filtered_graph< G, EP, VP >::out_edge_iterator,
+eastl::pair< typename filtered_graph< G, EP, VP >::out_edge_iterator,
     typename filtered_graph< G, EP, VP >::out_edge_iterator >
 out_edges(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     const filtered_graph< G, EP, VP >& g)
@@ -382,8 +382,8 @@ out_edges(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     typename Graph::OutEdgePred pred(g.m_edge_pred, g.m_vertex_pred, g);
     typedef typename Graph::out_edge_iterator iter;
     typename graph_traits< G >::out_edge_iterator f, l;
-    boost::tie(f, l) = out_edges(u, g.m_g);
-    return std::make_pair(iter(pred, f, l), iter(pred, l, l));
+    eastl::tie(f, l) = out_edges(u, g.m_g);
+    return eastl::make_pair(iter(pred, f, l), iter(pred, l, l));
 }
 
 template < typename G, typename EP, typename VP >
@@ -393,13 +393,13 @@ typename filtered_graph< G, EP, VP >::degree_size_type out_degree(
 {
     typename filtered_graph< G, EP, VP >::degree_size_type n = 0;
     typename filtered_graph< G, EP, VP >::out_edge_iterator f, l;
-    for (boost::tie(f, l) = out_edges(u, g); f != l; ++f)
+    for (eastl::tie(f, l) = out_edges(u, g); f != l; ++f)
         ++n;
     return n;
 }
 
 template < typename G, typename EP, typename VP >
-std::pair< typename filtered_graph< G, EP, VP >::adjacency_iterator,
+eastl::pair< typename filtered_graph< G, EP, VP >::adjacency_iterator,
     typename filtered_graph< G, EP, VP >::adjacency_iterator >
 adjacent_vertices(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     const filtered_graph< G, EP, VP >& g)
@@ -407,13 +407,13 @@ adjacent_vertices(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     typedef filtered_graph< G, EP, VP > Graph;
     typedef typename Graph::adjacency_iterator adjacency_iterator;
     typename Graph::out_edge_iterator f, l;
-    boost::tie(f, l) = out_edges(u, g);
-    return std::make_pair(adjacency_iterator(f, const_cast< Graph* >(&g)),
+    eastl::tie(f, l) = out_edges(u, g);
+    return eastl::make_pair(adjacency_iterator(f, const_cast< Graph* >(&g)),
         adjacency_iterator(l, const_cast< Graph* >(&g)));
 }
 
 template < typename G, typename EP, typename VP >
-std::pair< typename filtered_graph< G, EP, VP >::in_edge_iterator,
+eastl::pair< typename filtered_graph< G, EP, VP >::in_edge_iterator,
     typename filtered_graph< G, EP, VP >::in_edge_iterator >
 in_edges(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     const filtered_graph< G, EP, VP >& g)
@@ -422,8 +422,8 @@ in_edges(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     typename Graph::InEdgePred pred(g.m_edge_pred, g.m_vertex_pred, g);
     typedef typename Graph::in_edge_iterator iter;
     typename graph_traits< G >::in_edge_iterator f, l;
-    boost::tie(f, l) = in_edges(u, g.m_g);
-    return std::make_pair(iter(pred, f, l), iter(pred, l, l));
+    eastl::tie(f, l) = in_edges(u, g.m_g);
+    return eastl::make_pair(iter(pred, f, l), iter(pred, l, l));
 }
 
 template < typename G, typename EP, typename VP >
@@ -433,7 +433,7 @@ typename filtered_graph< G, EP, VP >::degree_size_type in_degree(
 {
     typename filtered_graph< G, EP, VP >::degree_size_type n = 0;
     typename filtered_graph< G, EP, VP >::in_edge_iterator f, l;
-    for (boost::tie(f, l) = in_edges(u, g); f != l; ++f)
+    for (eastl::tie(f, l) = in_edges(u, g); f != l; ++f)
         ++n;
     return n;
 }
@@ -457,19 +457,19 @@ degree(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
 }
 
 template < typename G, typename EP, typename VP >
-std::pair< typename filtered_graph< G, EP, VP >::edge_descriptor, bool > edge(
+eastl::pair< typename filtered_graph< G, EP, VP >::edge_descriptor, bool > edge(
     typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     typename filtered_graph< G, EP, VP >::vertex_descriptor v,
     const filtered_graph< G, EP, VP >& g)
 {
     typename graph_traits< G >::edge_descriptor e;
     bool exists;
-    boost::tie(e, exists) = edge(u, v, g.m_g);
-    return std::make_pair(e, exists && g.m_edge_pred(e));
+    eastl::tie(e, exists) = edge(u, v, g.m_g);
+    return eastl::make_pair(e, exists && g.m_edge_pred(e));
 }
 
 template < typename G, typename EP, typename VP >
-std::pair< typename filtered_graph< G, EP, VP >::out_edge_iterator,
+eastl::pair< typename filtered_graph< G, EP, VP >::out_edge_iterator,
     typename filtered_graph< G, EP, VP >::out_edge_iterator >
 edge_range(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     typename filtered_graph< G, EP, VP >::vertex_descriptor v,
@@ -479,8 +479,8 @@ edge_range(typename filtered_graph< G, EP, VP >::vertex_descriptor u,
     typename Graph::OutEdgePred pred(g.m_edge_pred, g.m_vertex_pred, g);
     typedef typename Graph::out_edge_iterator iter;
     typename graph_traits< G >::out_edge_iterator f, l;
-    boost::tie(f, l) = edge_range(u, v, g.m_g);
-    return std::make_pair(iter(pred, f, l), iter(pred, l, l));
+    eastl::tie(f, l) = edge_range(u, v, g.m_g);
+    return eastl::make_pair(iter(pred, f, l), iter(pred, l, l));
 }
 
 //===========================================================================

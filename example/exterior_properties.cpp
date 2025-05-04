@@ -46,12 +46,12 @@ void print_network(Graph& G, Capacity capacity, Flow flow)
     typedef typename boost::graph_traits< Graph >::in_edge_iterator InEdgeIter;
 
     Viter ui, uiend;
-    for (boost::tie(ui, uiend) = boost::vertices(G); ui != uiend; ++ui)
+    for (eastl::tie(ui, uiend) = boost::vertices(G); ui != uiend; ++ui)
     {
         OutEdgeIter out, out_end;
         std::cout << *ui << "\t";
 
-        for (boost::tie(out, out_end) = boost::out_edges(*ui, G);
+        for (eastl::tie(out, out_end) = boost::out_edges(*ui, G);
              out != out_end; ++out)
             std::cout << "--(" << boost::get(capacity, *out) << ", "
                       << boost::get(flow, *out) << ")--> "
@@ -59,7 +59,7 @@ void print_network(Graph& G, Capacity capacity, Flow flow)
         std::cout << std::endl << "\t";
 
         InEdgeIter in, in_end;
-        for (boost::tie(in, in_end) = boost::in_edges(*ui, G); in != in_end;
+        for (eastl::tie(in, in_end) = boost::in_edges(*ui, G); in != in_end;
              ++in)
             std::cout << "<--(" << boost::get(capacity, *in) << ","
                       << boost::get(flow, *in) << ")-- "

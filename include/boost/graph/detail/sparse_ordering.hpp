@@ -12,8 +12,8 @@
 #define BOOST_GRAPH_DETAIL_SPARSE_ORDERING_HPP
 
 #include <boost/config.hpp>
-#include <vector>
-#include <queue>
+#include <EASTL/vector.h>
+#include <EASTL/queue.h>
 #include <boost/pending/queue.hpp>
 #include <boost/pending/mutable_queue.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -43,10 +43,10 @@ namespace sparse
 
     // yes, it's a bad name...but it works, so use it
     template < class Vertex, class DegreeMap,
-        class Container = std::deque< Vertex > >
-    class rcm_queue : public std::queue< Vertex, Container >
+        class Container = eastl::deque< Vertex > >
+    class rcm_queue : public eastl::queue< Vertex, Container >
     {
-        typedef std::queue< Vertex > base;
+        typedef eastl::queue< Vertex > base;
 
     public:
         typedef typename base::value_type value_type;
@@ -109,7 +109,7 @@ namespace sparse
         DegreeMap degree;
     };
 
-    template < typename Tp, typename Sequence = std::deque< Tp > >
+    template < typename Tp, typename Sequence = eastl::deque< Tp > >
     class sparse_ordering_queue : public boost::queue< Tp, Sequence >
     {
     public:
@@ -146,7 +146,7 @@ Vertex pseudo_peripheral_pair(
     sparse::rcm_queue< Vertex, DegreeMap > Q(degree);
 
     typename boost::graph_traits< Graph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
         if (get(color, *ui) != Color::red())
             put(color, *ui, Color::white());
     breadth_first_visit(G, u, buffer(Q).color_map(color));

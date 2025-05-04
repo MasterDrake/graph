@@ -35,7 +35,7 @@ int main()
     auto vertex_attr_map = get(vertex_attribute, g);
     std::string color[] = { "white", "gray", "black", "lightgray" };
     graph_traits< GraphvizGraph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         vertex_attr_map[*vi]["color"] = color[component[*vi]];
         vertex_attr_map[*vi]["style"] = "filled";

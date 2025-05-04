@@ -247,17 +247,17 @@ protected:
 namespace boost
 {
 
-inline std::pair< sgb_vertex_iterator, sgb_vertex_iterator > vertices(
+inline eastl::pair< sgb_vertex_iterator, sgb_vertex_iterator > vertices(
     sgb_const_graph_ptr g)
 {
-    return std::make_pair(sgb_vertex_iterator(g->vertices),
+    return eastl::make_pair(sgb_vertex_iterator(g->vertices),
         sgb_vertex_iterator(g->vertices + g->n));
 }
 
-inline std::pair< sgb_out_edge_iterator, sgb_out_edge_iterator > out_edges(
+inline eastl::pair< sgb_out_edge_iterator, sgb_out_edge_iterator > out_edges(
     Vertex* u, sgb_const_graph_ptr)
 {
-    return std::make_pair(
+    return eastl::make_pair(
         sgb_out_edge_iterator(u, u->arcs), sgb_out_edge_iterator(u, 0));
 }
 
@@ -265,16 +265,16 @@ inline boost::graph_traits< sgb_graph_ptr >::degree_size_type out_degree(
     Vertex* u, sgb_const_graph_ptr g)
 {
     boost::graph_traits< sgb_graph_ptr >::out_edge_iterator i, i_end;
-    boost::tie(i, i_end) = out_edges(u, g);
-    return std::distance(i, i_end);
+    eastl::tie(i, i_end) = out_edges(u, g);
+    return eastl::distance(i, i_end);
 }
 
 // in_edges?
 
-inline std::pair< sgb_adj_iterator, sgb_adj_iterator > adjacent_vertices(
+inline eastl::pair< sgb_adj_iterator, sgb_adj_iterator > adjacent_vertices(
     Vertex* u, sgb_const_graph_ptr)
 {
-    return std::make_pair(sgb_adj_iterator(u->arcs), sgb_adj_iterator(0));
+    return eastl::make_pair(sgb_adj_iterator(u->arcs), sgb_adj_iterator(0));
 }
 
 inline long num_vertices(sgb_const_graph_ptr g) { return g->n; }

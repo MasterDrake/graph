@@ -14,9 +14,9 @@
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/graph/johnson_all_pairs_shortest.hpp>
 #include <boost/type_traits/is_convertible.hpp>
-#include <utility>
-#include <iterator>
-#include <vector>
+#include <EASTL/utility.h>
+#include <EASTL/iterator.h>
+#include <EASTL/vector.h>
 #include <iostream>
 #include <boost/limits.hpp>
 #include <boost/config/no_tr1/cmath.hpp>
@@ -191,7 +191,7 @@ namespace detail
                 vertex_descriptor m, vertex_descriptor i)
             {
 #ifndef BOOST_NO_STDC_NAMESPACE
-                using std::sqrt;
+                using eastl::sqrt;
 #endif // BOOST_NO_STDC_NAMESPACE
 
                 deriv_type result;
@@ -213,7 +213,7 @@ namespace detail
             deriv_type compute_partial_derivatives(vertex_descriptor m)
             {
 #ifndef BOOST_NO_STDC_NAMESPACE
-                using std::sqrt;
+                using eastl::sqrt;
 #endif // BOOST_NO_STDC_NAMESPACE
 
                 deriv_type result;
@@ -232,7 +232,7 @@ namespace detail
             bool run()
             {
 #ifndef BOOST_NO_STDC_NAMESPACE
-                using std::sqrt;
+                using eastl::sqrt;
 #endif // BOOST_NO_STDC_NAMESPACE
 
                 // Compute d_{ij} and place it in the distance matrix
@@ -257,7 +257,7 @@ namespace detail
                     {
                         weight_type dij
                             = distance[get(index, *ui)][get(index, *vi)];
-                        if (dij == (std::numeric_limits< weight_type >::max)())
+                        if (dij == (eastl::numeric_limits< weight_type >::max)())
                             return false;
                         distance[get(index, *ui)][get(index, *vi)]
                             = edge_length * dij;
@@ -295,7 +295,7 @@ namespace detail
                     // each vertex. Computing this (at O(n) cost) allows us to
                     // update the delta_i values in O(n) time instead of O(n^2)
                     // time.
-                    std::vector< deriv_type > p_partials(num_vertices(g));
+                    eastl::vector< deriv_type > p_partials(num_vertices(g));
                     for (ui = vertices(g).first, end = vertices(g).second;
                          ui != end; ++ui)
                     {
@@ -461,8 +461,8 @@ template < typename T = double > struct layout_tolerance
 {
     layout_tolerance(const T& tolerance = T(0.001))
     : tolerance(tolerance)
-    , last_energy((std::numeric_limits< T >::max)())
-    , last_local_energy((std::numeric_limits< T >::max)())
+    , last_energy((eastl::numeric_limits< T >::max)())
+    , last_local_energy((eastl::numeric_limits< T >::max)())
     {
     }
 
@@ -473,7 +473,7 @@ template < typename T = double > struct layout_tolerance
     {
         if (global)
         {
-            if (last_energy == (std::numeric_limits< T >::max)())
+            if (last_energy == (eastl::numeric_limits< T >::max)())
             {
                 last_energy = delta_p;
                 return false;
@@ -488,7 +488,7 @@ template < typename T = double > struct layout_tolerance
         }
         else
         {
-            if (last_local_energy == (std::numeric_limits< T >::max)())
+            if (last_local_energy == (eastl::numeric_limits< T >::max)())
             {
                 last_local_energy = delta_p;
                 return delta_p == T(0);
@@ -625,11 +625,11 @@ bool kamada_kawai_spring_layout(const Graph& g, PositionMap position,
     typedef typename property_traits< WeightMap >::value_type weight_type;
 
     typename graph_traits< Graph >::vertices_size_type n = num_vertices(g);
-    typedef std::vector< weight_type > weight_vec;
+    typedef eastl::vector< weight_type > weight_vec;
 
-    std::vector< weight_vec > distance(n, weight_vec(n));
-    std::vector< weight_vec > spring_strength(n, weight_vec(n));
-    std::vector< typename Topology::point_difference_type > partial_derivatives(
+    eastl::vector< weight_vec > distance(n, weight_vec(n));
+    eastl::vector< weight_vec > spring_strength(n, weight_vec(n));
+    eastl::vector< typename Topology::point_difference_type > partial_derivatives(
         n);
 
     return kamada_kawai_spring_layout(g, position, weight, topology,

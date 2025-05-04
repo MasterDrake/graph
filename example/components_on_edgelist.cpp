@@ -49,7 +49,7 @@
  */
 
 using namespace std;
-using boost::tie;
+using eastl::tie;
 
 int main(int, char*[])
 {

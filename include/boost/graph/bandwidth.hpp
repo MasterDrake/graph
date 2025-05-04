@@ -7,7 +7,7 @@
 #ifndef BOOST_GRAPH_BANDWIDTH_HPP
 #define BOOST_GRAPH_BANDWIDTH_HPP
 
-#include <algorithm> // for std::min and std::max
+#include <EASTL/algorithm.h> // for eastl::min and eastl::max
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
@@ -22,12 +22,12 @@ typename graph_traits< Graph >::vertices_size_type ith_bandwidth(
     VertexIndexMap index)
 {
     BOOST_USING_STD_MAX();
-    using std::abs;
+    using eastl::abs;
     typedef
         typename graph_traits< Graph >::vertices_size_type vertices_size_type;
     vertices_size_type b = 0;
     typename graph_traits< Graph >::out_edge_iterator e, end;
-    for (boost::tie(e, end) = out_edges(i, g); e != end; ++e)
+    for (eastl::tie(e, end) = out_edges(i, g); e != end; ++e)
     {
         int f_i = get(index, i);
         int f_j = get(index, target(*e, g));
@@ -49,12 +49,12 @@ typename graph_traits< Graph >::vertices_size_type bandwidth(
     const Graph& g, VertexIndexMap index)
 {
     BOOST_USING_STD_MAX();
-    using std::abs;
+    using eastl::abs;
     typedef
         typename graph_traits< Graph >::vertices_size_type vertices_size_type;
     vertices_size_type b = 0;
     typename graph_traits< Graph >::edge_iterator i, end;
-    for (boost::tie(i, end) = edges(g); i != end; ++i)
+    for (eastl::tie(i, end) = edges(g); i != end; ++i)
     {
         int f_i = get(index, source(*i, g));
         int f_j = get(index, target(*i, g));
@@ -79,7 +79,7 @@ typename graph_traits< Graph >::vertices_size_type edgesum(
         typename detail::numeric_traits< size_type >::difference_type diff_t;
     size_type sum = 0;
     typename graph_traits< Graph >::edge_iterator i, end;
-    for (boost::tie(i, end) = edges(g); i != end; ++i)
+    for (eastl::tie(i, end) = edges(g); i != end; ++i)
     {
         diff_t f_u = get(index_map, source(*i, g));
         diff_t f_v = get(index_map, target(*i, g));

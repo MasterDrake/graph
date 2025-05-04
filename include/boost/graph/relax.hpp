@@ -9,7 +9,7 @@
 #ifndef BOOST_GRAPH_RELAX_HPP
 #define BOOST_GRAPH_RELAX_HPP
 
-#include <functional>
+#include <EASTL/functional.h>
 #include <boost/limits.hpp> // for numeric limits
 #include <boost/graph/graph_traits.hpp>
 #include <boost/property_map/property_map.hpp>
@@ -24,7 +24,7 @@ template < class T > struct closed_plus
 {
     const T inf;
 
-    closed_plus() : inf((std::numeric_limits< T >::max)()) {}
+    closed_plus() : inf((eastl::numeric_limits< T >::max)()) {}
     closed_plus(T inf) : inf(inf) {}
 
     T operator()(const T& a, const T& b) const
@@ -126,7 +126,7 @@ bool relax(typename graph_traits< Graph >::edge_descriptor e, const Graph& g,
 {
     typedef typename property_traits< DistanceMap >::value_type D;
     typedef closed_plus< D > Combine;
-    typedef std::less< D > Compare;
+    typedef eastl::less< D > Compare;
     return relax(e, g, w, p, d, Combine(), Compare());
 }
 

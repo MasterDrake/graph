@@ -8,8 +8,8 @@
 #define BOOST_GRAPH_LABELED_GRAPH_HPP
 
 #include <boost/config.hpp>
-#include <vector>
-#include <map>
+#include <EASTL/vector.h>
+#include <EASTL/map.h>
 
 #include <boost/static_assert.hpp>
 #include <boost/mpl/if.hpp>
@@ -48,8 +48,8 @@ namespace graph_detail
      */
     template < typename Label, typename Vertex > struct choose_default_map
     {
-        typedef typename mpl::if_< is_unsigned< Label >, std::vector< Vertex >,
-            std::map< Label, Vertex > // TODO: Should use unordered_map?
+        typedef typename mpl::if_< is_unsigned< Label >, eastl::vector< Vertex >,
+            eastl::map< Label, Vertex > // TODO: Should use unordered_map?
             >::type type;
     };
 
@@ -69,19 +69,19 @@ namespace graph_detail
     template < typename Label, typename Vertex >
     struct generate_label_map< vecS, Label, Vertex >
     {
-        typedef std::vector< Vertex > type;
+        typedef eastl::vector< Vertex > type;
     };
 
     template < typename Label, typename Vertex >
     struct generate_label_map< mapS, Label, Vertex >
     {
-        typedef std::map< Label, Vertex > type;
+        typedef eastl::map< Label, Vertex > type;
     };
 
     template < typename Label, typename Vertex >
     struct generate_label_map< multimapS, Label, Vertex >
     {
-        typedef std::multimap< Label, Vertex > type;
+        typedef eastl::multimap< Label, Vertex > type;
     };
 
     template < typename Label, typename Vertex >
@@ -124,7 +124,7 @@ namespace graph_detail
     // to accommodate indices.
     template < typename Container, typename Graph, typename Label,
         typename Prop >
-    std::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
+    eastl::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
     insert_labeled_vertex(Container& c, Graph& g, Label const& l, Prop const& p,
         random_access_container_tag)
     {
@@ -139,13 +139,13 @@ namespace graph_detail
         }
         Vertex v = add_vertex(p, g);
         c[l] = v;
-        return std::make_pair(c[l], true);
+        return eastl::make_pair(c[l], true);
     }
 
     // Tag dispatch on multi associative containers (i.e. multimaps).
     template < typename Container, typename Graph, typename Label,
         typename Prop >
-    std::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
+    eastl::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
     insert_labeled_vertex(Container& c, Graph& g, Label const& l, Prop const& p,
         multiple_associative_container_tag const&)
     {
@@ -153,14 +153,14 @@ namespace graph_detail
         // and then the mapping to the label.
         typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
         Vertex v = add_vertex(p, g);
-        c.insert(std::make_pair(l, v));
-        return std::make_pair(v, true);
+        c.insert(eastl::make_pair(l, v));
+        return eastl::make_pair(v, true);
     }
 
     // Tag dispatch on unique associative containers (i.e. maps).
     template < typename Container, typename Graph, typename Label,
         typename Prop >
-    std::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
+    eastl::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
     insert_labeled_vertex(Container& c, Graph& g, Label const& l, Prop const& p,
         unique_associative_container_tag)
     {
@@ -168,19 +168,19 @@ namespace graph_detail
         // the vertex if we get a new element.
         typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
         typedef typename Container::iterator Iterator;
-        std::pair< Iterator, bool > x = c.insert(std::make_pair(l, Vertex()));
+        eastl::pair< Iterator, bool > x = c.insert(eastl::make_pair(l, Vertex()));
         if (x.second)
         {
             x.first->second = add_vertex(g);
             put(boost::vertex_all, g, x.first->second, p);
         }
-        return std::make_pair(x.first->second, x.second);
+        return eastl::make_pair(x.first->second, x.second);
     }
 
     // Dispatcher
     template < typename Container, typename Graph, typename Label,
         typename Prop >
-    std::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
+    eastl::pair< typename graph_traits< Graph >::vertex_descriptor, bool >
     insert_labeled_vertex(Container& c, Graph& g, Label const& l, Prop const& p)
     {
         return insert_labeled_vertex(c, g, l, p, container_category(c));
@@ -239,7 +239,7 @@ namespace graph_detail
     bool put_vertex_label(Container& c, Graph const&, Label const& l, Vertex v,
         unique_associative_container_tag)
     {
-        return c.insert(std::make_pair(l, v)).second;
+        return c.insert(eastl::make_pair(l, v)).second;
     }
 
     // Insert the pair and return true.
@@ -248,7 +248,7 @@ namespace graph_detail
     bool put_vertex_label(Container& c, Graph const&, Label const& l, Vertex v,
         multiple_associative_container_tag)
     {
-        c.insert(std::make_pair(l, v));
+        c.insert(eastl::make_pair(l, v));
         return true;
     }
 
@@ -407,7 +407,7 @@ public:
         graph_property_type const& gp = graph_property_type())
     : _graph(n, gp), _map()
     {
-        std::pair< vertex_iterator, vertex_iterator > rng = vertices(_graph);
+        eastl::pair< vertex_iterator, vertex_iterator > rng = vertices(_graph);
         _map.insert(_map.end(), rng.first, rng.second);
     }
 
@@ -485,13 +485,13 @@ public:
      * insertion will always succeed.
      */
     //@{
-    std::pair< vertex_descriptor, bool > insert_vertex(Label const& l)
+    eastl::pair< vertex_descriptor, bool > insert_vertex(Label const& l)
     {
         return graph_detail::insert_labeled_vertex(
             _map, _graph, l, vertex_property_type());
     }
 
-    std::pair< vertex_descriptor, bool > insert_vertex(
+    eastl::pair< vertex_descriptor, bool > insert_vertex(
         Label const& l, vertex_property_type const& p)
     {
         return graph_detail::insert_labeled_vertex(_map, _graph, l, p);
@@ -625,7 +625,7 @@ public:
         return graph_detail::insert_labeled_vertex(_map, *_graph, l, p).first;
     }
 
-    std::pair< vertex_descriptor, bool > insert_vertex(Label const& l)
+    eastl::pair< vertex_descriptor, bool > insert_vertex(Label const& l)
     {
         return graph_detail::insert_labeled_vertex(
             _map, *_graph, l, vertex_property_type());
@@ -633,7 +633,7 @@ public:
     //@}
 
     /** Try to insert a vertex with the given label. */
-    std::pair< vertex_descriptor, bool > insert_vertex(
+    eastl::pair< vertex_descriptor, bool > insert_vertex(
         Label const& l, vertex_property_type const& p)
     {
         return graph_detail::insert_labeled_vertex(_map, *_graph, l, p);
@@ -705,7 +705,7 @@ inline typename LABELED_GRAPH::vertex_descriptor vertex_by_label(
 /** @name Graph */
 //@{
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool > edge(
+inline eastl::pair< typename LABELED_GRAPH::edge_descriptor, bool > edge(
     typename LABELED_GRAPH::vertex_descriptor const& u,
     typename LABELED_GRAPH::vertex_descriptor const& v, LABELED_GRAPH const& g)
 {
@@ -714,7 +714,7 @@ inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool > edge(
 
 // Labeled Extensions
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool > edge_by_label(
+inline eastl::pair< typename LABELED_GRAPH::edge_descriptor, bool > edge_by_label(
     typename LABELED_GRAPH::label_type const& u,
     typename LABELED_GRAPH::label_type const& v, LABELED_GRAPH const& g)
 {
@@ -725,7 +725,7 @@ inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool > edge_by_label(
 /** @name Incidence Graph */
 //@{
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::out_edge_iterator,
+inline eastl::pair< typename LABELED_GRAPH::out_edge_iterator,
     typename LABELED_GRAPH::out_edge_iterator >
 out_edges(typename LABELED_GRAPH::vertex_descriptor v, LABELED_GRAPH const& g)
 {
@@ -757,7 +757,7 @@ inline typename LABELED_GRAPH::vertex_descriptor target(
 /** @name Bidirectional Graph */
 //@{
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::in_edge_iterator,
+inline eastl::pair< typename LABELED_GRAPH::in_edge_iterator,
     typename LABELED_GRAPH::in_edge_iterator >
 in_edges(typename LABELED_GRAPH::vertex_descriptor v, LABELED_GRAPH const& g)
 {
@@ -782,7 +782,7 @@ inline typename LABELED_GRAPH::degree_size_type degree(
 /** @name Adjacency Graph */
 //@{
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::adjacency_iterator,
+inline eastl::pair< typename LABELED_GRAPH::adjacency_iterator,
     typename LABELED_GRAPH::adjacency_iterator >
 adjacent_vertices(
     typename LABELED_GRAPH::vertex_descriptor v, LABELED_GRAPH const& g)
@@ -794,7 +794,7 @@ adjacent_vertices(
 /** @name VertexListGraph */
 //@{
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::vertex_iterator,
+inline eastl::pair< typename LABELED_GRAPH::vertex_iterator,
     typename LABELED_GRAPH::vertex_iterator >
 vertices(LABELED_GRAPH const& g)
 {
@@ -812,7 +812,7 @@ inline typename LABELED_GRAPH::vertices_size_type num_vertices(
 /** @name EdgeListGraph */
 //@{
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::edge_iterator,
+inline eastl::pair< typename LABELED_GRAPH::edge_iterator,
     typename LABELED_GRAPH::edge_iterator >
 edges(LABELED_GRAPH const& g)
 {
@@ -898,7 +898,7 @@ inline void put(Prop p, LABELED_GRAPH& g, Key const& k, Value const& v)
 /** @name Mutable Graph */
 //@{
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool > add_edge(
+inline eastl::pair< typename LABELED_GRAPH::edge_descriptor, bool > add_edge(
     typename LABELED_GRAPH::vertex_descriptor const& u,
     typename LABELED_GRAPH::vertex_descriptor const& v, LABELED_GRAPH& g)
 {
@@ -906,7 +906,7 @@ inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool > add_edge(
 }
 
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool > add_edge(
+inline eastl::pair< typename LABELED_GRAPH::edge_descriptor, bool > add_edge(
     typename LABELED_GRAPH::vertex_descriptor const& u,
     typename LABELED_GRAPH::vertex_descriptor const& v,
     typename LABELED_GRAPH::edge_property_type const& p, LABELED_GRAPH& g)
@@ -937,7 +937,7 @@ inline void remove_edge(typename LABELED_GRAPH::vertex_descriptor u,
 
 // Labeled extensions
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool >
+inline eastl::pair< typename LABELED_GRAPH::edge_descriptor, bool >
 add_edge_by_label(typename LABELED_GRAPH::label_type const& u,
     typename LABELED_GRAPH::label_type const& v, LABELED_GRAPH& g)
 {
@@ -945,7 +945,7 @@ add_edge_by_label(typename LABELED_GRAPH::label_type const& u,
 }
 
 template < LABELED_GRAPH_PARAMS >
-inline std::pair< typename LABELED_GRAPH::edge_descriptor, bool >
+inline eastl::pair< typename LABELED_GRAPH::edge_descriptor, bool >
 add_edge_by_label(typename LABELED_GRAPH::label_type const& u,
     typename LABELED_GRAPH::label_type const& v,
     typename LABELED_GRAPH::edge_property_type const& p, LABELED_GRAPH& g)

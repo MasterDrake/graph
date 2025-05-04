@@ -6,10 +6,10 @@
 #ifndef BOOST_PERMUTATION_HPP
 #define BOOST_PERMUTATION_HPP
 
-#include <vector>
-#include <memory>
-#include <functional>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/memory.h>
+#include <EASTL/functiona.hl>
+#include <EASTL/algorithm.h>
 #include <boost/graph/detail/shadow_iterator.hpp>
 
 namespace boost
@@ -21,14 +21,14 @@ void permute_serial(Iter1 permuter, Iter1 last, Iter2 result)
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
     typedef std::ptrdiff_t D :
 #else
-    typedef typename std::iterator_traits< Iter1 >::difference_type D;
+    typedef typename eastl::iterator_traits< Iter1 >::difference_type D;
 #endif
 
         D n
         = 0;
     while (permuter != last)
     {
-        std::swap(result[n], result[*permuter]);
+        eastl::swap(result[n], result[*permuter]);
         ++n;
         ++permuter;
     }
@@ -40,7 +40,7 @@ void permute_copy(InIter first, InIter last, RandIterP p, RandIterR result)
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
     typedef std::ptrdiff_t i = 0;
 #else
-    typename std::iterator_traits< RandIterP >::difference_type i = 0;
+    typename eastl::iterator_traits< RandIterP >::difference_type i = 0;
 #endif
     for (; first != last; ++first, ++i)
         result[p[i]] = *first;
@@ -54,7 +54,7 @@ namespace detail
     {
         D i = 0, pi, n = last - first, cycle_start;
         T tmp;
-        std::vector< int > visited(n, false);
+        eastl::vector< int > visited(n, false);
 
         while (i != n)
         { // continue until all elements have been processed
@@ -64,7 +64,7 @@ namespace detail
             { // walk around a cycle
                 pi = p[i];
                 visited[pi] = true;
-                std::swap(tmp, first[pi]);
+                eastl::swap(tmp, first[pi]);
                 i = pi;
             } while (i != cycle_start);
 
@@ -93,7 +93,7 @@ template < class PermIter > void invert_permutation(PermIter X, PermIter Xend)
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
     typedef std::ptrdiff_t T :
 #else
-    typedef typename std::iterator_traits< PermIter >::value_type T;
+    typedef typename eastl::iterator_traits< PermIter >::value_type T;
 #endif
         T n
         = Xend - X;
@@ -130,9 +130,9 @@ inline void serialize_permutation(Iter1 q, Iter1 q_end, Iter2 q_inv, Iter3 p)
     typedef std::ptrdiff_t P2;
     typedef std::ptrdiff_t D;
 #else
-    typedef typename std::iterator_traits< Iter1 >::value_type P1;
-    typedef typename std::iterator_traits< Iter2 >::value_type P2;
-    typedef typename std::iterator_traits< Iter1 >::difference_type D;
+    typedef typename eastl::iterator_traits< Iter1 >::value_type P1;
+    typedef typename eastl::iterator_traits< Iter2 >::value_type P2;
+    typedef typename eastl::iterator_traits< Iter1 >::difference_type D;
 #endif
     D n = q_end - q;
     for (D i = 0; i < n; ++i)
@@ -140,8 +140,8 @@ inline void serialize_permutation(Iter1 q, Iter1 q_end, Iter2 q_inv, Iter3 p)
         P1 qi = q[i];
         P2 qii = q_inv[i];
         *p++ = qii;
-        std::swap(q[i], q[qii]);
-        std::swap(q_inv[i], q_inv[qi]);
+        eastl::swap(q[i], q[qii]);
+        eastl::swap(q_inv[i], q_inv[qi]);
     }
 }
 
@@ -154,7 +154,7 @@ void merge_sort(Iter first, Iter last, Compare cmp)
         Iter mid = first + (last - first) / 2;
         merge_sort(first, mid, cmp);
         merge_sort(mid, last, cmp);
-        std::inplace_merge(first, mid, last, cmp);
+        eastl::inplace_merge(first, mid, last, cmp);
     }
 }
 
@@ -163,45 +163,45 @@ void merge_sort(Iter first, Iter last, Compare cmp)
 template < class Iter, class IterP, class Cmp, class Alloc >
 inline void sortp(Iter first, Iter last, IterP p, Cmp cmp, Alloc alloc)
 {
-    typedef typename std::iterator_traits< IterP >::value_type P;
-    typedef typename std::iterator_traits< IterP >::difference_type D;
+    typedef typename eastl::iterator_traits< IterP >::value_type P;
+    typedef typename eastl::iterator_traits< IterP >::difference_type D;
     D n = last - first;
-    std::vector< P, Alloc > q(n);
+    eastl::vector< P, Alloc > q(n);
     for (D i = 0; i < n; ++i)
         q[i] = i;
-    std::sort(make_shadow_iter(first, q.begin()),
+    eastl::sort(make_shadow_iter(first, q.begin()),
         make_shadow_iter(last, q.end()), shadow_cmp< Cmp >(cmp));
     invert_permutation(q.begin(), q.end());
-    std::copy(q.begin(), q.end(), p);
+    eastl::copy(q.begin(), q.end(), p);
 }
 
 template < class Iter, class IterP, class Cmp >
 inline void sortp(Iter first, Iter last, IterP p, Cmp cmp)
 {
-    typedef typename std::iterator_traits< IterP >::value_type P;
-    sortp(first, last, p, cmp, std::allocator< P >());
+    typedef typename eastl::iterator_traits< IterP >::value_type P;
+    sortp(first, last, p, cmp, eastl::allocator< P >());
 }
 
 template < class Iter, class IterP >
 inline void sortp(Iter first, Iter last, IterP p)
 {
-    typedef typename std::iterator_traits< Iter >::value_type T;
-    typedef typename std::iterator_traits< IterP >::value_type P;
-    sortp(first, last, p, std::less< T >(), std::allocator< P >());
+    typedef typename eastl::iterator_traits< Iter >::value_type T;
+    typedef typename eastl::iterator_traits< IterP >::value_type P;
+    sortp(first, last, p, eastl::less< T >(), eastl::allocator< P >());
 }
 
 template < class Iter, class IterP, class Cmp, class Alloc >
 inline void sortv(Iter first, Iter last, IterP p, Cmp cmp, Alloc alloc)
 {
-    typedef typename std::iterator_traits< IterP >::value_type P;
-    typedef typename std::iterator_traits< IterP >::difference_type D;
+    typedef typename eastl::iterator_traits< IterP >::value_type P;
+    typedef typename eastl::iterator_traits< IterP >::difference_type D;
     D n = last - first;
-    std::vector< P, Alloc > q(n), q_inv(n);
+    eastl::vector< P, Alloc > q(n), q_inv(n);
     for (D i = 0; i < n; ++i)
         q_inv[i] = i;
-    std::sort(make_shadow_iter(first, q_inv.begin()),
+    eastl::sort(make_shadow_iter(first, q_inv.begin()),
         make_shadow_iter(last, q_inv.end()), shadow_cmp< Cmp >(cmp));
-    std::copy(q_inv, q_inv.end(), q.begin());
+    eastl::copy(q_inv, q_inv.end(), q.begin());
     invert_permutation(q.begin(), q.end());
     serialize_permutation(q.begin(), q.end(), q_inv.end(), p);
 }

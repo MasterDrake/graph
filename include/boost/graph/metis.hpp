@@ -15,14 +15,14 @@
 #define BOOST_GRAPH_METIS_INLINE_KEYWORD inline
 #endif
 
-#include <string>
+#include <EASTL/string.h>
 #include <iostream>
-#include <iterator>
-#include <utility>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
 #include <sstream>
 #include <exception>
-#include <vector>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h>
 
 #include <boost/throw_exception.hpp>
 
@@ -49,8 +49,8 @@ namespace graph
         class edge_iterator
         {
         public:
-            typedef std::input_iterator_tag iterator_category;
-            typedef std::pair< vertices_size_type, vertices_size_type >
+            typedef eastl::input_iterator_tag iterator_category;
+            typedef eastl::pair< vertices_size_type, vertices_size_type >
                 value_type;
             typedef const value_type& reference;
             typedef const value_type* pointer;
@@ -93,7 +93,7 @@ namespace graph
         class edge_weight_iterator
         {
         public:
-            typedef std::input_iterator_tag iterator_category;
+            typedef eastl::input_iterator_tag iterator_category;
             typedef edge_weight_type value_type;
             typedef const value_type& reference;
             typedef const value_type* pointer;
@@ -146,8 +146,8 @@ namespace graph
 
         // Information about the current edge/vertex
         std::istringstream line_in;
-        std::pair< vertices_size_type, vertices_size_type > edge;
-        std::vector< vertex_weight_type > vertex_weights;
+        eastl::pair< vertices_size_type, vertices_size_type > edge;
+        eastl::vector< vertex_weight_type > vertex_weights;
         edge_weight_type edge_weight;
 
         friend bool operator==(edge_iterator, edge_iterator);
@@ -159,7 +159,7 @@ namespace graph
     public:
         typedef int process_id_type;
         typedef std::size_t size_type;
-        typedef std::vector< process_id_type >::iterator iterator;
+        typedef eastl::vector< process_id_type >::iterator iterator;
 
         metis_distribution(std::istream& in, process_id_type my_id);
 
@@ -174,7 +174,7 @@ namespace graph
 
     private:
         process_id_type my_id;
-        std::vector< process_id_type > vertices;
+        eastl::vector< process_id_type > vertices;
     };
 
 #if !defined(BOOST_GRAPH_METIS_NO_INLINE) || defined(BOOST_GRAPH_METIS_SOURCE)
@@ -235,7 +235,7 @@ namespace graph
             }
 
             // Find the next line
-            std::string line;
+            eastl::string line;
             while (getline(self->in, line) && !line.empty() && line[0] == '%')
             {
                 /* Keep reading lines in the loop header... */
@@ -334,18 +334,18 @@ namespace graph
     metis_distribution::size_type metis_distribution::block_size(
         process_id_type id, size_type) const
     {
-        return std::count(vertices.begin(), vertices.end(), id);
+        return eastl::count(vertices.begin(), vertices.end(), id);
     }
 
     metis_distribution::size_type metis_distribution::local(size_type n) const
     {
-        return std::count(vertices.begin(), vertices.begin() + n, vertices[n]);
+        return eastl::count(vertices.begin(), vertices.begin() + n, vertices[n]);
     }
 
     metis_distribution::size_type metis_distribution::global(
         process_id_type id, size_type n) const
     {
-        std::vector< process_id_type >::const_iterator i = vertices.begin();
+        eastl::vector< process_id_type >::const_iterator i = vertices.begin();
         while (*i != id)
             ++i;
 

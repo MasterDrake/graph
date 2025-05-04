@@ -137,7 +137,7 @@ int main()
         c_map = get(color_t(), g);
 
         vertex_iterator i, end;
-        for (boost::tie(i, end) = boost::vertices(g); i != end; ++i)
+        for (eastl::tie(i, end) = boost::vertices(g); i != end; ++i)
             d_map[*i] = 0;
 
         std::size_t k = 0;

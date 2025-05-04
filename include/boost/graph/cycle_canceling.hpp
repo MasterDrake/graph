@@ -15,7 +15,7 @@
 #ifndef BOOST_GRAPH_CYCLE_CANCELING_HPP
 #define BOOST_GRAPH_CYCLE_CANCELING_HPP
 
-#include <numeric>
+#include <EASTL/numeric_limits.h>
 
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -132,7 +132,7 @@ namespace detail
     {
         typedef typename property_traits< Weight >::value_type D;
 
-        std::vector< D > d_map(num_vertices(g));
+        eastl::vector< D > d_map(num_vertices(g));
 
         cycle_canceling(g, weight, rev, residual_capacity, pred,
             make_iterator_property_map(d_map.begin(),
@@ -158,7 +158,7 @@ namespace detail
         const bgl_named_params< P, T, R >& params)
     {
         typedef typename graph_traits< Graph >::edge_descriptor edge_descriptor;
-        std::vector< edge_descriptor > p_map(num_vertices(g));
+        eastl::vector< edge_descriptor > p_map(num_vertices(g));
 
         cycle_canceling_dispatch2(g, weight, rev, residual_capacity,
             make_iterator_property_map(p_map.begin(),

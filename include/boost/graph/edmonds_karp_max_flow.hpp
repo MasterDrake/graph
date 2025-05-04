@@ -11,8 +11,8 @@
 #define BOOST_GRAPH_EDMONDS_KARP_MAX_FLOW_HPP
 
 #include <boost/config.hpp>
-#include <vector>
-#include <algorithm> // for std::min and std::max
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h> // for eastl::min and eastl::max
 #include <boost/config.hpp>
 #include <boost/pending/queue.hpp>
 #include <boost/property_map/property_map.hpp>
@@ -51,7 +51,7 @@ namespace detail
         typedef typename property_traits< ResCapMap >::value_type FlowValue;
 
         // find minimum residual capacity along the augmenting path
-        FlowValue delta = (std::numeric_limits< FlowValue >::max)();
+        FlowValue delta = (eastl::numeric_limits< FlowValue >::max)();
         e = get(p, sink);
         do
         {
@@ -90,8 +90,8 @@ typename property_traits< CapacityEdgeMap >::value_type edmonds_karp_max_flow(
 
     typename graph_traits< Graph >::vertex_iterator u_iter, u_end;
     typename graph_traits< Graph >::out_edge_iterator ei, e_end;
-    for (boost::tie(u_iter, u_end) = vertices(g); u_iter != u_end; ++u_iter)
-        for (boost::tie(ei, e_end) = out_edges(*u_iter, g); ei != e_end; ++ei)
+    for (eastl::tie(u_iter, u_end) = vertices(g); u_iter != u_end; ++u_iter)
+        for (eastl::tie(ei, e_end) = out_edges(*u_iter, g); ei != e_end; ++ei)
             put(res, *ei, get(cap, *ei));
 
     put(color, sink, Color::gray());
@@ -106,7 +106,7 @@ typename property_traits< CapacityEdgeMap >::value_type edmonds_karp_max_flow(
     } // while
 
     typename property_traits< CapacityEdgeMap >::value_type flow = 0;
-    for (boost::tie(ei, e_end) = out_edges(src, g); ei != e_end; ++ei)
+    for (eastl::tie(ei, e_end) = out_edges(src, g); ei != e_end; ++ei)
         flow += (get(cap, *ei) - get(res, *ei));
     return flow;
 } // edmonds_karp_max_flow()
@@ -150,7 +150,7 @@ namespace detail
             size_type n = is_default_param(get_param(params, vertex_color))
                 ? num_vertices(g)
                 : 1;
-            std::vector< default_color_type > color_vec(n);
+            eastl::vector< default_color_type > color_vec(n);
             return edmonds_karp_max_flow(g, src, sink,
                 choose_const_pmap(
                     get_param(params, edge_capacity), g, edge_capacity),
@@ -201,7 +201,7 @@ namespace detail
                 = is_default_param(get_param(params, vertex_predecessor))
                 ? num_vertices(g)
                 : 1;
-            std::vector< edge_descriptor > pred_vec(n);
+            eastl::vector< edge_descriptor > pred_vec(n);
 
             typedef typename get_param_type< vertex_color_t,
                 bgl_named_params< P, T, R > >::type C;

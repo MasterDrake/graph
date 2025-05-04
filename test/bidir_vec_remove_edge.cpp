@@ -42,7 +42,7 @@ int main(int, char*[])
 
         // e2 has been invalidated, so grab it again
         bool b2;
-        boost::tie(e2, b2) = boost::edge(1, 0, g);
+        eastl::tie(e2, b2) = boost::edge(1, 0, g);
         BOOST_TEST(b2);
         BOOST_TEST(g[e2].weight == 17);
 

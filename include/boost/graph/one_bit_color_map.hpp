@@ -20,8 +20,8 @@
 #include <boost/shared_array.hpp>
 #include <boost/config.hpp>
 #include <boost/assert.hpp>
-#include <algorithm>
-#include <limits>
+#include <EASTL/algorithm.h>
+#include <EASTL/numeric_limits.h>
 
 namespace boost
 {
@@ -42,7 +42,7 @@ template <> struct color_traits< one_bit_color_type >
 template < typename IndexMap = identity_property_map > struct one_bit_color_map
 {
     BOOST_STATIC_CONSTANT(
-        int, bits_per_char = std::numeric_limits< unsigned char >::digits);
+        int, bits_per_char = eastl::numeric_limits< unsigned char >::digits);
     std::size_t n;
     IndexMap index;
     shared_array< unsigned char > data;

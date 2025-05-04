@@ -16,7 +16,7 @@
 
 /*
   An alternate interface idea:
-    Extend the std::list functionality by creating remove/insert
+    Extend the eastl::list functionality by creating remove/insert
     functions that do not require the container object!
  */
 

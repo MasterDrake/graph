@@ -111,7 +111,7 @@ int main(int, char*[])
     {
         graph_traits< Graph >::edge_descriptor e;
         bool inserted;
-        boost::tie(e, inserted)
+        eastl::tie(e, inserted)
             = add_edge(used_by[j].first, used_by[j].second, g);
     }
 #else
@@ -144,7 +144,7 @@ int main(int, char*[])
                 int maxdist = 0;
                 // Through the order from topological sort, we are sure that
                 // every time we are using here is already initialized.
-                for (boost::tie(j, j_end) = in_edges(*i, g); j != j_end; ++j)
+                for (eastl::tie(j, j_end) = in_edges(*i, g); j != j_end; ++j)
                     maxdist = (std::max)(time[source(*j, g)], maxdist);
                 time[*i] = maxdist + 1;
             }
@@ -155,7 +155,7 @@ int main(int, char*[])
              << endl;
         {
             graph_traits< Graph >::vertex_iterator i, iend;
-            for (boost::tie(i, iend) = vertices(g); i != iend; ++i)
+            for (eastl::tie(i, iend) = vertices(g); i != iend; ++i)
                 cout << "time_slot[" << name[*i] << "] = " << time[*i] << endl;
         }
     }

@@ -37,7 +37,7 @@ namespace detail
         typedef typename property_traits< ResCapMap >::value_type FlowValue;
 
         // find minimum residual capacity along the augmenting path
-        FlowValue delta = (std::numeric_limits< FlowValue >::max)();
+        FlowValue delta = (eastl::numeric_limits< FlowValue >::max)();
         e = get(p, sink);
         do
         {

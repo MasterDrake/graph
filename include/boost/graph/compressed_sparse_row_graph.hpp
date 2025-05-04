@@ -13,12 +13,12 @@
 #ifndef BOOST_GRAPH_COMPRESSED_SPARSE_ROW_GRAPH_HPP
 #define BOOST_GRAPH_COMPRESSED_SPARSE_ROW_GRAPH_HPP
 
-#include <vector>
-#include <utility>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
+#include <EASTL/algorithm.h>
 #include <climits>
 #include <boost/assert.hpp>
-#include <iterator>
+#include <EASTL/iterator.h>
 #if 0
 #include <iostream> // For some debugging code below
 #endif
@@ -165,7 +165,7 @@ namespace detail
           boost::random_access_traversal_tag, const T& >
     {
         typedef boost::iterator_facade< default_construct_iterator< T >, T,
-            std::random_access_iterator_tag, const T& >
+            eastl::random_access_iterator_tag, const T& >
             base_type;
         T saved_value;
         const T& dereference() const { return saved_value; }
@@ -276,7 +276,7 @@ public:
     typedef EdgeIndex degree_size_type;
 
     // For AdjacencyGraph
-    typedef typename std::vector< Vertex >::const_iterator adjacency_iterator;
+    typedef typename eastl::vector< Vertex >::const_iterator adjacency_iterator;
 
     // For EdgeListGraph
     typedef detail::csr_edge_iterator< compressed_sparse_row_graph >
@@ -426,8 +426,8 @@ public:
     //  vectors are returned with unspecified contents but are guaranteed not to
     //  share storage with the constructed graph.
     compressed_sparse_row_graph(construct_inplace_from_sources_and_targets_t,
-        std::vector< vertex_descriptor >& sources,
-        std::vector< vertex_descriptor >& targets, vertices_size_type numverts,
+        eastl::vector< vertex_descriptor >& sources,
+        eastl::vector< vertex_descriptor >& targets, vertices_size_type numverts,
         const GraphProperty& prop = GraphProperty())
     : inherited_vertex_properties(numverts), m_property(prop)
     {
@@ -443,8 +443,8 @@ public:
     template < typename GlobalToLocal >
     compressed_sparse_row_graph(
         construct_inplace_from_sources_and_targets_global_t,
-        std::vector< vertex_descriptor >& sources,
-        std::vector< vertex_descriptor >& targets,
+        eastl::vector< vertex_descriptor >& sources,
+        eastl::vector< vertex_descriptor >& targets,
         vertices_size_type numlocalverts, GlobalToLocal global_to_local,
         const GraphProperty& prop = GraphProperty())
     : inherited_vertex_properties(numlocalverts), m_property(prop)
@@ -457,9 +457,9 @@ public:
     //  edge properties; vectors are returned with unspecified contents but are
     //  guaranteed not to share storage with the constructed graph.
     compressed_sparse_row_graph(construct_inplace_from_sources_and_targets_t,
-        std::vector< vertex_descriptor >& sources,
-        std::vector< vertex_descriptor >& targets,
-        std::vector<
+        eastl::vector< vertex_descriptor >& sources,
+        eastl::vector< vertex_descriptor >& targets,
+        eastl::vector<
             typename forward_type::inherited_edge_properties::edge_bundled >&
             edge_props,
         vertices_size_type numverts,
@@ -479,9 +479,9 @@ public:
     template < typename GlobalToLocal >
     compressed_sparse_row_graph(
         construct_inplace_from_sources_and_targets_global_t,
-        std::vector< vertex_descriptor >& sources,
-        std::vector< vertex_descriptor >& targets,
-        std::vector<
+        eastl::vector< vertex_descriptor >& sources,
+        eastl::vector< vertex_descriptor >& targets,
+        eastl::vector<
             typename forward_type::inherited_edge_properties::edge_bundled >&
             edge_props,
         vertices_size_type numlocalverts, GlobalToLocal global_to_local,
@@ -500,7 +500,7 @@ public:
         const GraphProperty& prop = GraphProperty())
     : inherited_vertex_properties(numverts), m_property(prop)
     {
-        std::vector< vertex_descriptor > sources, targets;
+        eastl::vector< vertex_descriptor > sources, targets;
         boost::graph::detail::split_into_separate_coords(
             edge_begin, edge_end, sources, targets);
         m_forward.assign_sources_and_targets_global(sources, targets, numverts,
@@ -517,11 +517,11 @@ public:
         const GraphProperty& prop = GraphProperty())
     : inherited_vertex_properties(numverts), m_property(prop)
     {
-        std::vector< vertex_descriptor > sources, targets;
+        eastl::vector< vertex_descriptor > sources, targets;
         boost::graph::detail::split_into_separate_coords(
             edge_begin, edge_end, sources, targets);
         size_t numedges = sources.size();
-        std::vector<
+        eastl::vector<
             typename forward_type::inherited_edge_properties::edge_bundled >
             edge_props(numedges);
         for (size_t i = 0; i < numedges; ++i)
@@ -545,7 +545,7 @@ public:
         const GraphProperty& prop = GraphProperty())
     : inherited_vertex_properties(numlocalverts), m_property(prop)
     {
-        std::vector< vertex_descriptor > sources, targets;
+        eastl::vector< vertex_descriptor > sources, targets;
         boost::graph::detail::split_into_separate_coords_filtered(
             edge_begin, edge_end, sources, targets, source_pred);
         m_forward.assign_sources_and_targets_global(
@@ -565,8 +565,8 @@ public:
         const GraphProperty& prop = GraphProperty())
     : inherited_vertex_properties(numlocalverts), m_property(prop)
     {
-        std::vector< vertex_descriptor > sources, targets;
-        std::vector< edge_bundled > edge_props;
+        eastl::vector< vertex_descriptor > sources, targets;
+        eastl::vector< edge_bundled > edge_props;
         boost::graph::detail::split_into_separate_coords_filtered(edge_begin,
             edge_end, ep_iter, sources, targets, edge_props, source_pred);
         m_forward.assign_sources_and_targets_global(
@@ -717,11 +717,11 @@ public:
         typedef compressed_sparse_row_graph Graph;
         typedef
             typename boost::graph_traits< Graph >::vertex_descriptor vertex_t;
-        typedef std::vector< std::pair< vertex_t, vertex_t > > edge_vector_t;
+        typedef eastl::vector< eastl::pair< vertex_t, vertex_t > > edge_vector_t;
         edge_vector_t new_edges(first, last);
         if (new_edges.empty())
             return;
-        std::sort(new_edges.begin(), new_edges.end());
+        eastl::sort(new_edges.begin(), new_edges.end());
         this->add_edges_sorted_internal_global(
             new_edges.begin(), new_edges.end(), global_to_local);
     }
@@ -744,16 +744,16 @@ public:
         typedef compressed_sparse_row_graph Graph;
         typedef
             typename boost::graph_traits< Graph >::vertex_descriptor vertex_t;
-        typedef std::pair< vertex_t, vertex_t > vertex_pair;
-        typedef std::vector< boost::tuple< vertex_pair, edge_bundled > >
+        typedef eastl::pair< vertex_t, vertex_t > vertex_pair;
+        typedef eastl::vector< boost::tuple< vertex_pair, edge_bundled > >
             edge_vector_t;
         edge_vector_t new_edges(
             boost::make_zip_iterator(boost::make_tuple(first, ep_iter)),
             boost::make_zip_iterator(boost::make_tuple(last, ep_iter_end)));
         if (new_edges.empty())
             return;
-        std::sort(new_edges.begin(), new_edges.end(),
-            boost::detail::compare_first< std::less< vertex_pair > >());
+        eastl::sort(new_edges.begin(), new_edges.end(),
+            boost::detail::compare_first< eastl::less< vertex_pair > >());
         m_forward.add_edges_sorted_internal(
             boost::make_transform_iterator(new_edges.begin(),
                 boost::detail::my_tuple_get_class< 0, vertex_pair >()),
@@ -874,7 +874,7 @@ public:
     typedef EdgeIndex degree_size_type;
 
     // For AdjacencyGraph
-    typedef typename std::vector< Vertex >::const_iterator adjacency_iterator;
+    typedef typename eastl::vector< Vertex >::const_iterator adjacency_iterator;
 
     // For EdgeListGraph
     typedef detail::csr_edge_iterator< compressed_sparse_row_graph >
@@ -911,7 +911,7 @@ public:
 private:
     void set_up_backward_property_links()
     {
-        std::pair< edge_iterator, edge_iterator > e = edges(*this);
+        eastl::pair< edge_iterator, edge_iterator > e = edges(*this);
         m_backward.assign_unsorted_multi_pass_edges(
             detail::transpose_edges(detail::make_edge_to_index_pair_iter(
                 *this, get(vertex_index, *this), e.first)),
@@ -1229,10 +1229,10 @@ inline Vertex num_vertices(const BOOST_CSR_GRAPH_TYPE& g)
 }
 
 template < BOOST_CSR_GRAPH_TEMPLATE_PARMS >
-std::pair< counting_iterator< Vertex >,
+eastl::pair< counting_iterator< Vertex >,
     counting_iterator< Vertex > > inline vertices(const BOOST_CSR_GRAPH_TYPE& g)
 {
-    return std::make_pair(counting_iterator< Vertex >(0),
+    return eastl::make_pair(counting_iterator< Vertex >(0),
         counting_iterator< Vertex >(num_vertices(g)));
 }
 
@@ -1252,7 +1252,7 @@ inline Vertex target(typename BOOST_CSR_GRAPH_TYPE::edge_descriptor e,
 }
 
 template < BOOST_CSR_GRAPH_TEMPLATE_PARMS >
-inline std::pair< typename BOOST_CSR_GRAPH_TYPE::out_edge_iterator,
+inline eastl::pair< typename BOOST_CSR_GRAPH_TYPE::out_edge_iterator,
     typename BOOST_CSR_GRAPH_TYPE::out_edge_iterator >
 out_edges(Vertex v, const BOOST_CSR_GRAPH_TYPE& g)
 {
@@ -1260,7 +1260,7 @@ out_edges(Vertex v, const BOOST_CSR_GRAPH_TYPE& g)
     typedef typename BOOST_CSR_GRAPH_TYPE::out_edge_iterator it;
     EdgeIndex v_row_start = g.m_forward.m_rowstart[v];
     EdgeIndex next_row_start = g.m_forward.m_rowstart[v + 1];
-    return std::make_pair(it(ed(v, v_row_start)), it(ed(v, next_row_start)));
+    return eastl::make_pair(it(ed(v, v_row_start)), it(ed(v, next_row_start)));
 }
 
 template < BOOST_CSR_GRAPH_TEMPLATE_PARMS >
@@ -1272,14 +1272,14 @@ inline EdgeIndex out_degree(Vertex v, const BOOST_CSR_GRAPH_TYPE& g)
 }
 
 template < BOOST_BIDIR_CSR_GRAPH_TEMPLATE_PARMS >
-inline std::pair< typename BOOST_BIDIR_CSR_GRAPH_TYPE::in_edge_iterator,
+inline eastl::pair< typename BOOST_BIDIR_CSR_GRAPH_TYPE::in_edge_iterator,
     typename BOOST_BIDIR_CSR_GRAPH_TYPE::in_edge_iterator >
 in_edges(Vertex v, const BOOST_BIDIR_CSR_GRAPH_TYPE& g)
 {
     typedef typename BOOST_BIDIR_CSR_GRAPH_TYPE::in_edge_iterator it;
     EdgeIndex v_row_start = g.m_backward.m_rowstart[v];
     EdgeIndex next_row_start = g.m_backward.m_rowstart[v + 1];
-    return std::make_pair(it(g, v_row_start), it(g, next_row_start));
+    return eastl::make_pair(it(g, v_row_start), it(g, next_row_start));
 }
 
 template < BOOST_BIDIR_CSR_GRAPH_TEMPLATE_PARMS >
@@ -1292,13 +1292,13 @@ inline EdgeIndex in_degree(Vertex v, const BOOST_BIDIR_CSR_GRAPH_TYPE& g)
 
 // From AdjacencyGraph
 template < BOOST_CSR_GRAPH_TEMPLATE_PARMS >
-inline std::pair< typename BOOST_CSR_GRAPH_TYPE::adjacency_iterator,
+inline eastl::pair< typename BOOST_CSR_GRAPH_TYPE::adjacency_iterator,
     typename BOOST_CSR_GRAPH_TYPE::adjacency_iterator >
 adjacent_vertices(Vertex v, const BOOST_CSR_GRAPH_TYPE& g)
 {
     EdgeIndex v_row_start = g.m_forward.m_rowstart[v];
     EdgeIndex next_row_start = g.m_forward.m_rowstart[v + 1];
-    return std::make_pair(g.m_forward.m_column.begin() + v_row_start,
+    return eastl::make_pair(g.m_forward.m_column.begin() + v_row_start,
         g.m_forward.m_column.begin() + next_row_start);
 }
 
@@ -1314,17 +1314,17 @@ inline typename graph_traits< BOOST_CSR_GRAPH_TYPE >::vertex_descriptor vertex(
 // edge() can be provided in linear time for the new interface
 
 template < BOOST_CSR_GRAPH_TEMPLATE_PARMS >
-inline std::pair< typename BOOST_CSR_GRAPH_TYPE::edge_descriptor, bool > edge(
+inline eastl::pair< typename BOOST_CSR_GRAPH_TYPE::edge_descriptor, bool > edge(
     Vertex i, Vertex j, const BOOST_CSR_GRAPH_TYPE& g)
 {
     typedef typename BOOST_CSR_GRAPH_TYPE::out_edge_iterator out_edge_iter;
-    std::pair< out_edge_iter, out_edge_iter > range = out_edges(i, g);
+    eastl::pair< out_edge_iter, out_edge_iter > range = out_edges(i, g);
     for (; range.first != range.second; ++range.first)
     {
         if (target(*range.first, g) == j)
-            return std::make_pair(*range.first, true);
+            return eastl::make_pair(*range.first, true);
     }
-    return std::make_pair(
+    return eastl::make_pair(
         typename BOOST_CSR_GRAPH_TYPE::edge_descriptor(), false);
 }
 
@@ -1333,9 +1333,9 @@ template < BOOST_CSR_GRAPH_TEMPLATE_PARMS >
 inline typename BOOST_CSR_GRAPH_TYPE::edge_descriptor edge_from_index(
     EdgeIndex idx, const BOOST_CSR_GRAPH_TYPE& g)
 {
-    typedef typename std::vector< EdgeIndex >::const_iterator row_start_iter;
+    typedef typename eastl::vector< EdgeIndex >::const_iterator row_start_iter;
     BOOST_ASSERT(idx < num_edges(g));
-    row_start_iter src_plus_1 = std::upper_bound(
+    row_start_iter src_plus_1 = eastl::upper_bound(
         g.m_forward.m_rowstart.begin(), g.m_forward.m_rowstart.end(), idx);
     // Get last source whose rowstart is at most idx
     // upper_bound returns this position plus 1
@@ -1350,7 +1350,7 @@ inline EdgeIndex num_edges(const BOOST_CSR_GRAPH_TYPE& g)
 }
 
 template < BOOST_CSR_GRAPH_TEMPLATE_PARMS >
-std::pair< typename BOOST_CSR_GRAPH_TYPE::edge_iterator,
+eastl::pair< typename BOOST_CSR_GRAPH_TYPE::edge_iterator,
     typename BOOST_CSR_GRAPH_TYPE::edge_iterator >
 edges(const BOOST_CSR_GRAPH_TYPE& g)
 {
@@ -1358,7 +1358,7 @@ edges(const BOOST_CSR_GRAPH_TYPE& g)
     typedef typename BOOST_CSR_GRAPH_TYPE::edge_descriptor edgedesc;
     if (g.m_forward.m_rowstart.size() == 1 || g.m_forward.m_column.empty())
     {
-        return std::make_pair(ei(), ei());
+        return eastl::make_pair(ei(), ei());
     }
     else
     {
@@ -1366,7 +1366,7 @@ edges(const BOOST_CSR_GRAPH_TYPE& g)
         Vertex src = 0;
         while (g.m_forward.m_rowstart[src + 1] == 0)
             ++src;
-        return std::make_pair(
+        return eastl::make_pair(
             ei(g, edgedesc(src, 0), g.m_forward.m_rowstart[src + 1]),
             ei(g, edgedesc(num_vertices(g), g.m_forward.m_column.size()), 0));
     }

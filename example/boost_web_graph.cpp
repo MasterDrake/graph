@@ -113,7 +113,7 @@ int main(int argc, const char** argv)
 
         auto i = line_toks.begin();
 
-        boost::tie(pos, inserted)
+        eastl::tie(pos, inserted)
             = name2vertex.insert(std::make_pair(*i, Vertex()));
         if (inserted)
         {
@@ -127,7 +127,7 @@ int main(int argc, const char** argv)
 
         std::string hyperlink_name = *i++;
 
-        boost::tie(pos, inserted)
+        eastl::tie(pos, inserted)
             = name2vertex.insert(std::make_pair(*i, Vertex()));
         if (inserted)
         {
@@ -139,7 +139,7 @@ int main(int argc, const char** argv)
             v = pos->second;
 
         Edge e;
-        boost::tie(e, inserted) = add_edge(u, v, g);
+        eastl::tie(e, inserted) = add_edge(u, v, g);
         if (inserted)
         {
             put(link_name, e, hyperlink_name);
@@ -176,7 +176,7 @@ int main(int argc, const char** argv)
 
     std::cout << "Number of clicks from the home page: " << std::endl;
     Traits::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         std::cout << d_matrix[0][*vi] << "\t" << node_name[*vi] << std::endl;
     std::cout << std::endl;
 
@@ -185,7 +185,7 @@ int main(int argc, const char** argv)
 
     // Create storage for a mapping from vertices to their parents
     std::vector< Traits::vertex_descriptor > parent(num_vertices(g));
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         parent[*vi] = *vi;
 
     // Do a BFS starting at the home page, recording the parent of each
@@ -197,7 +197,7 @@ int main(int argc, const char** argv)
 
     // Add all the search tree edges into a new graph
     Graph search_tree(num_vertices(g));
-    boost::tie(vi, vi_end) = vertices(g);
+    eastl::tie(vi, vi_end) = vertices(g);
     ++vi;
     for (; vi != vi_end; ++vi)
         add_edge(parent[*vi], *vi, search_tree);
@@ -212,7 +212,7 @@ int main(int argc, const char** argv)
     using NameMap = property_map< Graph, vertex_name_t >::type;
     print_tree_visitor< NameMap, size_type* > tree_printer(
         node_name, &dfs_distances[0]);
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         get(vertex_color, g)[*vi] = white_color;
     depth_first_visit(search_tree, src, tree_printer, get(vertex_color, g));
 

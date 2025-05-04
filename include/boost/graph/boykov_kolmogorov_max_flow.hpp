@@ -34,11 +34,11 @@
 
 #include <boost/config.hpp>
 #include <boost/assert.hpp>
-#include <vector>
-#include <list>
-#include <utility>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
+#include <EASTL/utility.h>
 #include <iosfwd>
-#include <algorithm> // for std::min and std::max
+#include <EASTL/algorithm.h> // for eastl::min and eastl::max
 
 #include <boost/pending/queue.hpp>
 #include <boost/limits.hpp>
@@ -119,14 +119,14 @@ namespace detail
         {
             // initialize the color-map with gray-values
             vertex_iterator vi, v_end;
-            for (boost::tie(vi, v_end) = vertices(m_g); vi != v_end; ++vi)
+            for (eastl::tie(vi, v_end) = vertices(m_g); vi != v_end; ++vi)
             {
                 set_tree(*vi, tColorTraits::gray());
             }
             // Initialize flow to zero which means initializing
             // the residual capacity equal to the capacity
             edge_iterator ei, e_end;
-            for (boost::tie(ei, e_end) = edges(m_g); ei != e_end; ++ei)
+            for (eastl::tie(ei, e_end) = edges(m_g); ei != e_end; ++ei)
             {
                 put(m_res_cap_map, *ei, get(m_cap_map, *ei));
                 BOOST_ASSERT(get(m_rev_edge_map, get(m_rev_edge_map, *ei))
@@ -149,7 +149,7 @@ namespace detail
             {
                 bool path_found;
                 edge_descriptor connecting_edge;
-                boost::tie(connecting_edge, path_found)
+                eastl::tie(connecting_edge, path_found)
                     = grow(); // find a path from source to sink
                 if (!path_found)
                 {
@@ -174,7 +174,7 @@ namespace detail
             // nodes have source/sink connects but shouldn't have an impact on
             // other maxflow problems (this is done in grow() anyway)
             out_edge_iterator ei, e_end;
-            for (boost::tie(ei, e_end) = out_edges(m_source, m_g); ei != e_end;
+            for (eastl::tie(ei, e_end) = out_edges(m_source, m_g); ei != e_end;
                  ++ei)
             {
                 edge_descriptor from_source = *ei;
@@ -188,7 +188,7 @@ namespace detail
                 }
                 edge_descriptor to_sink;
                 bool is_there;
-                boost::tie(to_sink, is_there)
+                eastl::tie(to_sink, is_there)
                     = lookup_edge(current_node, m_sink, m_g);
                 if (is_there)
                 {
@@ -237,7 +237,7 @@ namespace detail
                     add_active_node(current_node);
                 }
             }
-            for (boost::tie(ei, e_end) = out_edges(m_sink, m_g); ei != e_end;
+            for (eastl::tie(ei, e_end) = out_edges(m_sink, m_g); ei != e_end;
                  ++ei)
             {
                 edge_descriptor to_sink = get(m_rev_edge_map, *ei);
@@ -260,7 +260,7 @@ namespace detail
          * source-tree target(returnVal, m_g) is the beginning of the path found
          * in the sink-tree
          */
-        std::pair< edge_descriptor, bool > grow()
+        eastl::pair< edge_descriptor, bool > grow()
         {
             BOOST_ASSERT(m_orphans.empty());
             vertex_descriptor current_node;
@@ -278,7 +278,7 @@ namespace detail
                     if (current_node != m_last_grow_vertex)
                     {
                         m_last_grow_vertex = current_node;
-                        boost::tie(m_last_grow_edge_it, m_last_grow_edge_end)
+                        eastl::tie(m_last_grow_edge_it, m_last_grow_edge_end)
                             = out_edges(current_node, m_g);
                     }
                     for (; m_last_grow_edge_it != m_last_grow_edge_end;
@@ -327,7 +327,7 @@ namespace detail
                                 // kewl, found a path from one to the other
                                 // search tree, return
                                 // the connecting edge in src->sink dir
-                                return std::make_pair(out_edge, true);
+                                return eastl::make_pair(out_edge, true);
                             }
                         }
                     } // for all out-edges
@@ -340,7 +340,7 @@ namespace detail
                     if (current_node != m_last_grow_vertex)
                     {
                         m_last_grow_vertex = current_node;
-                        boost::tie(m_last_grow_edge_it, m_last_grow_edge_end)
+                        eastl::tie(m_last_grow_edge_it, m_last_grow_edge_end)
                             = out_edges(current_node, m_g);
                     }
                     for (; m_last_grow_edge_it != m_last_grow_edge_end;
@@ -389,7 +389,7 @@ namespace detail
                                 // kewl, found a path from one to the other
                                 // search tree,
                                 // return the connecting edge in src->sink dir
-                                return std::make_pair(in_edge, true);
+                                return eastl::make_pair(in_edge, true);
                             }
                         }
                     } // for all out-edges
@@ -402,7 +402,7 @@ namespace detail
             } // while active_nodes not empty
 
             // no active nodes anymore and no path found, we're done
-            return std::make_pair(edge_descriptor(), false);
+            return eastl::make_pair(edge_descriptor(), false);
         }
 
         /**
@@ -523,10 +523,10 @@ namespace detail
                 {
                     // we're in the source-tree
                     tDistanceVal min_distance
-                        = (std::numeric_limits< tDistanceVal >::max)();
+                        = (eastl::numeric_limits< tDistanceVal >::max)();
                     edge_descriptor new_parent_edge;
                     out_edge_iterator ei, e_end;
-                    for (boost::tie(ei, e_end) = out_edges(current_node, m_g);
+                    for (eastl::tie(ei, e_end) = out_edges(current_node, m_g);
                          ei != e_end; ++ei)
                     {
                         const edge_descriptor in_edge
@@ -549,7 +549,7 @@ namespace detail
                         }
                     }
                     if (min_distance
-                        != (std::numeric_limits< tDistanceVal >::max)())
+                        != (eastl::numeric_limits< tDistanceVal >::max)())
                     {
                         set_edge_to_parent(current_node, new_parent_edge);
                         put(m_dist_map, current_node, min_distance + 1);
@@ -558,7 +558,7 @@ namespace detail
                     else
                     {
                         put(m_time_map, current_node, 0);
-                        for (boost::tie(ei, e_end)
+                        for (eastl::tie(ei, e_end)
                              = out_edges(current_node, m_g);
                              ei != e_end; ++ei)
                         {
@@ -594,8 +594,8 @@ namespace detail
                     out_edge_iterator ei, e_end;
                     edge_descriptor new_parent_edge;
                     tDistanceVal min_distance
-                        = (std::numeric_limits< tDistanceVal >::max)();
-                    for (boost::tie(ei, e_end) = out_edges(current_node, m_g);
+                        = (eastl::numeric_limits< tDistanceVal >::max)();
+                    for (eastl::tie(ei, e_end) = out_edges(current_node, m_g);
                          ei != e_end; ++ei)
                     {
                         const edge_descriptor out_edge = *ei;
@@ -613,7 +613,7 @@ namespace detail
                         }
                     }
                     if (min_distance
-                        != (std::numeric_limits< tDistanceVal >::max)())
+                        != (eastl::numeric_limits< tDistanceVal >::max)())
                     {
                         set_edge_to_parent(current_node, new_parent_edge);
                         put(m_dist_map, current_node, min_distance + 1);
@@ -622,7 +622,7 @@ namespace detail
                     else
                     {
                         put(m_time_map, current_node, 0);
-                        for (boost::tie(ei, e_end)
+                        for (eastl::tie(ei, e_end)
                              = out_edges(current_node, m_g);
                              ei != e_end; ++ei)
                         {
@@ -902,21 +902,21 @@ namespace detail
         vertex_descriptor m_sink;
 
         tQueue m_active_nodes;
-        std::vector< bool > m_in_active_list_vec;
-        iterator_property_map< std::vector< bool >::iterator, IndexMap >
+        eastl::vector< bool > m_in_active_list_vec;
+        iterator_property_map< eastl::vector< bool >::iterator, IndexMap >
             m_in_active_list_map;
 
-        std::list< vertex_descriptor > m_orphans;
+        eastl::list< vertex_descriptor > m_orphans;
         tQueue m_child_orphans; // we use a second queuqe for child orphans, as
                                 // they are FIFO processed
 
-        std::vector< bool > m_has_parent_vec;
-        iterator_property_map< std::vector< bool >::iterator, IndexMap >
+        eastl::vector< bool > m_has_parent_vec;
+        iterator_property_map< eastl::vector< bool >::iterator, IndexMap >
             m_has_parent_map;
 
-        std::vector< long > m_time_vec; // timestamp of each node, used for
+        eastl::vector< long > m_time_vec; // timestamp of each node, used for
                                         // sink/source-path calculations
-        iterator_property_map< std::vector< long >::iterator, IndexMap >
+        iterator_property_map< eastl::vector< long >::iterator, IndexMap >
             m_time_map;
         tEdgeVal m_flow;
         long m_time;
@@ -990,10 +990,10 @@ boykov_kolmogorov_max_flow(Graph& g, CapacityEdgeMap cap,
 {
     typename graph_traits< Graph >::vertices_size_type n_verts
         = num_vertices(g);
-    std::vector< typename graph_traits< Graph >::edge_descriptor >
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >
         predecessor_vec(n_verts);
-    std::vector< default_color_type > color_vec(n_verts);
-    std::vector< typename graph_traits< Graph >::vertices_size_type >
+    eastl::vector< default_color_type > color_vec(n_verts);
+    eastl::vector< typename graph_traits< Graph >::vertices_size_type >
         distance_vec(n_verts);
     return boykov_kolmogorov_max_flow(g, cap, res_cap, rev,
         make_iterator_property_map(predecessor_vec.begin(), idx),
@@ -1016,9 +1016,9 @@ boykov_kolmogorov_max_flow(Graph& g, CapacityEdgeMap cap,
 {
     typename graph_traits< Graph >::vertices_size_type n_verts
         = num_vertices(g);
-    std::vector< typename graph_traits< Graph >::edge_descriptor >
+    eastl::vector< typename graph_traits< Graph >::edge_descriptor >
         predecessor_vec(n_verts);
-    std::vector< typename graph_traits< Graph >::vertices_size_type >
+    eastl::vector< typename graph_traits< Graph >::vertices_size_type >
         distance_vec(n_verts);
     return boykov_kolmogorov_max_flow(g, cap, res_cap, rev,
         make_iterator_property_map(predecessor_vec.begin(), idx), color,

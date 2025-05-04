@@ -42,7 +42,7 @@ void output_in_edges(std::ostream& out, const Graph& g,
     typename graph_traits< Graph >::vertex_descriptor v, VertexNameMap name_map)
 {
     typename graph_traits< Graph >::in_edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = in_edges(v, g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = in_edges(v, g); ei != ei_end; ++ei)
         out << get(name_map, source(*ei, g)) << " -> "
             << get(name_map, target(*ei, g)) << std::endl;
 }
@@ -108,7 +108,7 @@ int main(int argc, const char** argv)
     read_graph_file(file_in, name_in, g, name_map);
 
     graph_traits< graph_type >::vertex_iterator i, end;
-    boost::tie(i, end) = vertices(g);
+    eastl::tie(i, end) = vertices(g);
     i = std::find_if(i, end, name_equals("libzigzag.a", get(vertex_name, g)));
     output_in_edges(std::cout, g, *i, get(vertex_name, g));
     assert(num_vertices(g) == 15);

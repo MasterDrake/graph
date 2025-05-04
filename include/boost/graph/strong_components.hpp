@@ -12,7 +12,7 @@
 #ifndef BOOST_GRAPH_STRONG_COMPONENTS_HPP
 #define BOOST_GRAPH_STRONG_COMPONENTS_HPP
 
-#include <stack>
+#include <EASTL/stack.h>
 #include <boost/config.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/type_traits/conversion_traits.hpp>
@@ -57,7 +57,7 @@ namespace detail
             typename graph_traits< Graph >::vertex_descriptor v, const Graph&)
         {
             put(root, v, v);
-            put(comp, v, (std::numeric_limits< comp_type >::max)());
+            put(comp, v, (eastl::numeric_limits< comp_type >::max)());
             put(discover_time, v, dfs_time++);
             s.push(v);
         }
@@ -67,10 +67,10 @@ namespace detail
         {
             typename graph_traits< Graph >::vertex_descriptor w;
             typename graph_traits< Graph >::out_edge_iterator ei, ei_end;
-            for (boost::tie(ei, ei_end) = out_edges(v, g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = out_edges(v, g); ei != ei_end; ++ei)
             {
                 w = target(*ei, g);
-                if (get(comp, w) == (std::numeric_limits< comp_type >::max)())
+                if (get(comp, w) == (eastl::numeric_limits< comp_type >::max)())
                     put(root, v,
                         this->min_discover_time(get(root, v), get(root, w)));
             }
@@ -122,9 +122,9 @@ namespace detail
 
         typename property_traits< ComponentMap >::value_type total = 0;
 
-        std::stack< Vertex > s;
+        eastl::stack< Vertex > s;
         detail::tarjan_scc_visitor< ComponentMap, RootMap, DiscoverTime,
-            std::stack< Vertex > >
+            eastl::stack< Vertex > >
             vis(comp, root, discover_time, total, s);
         depth_first_search(g, params.visitor(vis));
         return total;
@@ -158,7 +158,7 @@ namespace detail
             typedef
                 typename graph_traits< Graph >::vertices_size_type size_type;
             size_type n = num_vertices(g) > 0 ? num_vertices(g) : 1;
-            std::vector< size_type > time_vec(n);
+            eastl::vector< size_type > time_vec(n);
             return strong_components_impl(g, comp, r_map,
                 make_iterator_property_map(time_vec.begin(),
                     choose_const_pmap(
@@ -199,9 +199,9 @@ namespace detail
             const bgl_named_params< P, T, R >& params, param_not_found)
         {
             typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
-            typename std::vector< Vertex >::size_type n
+            typename eastl::vector< Vertex >::size_type n
                 = num_vertices(g) > 0 ? num_vertices(g) : 1;
-            std::vector< Vertex > root_vec(n);
+            eastl::vector< Vertex > root_vec(n);
             return scc_helper2(g, comp,
                 make_iterator_property_map(root_vec.begin(),
                     choose_const_pmap(
@@ -256,7 +256,7 @@ void build_component_lists(const Graph& g,
 {
     components.resize(num_scc);
     typename graph_traits< Graph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         components[component_number[*vi]].push_back(*vi);
 }
 
@@ -309,18 +309,18 @@ kosaraju_strong_components(
 
     // initialize G_T
     typename graph_traits< Graph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(G_T); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G_T); ui != ui_end; ++ui)
         put(color, *ui, Color::white());
 
     typedef typename property_traits< FinishTime >::value_type D;
-    typedef indirect_cmp< FinishTime, std::less< D > > Compare;
+    typedef indirect_cmp< FinishTime, eastl::less< D > > Compare;
 
     Compare fl(finish_time);
-    std::priority_queue< Vertex, std::vector< Vertex >, Compare > Q(fl);
+    eastl::priority_queue< Vertex, eastl::vector< Vertex >, Compare > Q(fl);
 
     typename graph_traits< Graph >::vertex_iterator i, j, iend, jend;
-    boost::tie(i, iend) = vertices(G_T);
-    boost::tie(j, jend) = vertices(G);
+    eastl::tie(i, iend) = vertices(G_T);
+    eastl::tie(j, jend) = vertices(G);
     for (; i != iend; ++i, ++j)
     {
         put(finish_time, *i, get(finish_time, *j));

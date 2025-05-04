@@ -7,7 +7,7 @@
 #ifndef BOOST_GRAPH_EXTERIOR_PROPERTY_HPP
 #define BOOST_GRAPH_EXTERIOR_PROPERTY_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/graph/property_maps/container_property_map.hpp>
 #include <boost/graph/property_maps/matrix_property_map.hpp>
 
@@ -19,8 +19,8 @@ namespace detail
     // types that makes matrices easier to work with.
     template < typename Value > struct vector_matrix
     {
-        typedef std::vector< Value > container_type;
-        typedef std::vector< container_type > matrix_type;
+        typedef eastl::vector< Value > container_type;
+        typedef eastl::vector< container_type > matrix_type;
 
         typedef container_type value_type;
         typedef container_type& reference;
@@ -62,7 +62,7 @@ struct exterior_property
     typedef Key key_type;
     typedef Value value_type;
 
-    typedef std::vector< Value > container_type;
+    typedef eastl::vector< Value > container_type;
     typedef container_property_map< Graph, Key, container_type > map_type;
 
     typedef detail::vector_matrix< Value > matrix_type;

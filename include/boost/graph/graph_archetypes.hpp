@@ -79,13 +79,13 @@ V target(
 }
 
 template < typename V, typename D, typename P, typename B >
-std::pair< typename incidence_graph_archetype< V, D, P, B >::out_edge_iterator,
+eastl::pair< typename incidence_graph_archetype< V, D, P, B >::out_edge_iterator,
     typename incidence_graph_archetype< V, D, P, B >::out_edge_iterator >
 out_edges(const V&, const incidence_graph_archetype< V, D, P, B >&)
 {
     typedef typename incidence_graph_archetype< V, D, P, B >::out_edge_iterator
         Iter;
-    return std::make_pair(Iter(), Iter());
+    return eastl::make_pair(Iter(), Iter());
 }
 
 template < typename V, typename D, typename P, typename B >
@@ -123,13 +123,13 @@ struct adjacency_graph_archetype : public Base
 };
 
 template < typename V, typename D, typename P, typename B >
-std::pair< typename adjacency_graph_archetype< V, D, P, B >::adjacency_iterator,
+eastl::pair< typename adjacency_graph_archetype< V, D, P, B >::adjacency_iterator,
     typename adjacency_graph_archetype< V, D, P, B >::adjacency_iterator >
 adjacent_vertices(const V&, const adjacency_graph_archetype< V, D, P, B >&)
 {
     typedef typename adjacency_graph_archetype< V, D, P, B >::adjacency_iterator
         Iter;
-    return std::make_pair(Iter(), Iter());
+    return eastl::make_pair(Iter(), Iter());
 }
 
 template < typename V, typename D, typename P, typename B >
@@ -177,13 +177,13 @@ struct vertex_list_graph_archetype : public Base
 };
 
 template < typename V, typename D, typename P, typename B >
-std::pair< typename vertex_list_graph_archetype< V, D, P, B >::vertex_iterator,
+eastl::pair< typename vertex_list_graph_archetype< V, D, P, B >::vertex_iterator,
     typename vertex_list_graph_archetype< V, D, P, B >::vertex_iterator >
 vertices(const vertex_list_graph_archetype< V, D, P, B >&)
 {
     typedef typename vertex_list_graph_archetype< V, D, P, B >::vertex_iterator
         Iter;
-    return std::make_pair(Iter(), Iter());
+    return eastl::make_pair(Iter(), Iter());
 }
 
 template < typename V, typename D, typename P, typename B >

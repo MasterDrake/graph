@@ -10,7 +10,7 @@
 #ifndef BOOST_GRAPH_RANDOM_SPANNING_TREE_HPP
 #define BOOST_GRAPH_RANDOM_SPANNING_TREE_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/assert.hpp>
 #include <boost/graph/loop_erased_random_walk.hpp>
 #include <boost/graph/random.hpp>
@@ -48,7 +48,7 @@ namespace detail
             color_gen;
         BGL_FORALL_VERTICES_T(v, g, Graph) put(color, v, color_gen::white());
 
-        std::vector< vertex_descriptor > path;
+        eastl::vector< vertex_descriptor > path;
 
         put(color, s, color_gen::black());
         put(pred, s, graph_traits< Graph >::null_vertex());
@@ -58,15 +58,15 @@ namespace detail
             if (get(color, v) != color_gen::white())
                 continue;
             loop_erased_random_walk(g, v, next_edge, color, path);
-            for (typename std::vector<
+            for (typename eastl::vector<
                      vertex_descriptor >::const_reverse_iterator i
                  = path.rbegin();
                  boost::next(i)
-                 != (typename std::vector<
+                 != (typename eastl::vector<
                      vertex_descriptor >::const_reverse_iterator)path.rend();
                  ++i)
             {
-                typename std::vector<
+                typename eastl::vector<
                     vertex_descriptor >::const_reverse_iterator j
                     = i;
                 ++j;

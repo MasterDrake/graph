@@ -124,7 +124,7 @@ bool backtracking_search(Graph& g,
     while (!S.empty())
     {
         Vertex x;
-        boost::tie(time_stamp, x) = S.top();
+        eastl::tie(time_stamp, x) = S.top();
         put(time_map, x, time_stamp);
         // all vertices have been visited, success!
         if (time_stamp == num_vertices(g) - 1)
@@ -132,7 +132,7 @@ bool backtracking_search(Graph& g,
 
         bool deadend = true;
         typename graph_traits< Graph >::adjacency_iterator i, end;
-        for (boost::tie(i, end) = adjacent_vertices(x, g); i != end; ++i)
+        for (eastl::tie(i, end) = adjacent_vertices(x, g); i != end; ++i)
             if (get(time_map, *i) == -1)
             {
                 S.push(std::make_pair(time_stamp + 1, *i));
@@ -143,12 +143,12 @@ bool backtracking_search(Graph& g,
         {
             put(time_map, x, -1);
             S.pop();
-            boost::tie(time_stamp, x) = S.top();
+            eastl::tie(time_stamp, x) = S.top();
             while (get(time_map, x) != -1)
             { // unwind stack to last unexplored vertex
                 put(time_map, x, -1);
                 S.pop();
-                boost::tie(time_stamp, x) = S.top();
+                eastl::tie(time_stamp, x) = S.top();
             }
         }
 
@@ -161,7 +161,7 @@ int number_of_successors(Vertex x, Graph& g, TimePropertyMap time_map)
 {
     int s_x = 0;
     typename graph_traits< Graph >::adjacency_iterator i, end;
-    for (boost::tie(i, end) = adjacent_vertices(x, g); i != end; ++i)
+    for (eastl::tie(i, end) = adjacent_vertices(x, g); i != end; ++i)
         if (get(time_map, *i) == -1)
             ++s_x;
     return s_x;
@@ -180,7 +180,7 @@ bool warnsdorff(Graph& g, typename graph_traits< Graph >::vertex_descriptor src,
     while (!S.empty())
     {
         Vertex x;
-        boost::tie(time_stamp, x) = S.top();
+        eastl::tie(time_stamp, x) = S.top();
         put(time_map, x, time_stamp);
         // all vertices have been visited, success!
         if (time_stamp == num_vertices(g) - 1)
@@ -190,7 +190,7 @@ bool warnsdorff(Graph& g, typename graph_traits< Graph >::vertex_descriptor src,
         std::priority_queue< P, std::vector< P >, compare_first > Q;
         typename graph_traits< Graph >::adjacency_iterator i, end;
         int num_succ;
-        for (boost::tie(i, end) = adjacent_vertices(x, g); i != end; ++i)
+        for (eastl::tie(i, end) = adjacent_vertices(x, g); i != end; ++i)
             if (get(time_map, *i) == -1)
             {
                 num_succ = number_of_successors(*i, g, time_map);
@@ -200,19 +200,19 @@ bool warnsdorff(Graph& g, typename graph_traits< Graph >::vertex_descriptor src,
         // move vertices from local priority queue to the stack
         for (; !Q.empty(); Q.pop())
         {
-            boost::tie(num_succ, x) = Q.top();
+            eastl::tie(num_succ, x) = Q.top();
             S.push(std::make_pair(time_stamp + 1, x));
         }
         if (deadend)
         {
             put(time_map, x, -1);
             S.pop();
-            boost::tie(time_stamp, x) = S.top();
+            eastl::tie(time_stamp, x) = S.top();
             while (get(time_map, x) != -1)
             { // unwind stack to last unexplored vertex
                 put(time_map, x, -1);
                 S.pop();
-                boost::tie(time_stamp, x) = S.top();
+                eastl::tie(time_stamp, x) = S.top();
             }
         }
 

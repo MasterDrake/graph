@@ -140,7 +140,7 @@ namespace detail
                 component[v] = component[representative[v]];
 
         // initialize the "head" of the lists to "NULL"
-        std::fill_n(header, num_components, num_nodes);
+        eastl::fill_n(header, num_components, num_nodes);
 
         // Add each vertex to the linked list for its component
         Parent1 next = component;
@@ -152,7 +152,7 @@ namespace detail
     void construct_component_index(
         IndexContainer& index, HeaderContainer& header)
     {
-        build_components_header(index.begin(), std::back_inserter(header),
+        build_components_header(index.begin(), eastl::back_inserter(header),
             index.end() - index.begin());
 
         link_components(index.begin(), header.begin(),
@@ -171,7 +171,7 @@ namespace detail
         IndexIterator next;
         Integer node;
 
-        typedef std::forward_iterator_tag iterator_category;
+        typedef eastl::forward_iterator_tag iterator_category;
         typedef Integer value_type;
         typedef Integer& reference;
         typedef Integer* pointer;

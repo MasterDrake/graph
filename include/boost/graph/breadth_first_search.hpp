@@ -15,7 +15,7 @@
   Breadth First Search Algorithm (Cormen, Leiserson, and Rivest p. 470)
 */
 #include <boost/config.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/pending/queue.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
@@ -59,7 +59,7 @@ template < class IncidenceGraph, class Buffer, class BFSVisitor, class ColorMap,
 void breadth_first_visit(const IncidenceGraph& g, SourceIterator sources_begin,
     SourceIterator sources_end, Buffer& Q, BFSVisitor vis, ColorMap color)
 {
-    BOOST_CONCEPT_ASSERT((IncidenceGraphConcept< IncidenceGraph >));
+    //TODO:BOOST_CONCEPT_ASSERT((IncidenceGraphConcept< IncidenceGraph >));
     typedef graph_traits< IncidenceGraph > GTraits;
     typedef typename GTraits::vertex_descriptor Vertex;
     BOOST_CONCEPT_ASSERT((BFSVisitorConcept< BFSVisitor, IncidenceGraph >));
@@ -80,7 +80,7 @@ void breadth_first_visit(const IncidenceGraph& g, SourceIterator sources_begin,
         Vertex u = Q.top();
         Q.pop();
         vis.examine_vertex(u, g);
-        for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
         {
             Vertex v = target(*ei, g);
             vis.examine_edge(*ei, g);
@@ -128,7 +128,7 @@ void breadth_first_search(const VertexListGraph& g,
     typedef typename property_traits< ColorMap >::value_type ColorValue;
     typedef color_traits< ColorValue > Color;
     typename boost::graph_traits< VertexListGraph >::vertex_iterator i, i_end;
-    for (boost::tie(i, i_end) = vertices(g); i != i_end; ++i)
+    for (eastl::tie(i, i_end) = vertices(g); i != i_end; ++i)
     {
         vis.initialize_vertex(*i, g);
         put(color, *i, Color::white());

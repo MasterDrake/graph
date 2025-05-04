@@ -151,7 +151,7 @@ bool test_graph(std::string const& text, graph_t& graph,
             // assume that all the masses have been set
             // for each vertex:
             typename boost::graph_traits< graph_t >::vertex_iterator i, j;
-            for (boost::tie(i, j) = vertices(graph); i != j; ++i)
+            for (eastl::tie(i, j) = vertices(graph); i != j; ++i)
             {
                 std::string node_name = get(name_map, *i);
                 Mass node_mass = get(mass_map, *i);
@@ -168,7 +168,7 @@ bool test_graph(std::string const& text, graph_t& graph,
             // assume that all weights have been set
             /// for each edge:
             typename boost::graph_traits< graph_t >::edge_iterator i, j;
-            for (boost::tie(i, j) = edges(graph); i != j; ++i)
+            for (eastl::tie(i, j) = edges(graph); i != j; ++i)
             {
                 //  - get its name
                 std::pair< std::string, std::string > edge_name

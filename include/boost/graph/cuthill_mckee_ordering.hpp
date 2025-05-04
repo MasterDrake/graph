@@ -14,7 +14,7 @@
 #include <boost/config.hpp>
 #include <boost/graph/detail/sparse_ordering.hpp>
 #include <boost/graph/graph_utility.hpp>
-#include <algorithm>
+#include <EASTL/algorithm.h>
 
 /*
   (Reverse) Cuthill-McKee Algorithm for matrix reordering
@@ -43,11 +43,11 @@ namespace detail
         template < class Vertex, class Graph >
         void finish_vertex(Vertex, Graph&)
         {
-            using std::sort;
+            using eastl::sort;
 
             typedef typename property_traits< DegreeMap >::value_type ds_type;
 
-            typedef indirect_cmp< DegreeMap, std::less< ds_type > > Compare;
+            typedef indirect_cmp< DegreeMap, eastl::less< ds_type > > Compare;
             Compare comp(degree);
 
             sort(Qptr->begin() + index_begin, Qptr->end(), comp);
@@ -69,7 +69,7 @@ namespace detail
 
 template < class Graph, class OutputIterator, class ColorMap, class DegreeMap >
 OutputIterator cuthill_mckee_ordering(const Graph& g,
-    std::deque< typename graph_traits< Graph >::vertex_descriptor >
+    eastl::deque< typename graph_traits< Graph >::vertex_descriptor >
         vertex_queue,
     OutputIterator permutation, ColorMap color, DegreeMap degree)
 {
@@ -91,7 +91,7 @@ OutputIterator cuthill_mckee_ordering(const Graph& g,
 
     // Copy degree to pseudo_degree
     // initialize the color map
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(color, *ui, Color::white());
     }
@@ -114,7 +114,7 @@ OutputIterator cuthill_mckee_ordering(const Graph& g,
     OutputIterator permutation, ColorMap color, DegreeMap degree)
 {
 
-    std::deque< typename graph_traits< Graph >::vertex_descriptor >
+    eastl::deque< typename graph_traits< Graph >::vertex_descriptor >
         vertex_queue;
     vertex_queue.push_front(s);
 
@@ -133,7 +133,7 @@ OutputIterator cuthill_mckee_ordering(const Graph& G,
     typedef typename property_traits< ColorMap >::value_type ColorValue;
     typedef color_traits< ColorValue > Color;
 
-    std::deque< Vertex > vertex_queue;
+    eastl::deque< Vertex > vertex_queue;
 
     // Mark everything white
     BGL_FORALL_VERTICES_T(v, G, Graph) put(color, v, Color::white());
@@ -150,7 +150,7 @@ OutputIterator cuthill_mckee_ordering(const Graph& G,
 
     // Find starting nodes for all vertices
     // TBD: How to do this with a directed graph?
-    for (typename std::deque< Vertex >::iterator i = vertex_queue.begin();
+    for (typename eastl::deque< Vertex >::iterator i = vertex_queue.begin();
          i != vertex_queue.end(); ++i)
         *i = find_starting_node(G, *i, color, degree);
 
@@ -164,7 +164,7 @@ OutputIterator cuthill_mckee_ordering(
     if (boost::graph::has_no_vertices(G))
         return permutation;
 
-    std::vector< default_color_type > colors(num_vertices(G));
+    eastl::vector< default_color_type > colors(num_vertices(G));
     return cuthill_mckee_ordering(G, permutation,
         make_iterator_property_map(&colors[0], index_map, colors[0]),
         make_out_degree_map(G));

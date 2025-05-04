@@ -19,9 +19,9 @@
 #include <boost/config/no_tr1/cmath.hpp>
 #include <boost/throw_exception.hpp>
 #include <boost/assert.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 #include <exception>
-#include <algorithm>
+#include <EASTL/algorithm.h>
 
 #include <boost/graph/visitors.hpp>
 #include <boost/graph/properties.hpp>
@@ -78,7 +78,7 @@ namespace detail
         void operator()(vertex_descriptor v, const Graph&) const
         {
 #ifndef BOOST_NO_STDC_NAMESPACE
-            using std::pow;
+            using eastl::pow;
 #endif
 
             if (get(node_distance, v) > distance_limit)
@@ -104,7 +104,7 @@ namespace detail
         {
             boost::dijkstra_shortest_paths(g, s,
                 weight_map(weight).visitor(boost::make_dijkstra_visitor(
-                    std::make_pair(boost::record_distances(
+                    eastl::make_pair(boost::record_distances(
                                        node_distance, boost::on_edge_relaxed()),
                         update_position))));
         }
@@ -121,7 +121,7 @@ namespace detail
         {
             boost::breadth_first_search(g, s,
                 visitor(boost::make_bfs_visitor(
-                    std::make_pair(boost::record_distances(
+                    eastl::make_pair(boost::record_distances(
                                        node_distance, boost::on_tree_edge()),
                         update_position))));
         }
@@ -138,8 +138,8 @@ void gursoy_atun_step(const VertexListAndIncidenceGraph& graph,
     EdgeWeightMap weight)
 {
 #ifndef BOOST_NO_STDC_NAMESPACE
-    using std::exp;
-    using std::pow;
+    using eastl::exp;
+    using eastl::pow;
 #endif
 
     typedef
@@ -150,14 +150,14 @@ void gursoy_atun_step(const VertexListAndIncidenceGraph& graph,
             vertex_descriptor;
     typedef typename Topology::point_type point_type;
     vertex_iterator i, iend;
-    std::vector< double > distance_from_input_vector(num_vertices(graph));
-    typedef boost::iterator_property_map< std::vector< double >::iterator,
+    eastl::vector< double > distance_from_input_vector(num_vertices(graph));
+    typedef boost::iterator_property_map< eastl::vector< double >::iterator,
         VertexIndexMap, double, double& >
         DistanceFromInputMap;
     DistanceFromInputMap distance_from_input(
         distance_from_input_vector.begin(), vertex_index_map);
-    std::vector< double > node_distance_map_vector(num_vertices(graph));
-    typedef boost::iterator_property_map< std::vector< double >::iterator,
+    eastl::vector< double > node_distance_map_vector(num_vertices(graph));
+    typedef boost::iterator_property_map< eastl::vector< double >::iterator,
         VertexIndexMap, double, double& >
         NodeDistanceMap;
     NodeDistanceMap node_distance(
@@ -167,7 +167,7 @@ void gursoy_atun_step(const VertexListAndIncidenceGraph& graph,
         = graph_traits< VertexListAndIncidenceGraph >::null_vertex();
     double min_distance = 0.0;
     bool min_distance_unset = true;
-    for (boost::tie(i, iend) = vertices(graph); i != iend; ++i)
+    for (eastl::tie(i, iend) = vertices(graph); i != iend; ++i)
     {
         double this_distance = space.distance(get(position, *i), input_vector);
         put(distance_from_input, *i, this_distance);
@@ -183,7 +183,7 @@ void gursoy_atun_step(const VertexListAndIncidenceGraph& graph,
         Topology, VertexListAndIncidenceGraph >
         update_position(position, node_distance, space, input_vector, diameter,
             learning_constant, exp(-1. / (2 * diameter * diameter)));
-    std::fill(
+    eastl::fill(
         node_distance_map_vector.begin(), node_distance_map_vector.end(), 0);
     try
     {
@@ -206,8 +206,8 @@ void gursoy_atun_refine(const VertexListAndIncidenceGraph& graph,
     VertexIndexMap vertex_index_map, EdgeWeightMap weight)
 {
 #ifndef BOOST_NO_STDC_NAMESPACE
-    using std::exp;
-    using std::pow;
+    using eastl::exp;
+    using eastl::pow;
 #endif
 
     typedef
@@ -217,14 +217,14 @@ void gursoy_atun_refine(const VertexListAndIncidenceGraph& graph,
     double diameter_ratio = (double)diameter_final / diameter_initial;
     double learning_constant_ratio
         = learning_constant_final / learning_constant_initial;
-    std::vector< double > distance_from_input_vector(num_vertices(graph));
-    typedef boost::iterator_property_map< std::vector< double >::iterator,
+    eastl::vector< double > distance_from_input_vector(num_vertices(graph));
+    typedef boost::iterator_property_map< eastl::vector< double >::iterator,
         VertexIndexMap, double, double& >
         DistanceFromInputMap;
     DistanceFromInputMap distance_from_input(
         distance_from_input_vector.begin(), vertex_index_map);
-    std::vector< int > node_distance_map_vector(num_vertices(graph));
-    typedef boost::iterator_property_map< std::vector< int >::iterator,
+    eastl::vector< int > node_distance_map_vector(num_vertices(graph));
+    typedef boost::iterator_property_map< eastl::vector< int >::iterator,
         VertexIndexMap, double, double& >
         NodeDistanceMap;
     NodeDistanceMap node_distance(
@@ -253,7 +253,7 @@ void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
         typename graph_traits< VertexListAndIncidenceGraph >::vertex_iterator
             vertex_iterator;
     vertex_iterator i, iend;
-    for (boost::tie(i, iend) = vertices(graph); i != iend; ++i)
+    for (eastl::tie(i, iend) = vertices(graph); i != iend; ++i)
     {
         put(position, *i, space.random_point());
     }
@@ -319,8 +319,8 @@ void gursoy_atun_layout(const VertexListAndIncidenceGraph& graph,
     using std::sqrt;
 #endif
 
-    std::pair< double, double > diam(sqrt(double(num_vertices(graph))), 1.0);
-    std::pair< double, double > learn(0.8, 0.2);
+    eastl::pair< double, double > diam(sqrt(double(num_vertices(graph))), 1.0);
+    eastl::pair< double, double > learn(0.8, 0.2);
     gursoy_atun_layout(graph, space, position,
         choose_param(get_param(params, iterations_t()), num_vertices(graph)),
         choose_param(get_param(params, diameter_range_t()), diam).first,

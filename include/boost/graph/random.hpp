@@ -85,7 +85,7 @@ typename graph_traits< Graph >::edge_descriptor random_out_edge(Graph& g,
     boost::variate_generator< RandomNumGen&, ui_type > variate(gen, ui);
     typename graph_traits< Graph >::out_edge_iterator it
         = out_edges(src, g).first;
-    std::advance(it, variate());
+    eastl::advance(it, variate());
     return *it;
 }
 
@@ -177,7 +177,7 @@ void generate_random_graph1(MutableGraph& g,
             } while (self_edges == false && a == b);
             edge_t e;
             bool inserted;
-            boost::tie(e, inserted) = add_edge(a, b, g);
+            eastl::tie(e, inserted) = add_edge(a, b, g);
             if (inserted)
             {
                 ++j;
@@ -231,10 +231,10 @@ void generate_random_graph(MutableGraph& g,
         } while (self_edges == false && a == b);
         edge_t e;
         bool inserted;
-        boost::tie(e, inserted) = add_edge(a, b, g);
+        eastl::tie(e, inserted) = add_edge(a, b, g);
         if (inserted)
         {
-            *edge_out++ = std::make_pair(source(e, g), target(e, g));
+            *edge_out++ = eastl::make_pair(source(e, g), target(e, g));
             ++j;
         }
         else
@@ -257,7 +257,7 @@ namespace detail
     {
         typename property_map< G, Property >::type pm = get(Property(), g);
         typename graph_traits< G >::vertex_iterator vi, ve;
-        for (boost::tie(vi, ve) = vertices(g); vi != ve; ++vi)
+        for (eastl::tie(vi, ve) = vertices(g); vi != ve; ++vi)
         {
             pm[*vi] = rg();
         }
@@ -269,7 +269,7 @@ namespace detail
     {
         typename property_map< G, Property >::type pm = get(Property(), g);
         typename graph_traits< G >::edge_iterator ei, ee;
-        for (boost::tie(ei, ee) = edges(g); ei != ee; ++ei)
+        for (eastl::tie(ei, ee) = edges(g); ei != ee; ++ei)
         {
             pm[*ei] = rg();
         }

@@ -27,16 +27,16 @@ void sub_cmp(subgraph_t const& g1, subgraph_t const& g2)
     BOOST_TEST(num_vertices(g1) == num_vertices(g2));
     BOOST_TEST(num_edges(g1) == num_edges(g2));
     typename subgraph_t::edge_iterator e1_i, e1_i_end, e2_i, e2_i_end;
-    boost::tie(e1_i, e1_i_end) = edges(g1);
-    boost::tie(e2_i, e2_i_end) = edges(g2);
+    eastl::tie(e1_i, e1_i_end) = edges(g1);
+    eastl::tie(e2_i, e2_i_end) = edges(g2);
     for (; e1_i != e1_i_end; ++e1_i, ++e2_i)
     {
         BOOST_TEST(get(boost::edge_index, g1, *e1_i)
             == get(boost::edge_index, g2, *e2_i));
     }
     typename subgraph_t::const_children_iterator g1_i, g1_i_end, g2_i, g2_i_end;
-    boost::tie(g1_i, g1_i_end) = g1.children();
-    boost::tie(g2_i, g2_i_end) = g2.children();
+    eastl::tie(g1_i, g1_i_end) = g1.children();
+    eastl::tie(g2_i, g2_i_end) = g2.children();
     for (; g1_i != g1_i_end && g2_i != g2_i_end; ++g1_i, ++g2_i)
     {
         sub_cmp(*g1_i, *g2_i);
@@ -132,7 +132,7 @@ int main(int, char*[])
                 = g.create_subgraph(vertices(g).first, vertices(g).second);
 
             graph_t::edge_iterator ei, ee;
-            for (boost::tie(ei, ee) = edges(sub); ei != ee; ++ei)
+            for (eastl::tie(ei, ee) = edges(sub); ei != ee; ++ei)
             {
                 // This used to segfault.
                 get(edge_weight, sub, *ei);

@@ -24,11 +24,11 @@
 namespace boost
 {
 
-// This is a bit more convenient than std::numeric_limits because
+// This is a bit more convenient than eastl::numeric_limits because
 // you don't have to explicitly provide type T.
 template < class T > inline T numeric_limits_max(T)
 {
-    return (std::numeric_limits< T >::max)();
+    return (eastl::numeric_limits< T >::max)();
 }
 
 //========================================================================
@@ -233,7 +233,7 @@ namespace detail
 
 template < class Visitor, class Rest, class T, class Graph, class Tag >
 inline void invoke_visitors(
-    std::pair< Visitor, Rest >& vlist, T x, Graph& g, Tag tag)
+    eastl::pair< Visitor, Rest >& vlist, T x, Graph& g, Tag tag)
 {
     typedef typename Visitor::event_filter Category;
     typedef typename is_same< Category, Tag >::type IsSameTag;
@@ -412,11 +412,11 @@ inline property_put< PropertyMap, EventTag > put_property(
 #define BOOST_GRAPH_EVENT_STUB(Event, Kind)                                 \
     typedef ::boost::Event Event##_type;                                    \
     template < typename Visitor >                                           \
-    Kind##_visitor< std::pair<                                              \
+    Kind##_visitor< eastl::pair<                                              \
         detail::functor_to_visitor< Event##_type, Visitor >, Visitors > >   \
         do_##Event(Visitor visitor)                                         \
     {                                                                       \
-        typedef std::pair<                                                  \
+        typedef eastl::pair<                                                  \
             detail::functor_to_visitor< Event##_type, Visitor >, Visitors > \
             visitor_list;                                                   \
         typedef Kind##_visitor< visitor_list > result_type;                 \

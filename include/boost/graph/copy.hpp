@@ -41,7 +41,7 @@
 #define BOOST_GRAPH_COPY_HPP
 
 #include <boost/config.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/property_map/property_map.hpp>
@@ -181,7 +181,7 @@ namespace detail
                 typename graph_traits< Graph >::edge_descriptor >
                 cvt;
             typename graph_traits< Graph >::vertex_iterator vi, vi_end;
-            for (boost::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
             {
                 typename graph_traits< MutableGraph >::vertex_descriptor new_v
                     = add_vertex(g_out);
@@ -189,11 +189,11 @@ namespace detail
                 copy_vertex(*vi, new_v);
             }
             typename graph_traits< Graph >::edge_iterator ei, ei_end;
-            for (boost::tie(ei, ei_end) = edges(g_in); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = edges(g_in); ei != ei_end; ++ei)
             {
                 typename graph_traits< MutableGraph >::edge_descriptor new_e;
                 bool inserted;
-                boost::tie(new_e, inserted)
+                eastl::tie(new_e, inserted)
                     = add_edge(get(orig2copy, source(*ei, g_in)),
                         get(orig2copy, target(*ei, g_in)), g_out);
                 copy_edge(cvt::convert(*ei, g_in), new_e);
@@ -215,23 +215,23 @@ namespace detail
                 typename graph_traits< Graph >::edge_descriptor >
                 cvt;
             typename graph_traits< Graph >::vertex_iterator vi, vi_end;
-            for (boost::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
             {
                 typename graph_traits< MutableGraph >::vertex_descriptor new_v
                     = add_vertex(g_out);
                 put(orig2copy, *vi, new_v);
                 copy_vertex(*vi, new_v);
             }
-            for (boost::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
             {
                 typename graph_traits< Graph >::out_edge_iterator ei, ei_end;
-                for (boost::tie(ei, ei_end) = out_edges(*vi, g_in);
+                for (eastl::tie(ei, ei_end) = out_edges(*vi, g_in);
                      ei != ei_end; ++ei)
                 {
                     typename graph_traits< MutableGraph >::edge_descriptor
                         new_e;
                     bool inserted;
-                    boost::tie(new_e, inserted)
+                    eastl::tie(new_e, inserted)
                         = add_edge(get(orig2copy, source(*ei, g_in)),
                             get(orig2copy, target(*ei, g_in)), g_out);
                     copy_edge(cvt::convert(*ei, g_in), new_e);
@@ -254,20 +254,20 @@ namespace detail
                 typename graph_traits< Graph >::edge_descriptor >
                 cvt;
             typedef color_traits< default_color_type > Color;
-            std::vector< default_color_type > color(
+            eastl::vector< default_color_type > color(
                 num_vertices(g_in), Color::white());
             typename graph_traits< Graph >::vertex_iterator vi, vi_end;
-            for (boost::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
             {
                 typename graph_traits< MutableGraph >::vertex_descriptor new_v
                     = add_vertex(g_out);
                 put(orig2copy, *vi, new_v);
                 copy_vertex(*vi, new_v);
             }
-            for (boost::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(g_in); vi != vi_end; ++vi)
             {
                 typename graph_traits< Graph >::out_edge_iterator ei, ei_end;
-                for (boost::tie(ei, ei_end) = out_edges(*vi, g_in);
+                for (eastl::tie(ei, ei_end) = out_edges(*vi, g_in);
                      ei != ei_end; ++ei)
                 {
                     typename graph_traits< MutableGraph >::edge_descriptor
@@ -276,7 +276,7 @@ namespace detail
                     if (color[get(index_map, target(*ei, g_in))]
                         == Color::white())
                     {
-                        boost::tie(new_e, inserted)
+                        eastl::tie(new_e, inserted)
                             = add_edge(get(orig2copy, source(*ei, g_in)),
                                 get(orig2copy, target(*ei, g_in)), g_out);
                         copy_edge(cvt::convert(*ei, g_in), new_e);
@@ -392,7 +392,7 @@ void copy_graph(const VertexListGraph& g_in, MutableGraph& g_out)
     if (num_vertices(g_in) == 0)
         return;
     typedef typename graph_traits< MutableGraph >::vertex_descriptor vertex_t;
-    std::vector< vertex_t > orig2copy(num_vertices(g_in));
+    eastl::vector< vertex_t > orig2copy(num_vertices(g_in));
     typedef
         typename detail::choose_graph_copy< VertexListGraph >::type copy_impl;
     copy_impl::apply(g_in, g_out, detail::make_vertex_copier(g_in, g_out),
@@ -407,13 +407,13 @@ template < typename VertexListGraph, typename MutableGraph, class P, class T,
 void copy_graph(const VertexListGraph& g_in, MutableGraph& g_out,
     const bgl_named_params< P, T, R >& params)
 {
-    typename std::vector< T >::size_type n;
+    typename eastl::vector< T >::size_type n;
     n = is_default_param(get_param(params, orig_to_copy_t()))
         ? num_vertices(g_in)
         : 1;
     if (n == 0)
         return;
-    std::vector<
+    eastl::vector<
         BOOST_DEDUCED_TYPENAME graph_traits< MutableGraph >::vertex_descriptor >
         orig2copy(n);
 
@@ -462,7 +462,7 @@ namespace detail
             // For a tree edge, the target vertex has not been copied yet.
             typename graph_traits< NewGraph >::edge_descriptor new_e;
             bool inserted;
-            boost::tie(new_e, inserted)
+            eastl::tie(new_e, inserted)
                 = add_edge(get(orig2copy, source(e, g_in)),
                     this->copy_one_vertex(target(e, g_in)), g_out);
             copy_edge(e, new_e);
@@ -474,7 +474,7 @@ namespace detail
             // For a non-tree edge, the target vertex has already been copied.
             typename graph_traits< NewGraph >::edge_descriptor new_e;
             bool inserted;
-            boost::tie(new_e, inserted)
+            eastl::tie(new_e, inserted)
                 = add_edge(get(orig2copy, source(e, g_in)),
                     get(orig2copy, target(e, g_in)), g_out);
             copy_edge(e, new_e);
@@ -516,11 +516,11 @@ typename graph_traits< MutableGraph >::vertex_descriptor copy_component(
     typename graph_traits< IncidenceGraph >::vertex_descriptor src,
     MutableGraph& g_out, const bgl_named_params< P, T, R >& params)
 {
-    typename std::vector< T >::size_type n;
+    typename eastl::vector< T >::size_type n;
     n = is_default_param(get_param(params, orig_to_copy_t()))
         ? num_vertices(g_in)
         : 1;
-    std::vector< typename graph_traits< IncidenceGraph >::vertex_descriptor >
+    eastl::vector< typename graph_traits< IncidenceGraph >::vertex_descriptor >
         orig2copy(n);
 
     return detail::copy_component_impl(g_in, src, g_out,
@@ -542,7 +542,7 @@ typename graph_traits< MutableGraph >::vertex_descriptor copy_component(
     typename graph_traits< IncidenceGraph >::vertex_descriptor src,
     MutableGraph& g_out)
 {
-    std::vector< typename graph_traits< IncidenceGraph >::vertex_descriptor >
+    eastl::vector< typename graph_traits< IncidenceGraph >::vertex_descriptor >
         orig2copy(num_vertices(g_in));
 
     return detail::copy_component_impl(g_in, src, g_out,

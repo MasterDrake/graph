@@ -11,8 +11,8 @@
 #define BOOST_GRAPH_ERDOS_RENYI_GENERATOR_HPP
 
 #include <boost/assert.hpp>
-#include <iterator>
-#include <utility>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/random/uniform_int.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -28,10 +28,10 @@ namespace boost
 template < typename RandomGenerator, typename Graph >
 class erdos_renyi_iterator
 : public iterator_facade< erdos_renyi_iterator< RandomGenerator, Graph >,
-      std::pair< typename graph_traits< Graph >::vertices_size_type,
+      eastl::pair< typename graph_traits< Graph >::vertices_size_type,
           typename graph_traits< Graph >::vertices_size_type >,
-      std::input_iterator_tag,
-      const std::pair< typename graph_traits< Graph >::vertices_size_type,
+      eastl::input_iterator_tag,
+      const eastl::pair< typename graph_traits< Graph >::vertices_size_type,
           typename graph_traits< Graph >::vertices_size_type >& >
 {
     typedef typename graph_traits< Graph >::directed_category directed_category;
@@ -64,7 +64,7 @@ public:
         next();
     }
 
-    const std::pair< vertices_size_type, vertices_size_type >&
+    const eastl::pair< vertices_size_type, vertices_size_type >&
     dereference() const
     {
         return current;
@@ -96,16 +96,16 @@ private:
     vertices_size_type n;
     edges_size_type edges;
     bool allow_self_loops;
-    std::pair< vertices_size_type, vertices_size_type > current;
+    eastl::pair< vertices_size_type, vertices_size_type > current;
 };
 
 template < typename RandomGenerator, typename Graph >
 class sorted_erdos_renyi_iterator
 : public iterator_facade< sorted_erdos_renyi_iterator< RandomGenerator, Graph >,
-      std::pair< typename graph_traits< Graph >::vertices_size_type,
+      eastl::pair< typename graph_traits< Graph >::vertices_size_type,
           typename graph_traits< Graph >::vertices_size_type >,
-      std::input_iterator_tag,
-      const std::pair< typename graph_traits< Graph >::vertices_size_type,
+      eastl::input_iterator_tag,
+      const eastl::pair< typename graph_traits< Graph >::vertices_size_type,
           typename graph_traits< Graph >::vertices_size_type >& >
 {
     typedef typename graph_traits< Graph >::directed_category directed_category;
@@ -123,7 +123,7 @@ public:
     , rand_vertex(0.5)
     , n(0)
     , allow_self_loops(false)
-    , src((std::numeric_limits< vertices_size_type >::max)())
+    , src((eastl::numeric_limits< vertices_size_type >::max)())
     , tgt_index(vertices_size_type(-1))
     , prob(.5)
     {
@@ -146,13 +146,13 @@ public:
 
         if (prob == 0.0)
         {
-            src = (std::numeric_limits< vertices_size_type >::max)();
+            src = (eastl::numeric_limits< vertices_size_type >::max)();
             return;
         }
         next();
     }
 
-    const std::pair< vertices_size_type, vertices_size_type >&
+    const eastl::pair< vertices_size_type, vertices_size_type >&
     dereference() const
     {
         return current;
@@ -176,7 +176,7 @@ private:
         // bernoulli_distribution would need to be run until it returns true.
         // Thus, this distribution can be used to step through the edges
         // which are actually present.
-        BOOST_ASSERT(src != (std::numeric_limits< vertices_size_type >::max)()
+        BOOST_ASSERT(src != (eastl::numeric_limits< vertices_size_type >::max)()
             && src != n);
         while (src != n)
         {
@@ -204,7 +204,7 @@ private:
             }
         }
         if (src == n)
-            src = (std::numeric_limits< vertices_size_type >::max)();
+            src = (eastl::numeric_limits< vertices_size_type >::max)();
     }
 
     shared_ptr< uniform_01< RandomGenerator* > > gen;
@@ -212,7 +212,7 @@ private:
     vertices_size_type n;
     bool allow_self_loops;
     vertices_size_type src, tgt_index;
-    std::pair< vertices_size_type, vertices_size_type > current;
+    eastl::pair< vertices_size_type, vertices_size_type > current;
     double prob;
 };
 

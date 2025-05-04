@@ -11,8 +11,8 @@
 #ifndef BOOST_GRAPH_DETAIL_ADJ_LIST_EDGE_ITERATOR_HPP
 #define BOOST_GRAPH_DETAIL_ADJ_LIST_EDGE_ITERATOR_HPP
 
-#include <iterator>
-#include <utility>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
 #include <boost/detail/workaround.hpp>
 
 #if BOOST_WORKAROUND(__IBMCPP__, <= 600)
@@ -38,7 +38,7 @@ namespace detail
         typedef adj_list_edge_iterator self;
 
     public:
-        typedef std::forward_iterator_tag iterator_category;
+        typedef eastl::forward_iterator_tag iterator_category;
         typedef typename OutEdgeIterator::value_type value_type;
         typedef typename OutEdgeIterator::reference reference;
         typedef typename OutEdgeIterator::pointer pointer;
@@ -119,9 +119,9 @@ namespace detail
         VertexIterator vEnd;
 
 #ifdef BOOST_GRAPH_NO_OPTIONAL
-        std::pair< OutEdgeIterator, OutEdgeIterator > edges;
+        eastl::pair< OutEdgeIterator, OutEdgeIterator > edges;
 #else
-        boost::optional< std::pair< OutEdgeIterator, OutEdgeIterator > > edges;
+        boost::optional< eastl::pair< OutEdgeIterator, OutEdgeIterator > > edges;
 #endif // ndef BOOST_GRAPH_NO_OPTIONAL
         const Graph* m_g;
     };

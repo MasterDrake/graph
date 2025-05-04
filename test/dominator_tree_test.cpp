@@ -43,7 +43,7 @@ void index_graph(Graph& g, std::false_type /*IsRandomAccessAdjacentList*/)
     IndexMap indexMap(get(vertex_index, g));
     typename graph_traits< Graph >::vertex_iterator uItr, uEnd;
     int j = 0;
-    for (boost::tie(uItr, uEnd) = vertices(g); uItr != uEnd; ++uItr, ++j)
+    for (eastl::tie(uItr, uEnd) = vertices(g); uItr != uEnd; ++uItr, ++j)
     {
         put(indexMap, *uItr, j);
     }
@@ -278,7 +278,7 @@ void run_test()
 
         vector< int > idom(num_vertices(g));
         typename graph_traits< Graph >::vertex_iterator uItr, uEnd;
-        for (boost::tie(uItr, uEnd) = vertices(g); uItr != uEnd; ++uItr)
+        for (eastl::tie(uItr, uEnd) = vertices(g); uItr != uEnd; ++uItr)
         {
             if (get(domTreePredMap, *uItr)
                 != graph_traits< Graph >::null_vertex())
@@ -304,7 +304,7 @@ void run_test()
         iterative_bit_vector_dominator_tree(g, vertex(0, g), domTreePredMap);
 
         vector< int > idom2(num_vertices(g));
-        for (boost::tie(uItr, uEnd) = vertices(g); uItr != uEnd; ++uItr)
+        for (eastl::tie(uItr, uEnd) = vertices(g); uItr != uEnd; ++uItr)
         {
             if (get(domTreePredMap, *uItr)
                 != graph_traits< Graph >::null_vertex())

@@ -178,15 +178,15 @@ namespace detail
         typedef
             typename property_traits< DistanceMap >::value_type DistanceType;
         DistanceType inf = choose_param(get_param(params, distance_inf_t()),
-            (std::numeric_limits< DistanceType >::max)());
+            (eastl::numeric_limits< DistanceType >::max)());
         dijkstra_shortest_paths_no_color_map(graph, start_vertex,
             choose_param(
                 get_param(params, vertex_predecessor), predecessor_map),
             distance_map, weight_map, index_map,
             choose_param(get_param(params, distance_compare_t()),
-                std::less< DistanceType >()),
+                eastl::less< DistanceType >()),
             choose_param(get_param(params, distance_combine_t()),
-                std::plus< DistanceType >()),
+                eastl::plus< DistanceType >()),
             inf,
             choose_param(get_param(params, distance_zero_t()), DistanceType()),
             choose_param(get_param(params, graph_visitor),
@@ -202,10 +202,10 @@ namespace detail
     {
         // Default for distance map
         typedef typename property_traits< WeightMap >::value_type DistanceType;
-        typename std::vector< DistanceType >::size_type vertex_count
+        typename eastl::vector< DistanceType >::size_type vertex_count
             = is_default_param(distance_map) ? num_vertices(graph) : 1;
 
-        std::vector< DistanceType > default_distance_map(vertex_count);
+        eastl::vector< DistanceType > default_distance_map(vertex_count);
 
         detail::dijkstra_no_color_map_dispatch2(graph, start_vertex,
             choose_param(distance_map,

@@ -18,7 +18,7 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/smart_ptr/make_shared.hpp>
 #include <boost/pending/disjoint_sets.hpp>
-#include <iterator>
+#include <EASTL/iterator.h>
 
 namespace boost
 {
@@ -38,7 +38,7 @@ namespace boost
 // empty before the algorithm is called. It will grow during the
 // course of the algorithm. The container must be a model of
 // BackInsertionSequence and RandomAccessContainer
-// (std::vector is a good choice). After running the algorithm the
+// (eastl::vector is a good choice). After running the algorithm the
 // index container will map each vertex to the representative
 // vertex of the component to which it belongs.
 //
@@ -56,7 +56,7 @@ template < class EdgeListGraph, class DisjointSets >
 void incremental_components(EdgeListGraph& g, DisjointSets& ds)
 {
     typename graph_traits< EdgeListGraph >::edge_iterator e, end;
-    for (boost::tie(e, end) = edges(g); e != end; ++e)
+    for (eastl::tie(e, end) = edges(g); e != end; ++e)
         ds.union_set(source(*e, g), target(*e, g));
 }
 
@@ -69,7 +69,7 @@ void compress_components(ParentIterator first, ParentIterator last)
 }
 
 template < class ParentIterator >
-typename std::iterator_traits< ParentIterator >::difference_type
+typename eastl::iterator_traits< ParentIterator >::difference_type
 component_count(ParentIterator first, ParentIterator last)
 {
     std::ptrdiff_t count = 0;
@@ -93,7 +93,7 @@ template < class VertexListGraph, class DisjointSets >
 void initialize_incremental_components(VertexListGraph& G, DisjointSets& ds)
 {
     typename graph_traits< VertexListGraph >::vertex_iterator v, vend;
-    for (boost::tie(v, vend) = vertices(G); v != vend; ++v)
+    for (eastl::tie(v, vend) = vertices(G); v != vend; ++v)
         ds.make_set(*v);
 }
 
@@ -109,7 +109,7 @@ template < typename IndexType > class component_index
 {
 
 private:
-    typedef std::vector< IndexType > IndexContainer;
+    typedef eastl::vector< IndexType > IndexContainer;
 
 public:
     typedef counting_iterator< IndexType > iterator;
@@ -125,7 +125,7 @@ public:
     template < typename ParentIterator, typename ElementIndexMap >
     component_index(ParentIterator parent_start, ParentIterator parent_end,
         const ElementIndexMap& index_map)
-    : m_num_elements(std::distance(parent_start, parent_end))
+    : m_num_elements(eastl::distance(parent_start, parent_end))
     , m_components(make_shared< IndexContainer >())
     , m_index_list(make_shared< IndexContainer >(m_num_elements))
     {
@@ -136,7 +136,7 @@ public:
 
     template < typename ParentIterator >
     component_index(ParentIterator parent_start, ParentIterator parent_end)
-    : m_num_elements(std::distance(parent_start, parent_end))
+    : m_num_elements(eastl::distance(parent_start, parent_end))
     , m_components(make_shared< IndexContainer >())
     , m_index_list(make_shared< IndexContainer >(m_num_elements))
     {
@@ -156,13 +156,13 @@ public:
 
     // Returns a pair of begin and end iterators for the child
     // elements of component [component_index].
-    std::pair< component_iterator, component_iterator > operator[](
+    eastl::pair< component_iterator, component_iterator > operator[](
         IndexType component_index) const
     {
 
         IndexType first_index = (*m_components)[component_index];
 
-        return (std::make_pair(
+        return (eastl::make_pair(
             component_iterator(m_index_list->begin(), first_index),
             component_iterator(m_num_elements)));
     }
@@ -174,7 +174,7 @@ private:
     {
 
         typedef
-            typename std::iterator_traits< ParentIterator >::value_type Element;
+            typename eastl::iterator_traits< ParentIterator >::value_type Element;
         typename IndexContainer::iterator index_list = m_index_list->begin();
 
         // First pass - find root elements, construct index list

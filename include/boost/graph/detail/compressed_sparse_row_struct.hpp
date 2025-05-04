@@ -17,12 +17,12 @@
 #error This file should only be included from boost/graph/compressed_sparse_row_graph.hpp
 #endif
 
-#include <vector>
-#include <utility>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
+#include <EASTL/algorithm.h>
 #include <climits>
 #include <boost/assert.hpp>
-#include <iterator>
+#include <eASTL/iterator.h>
 #if 0
 #include <iostream> // For some debugging code below
 #endif
@@ -96,8 +96,8 @@ namespace detail
 
         static vertex_descriptor null_vertex() { return vertex_descriptor(-1); }
 
-        std::vector< EdgeIndex > m_rowstart;
-        std::vector< Vertex > m_column;
+        eastl::vector< EdgeIndex > m_rowstart;
+        eastl::vector< Vertex > m_column;
 
         compressed_sparse_row_structure(Vertex numverts = 0)
         : m_rowstart(numverts + 1, EdgeIndex(0)), m_column()
@@ -115,7 +115,7 @@ namespace detail
         {
             m_rowstart.clear();
             m_rowstart.resize(numlocalverts + 1, 0);
-            typedef std::pair< vertices_size_type, vertices_size_type >
+            typedef eastl::pair< vertices_size_type, vertices_size_type >
                 edge_type;
             typedef boost::transform_iterator<
                 boost::graph::detail::project1st< edge_type >,
@@ -160,7 +160,7 @@ namespace detail
         {
             m_rowstart.clear();
             m_rowstart.resize(numlocalverts + 1, 0);
-            typedef std::pair< vertices_size_type, vertices_size_type >
+            typedef eastl::pair< vertices_size_type, vertices_size_type >
                 edge_type;
             typedef boost::transform_iterator<
                 boost::graph::detail::project1st< edge_type >,
@@ -279,8 +279,8 @@ namespace detail
         // from global ones in the two arrays.
         template < typename GlobalToLocal >
         void assign_sources_and_targets_global(
-            std::vector< vertex_descriptor >& sources,
-            std::vector< vertex_descriptor >& targets,
+            eastl::vector< vertex_descriptor >& sources,
+            eastl::vector< vertex_descriptor >& targets,
             vertices_size_type numverts, GlobalToLocal global_to_local)
         {
             BOOST_ASSERT(sources.size() == targets.size());
@@ -305,9 +305,9 @@ namespace detail
         // map to get local indices from global ones in the two arrays.
         template < typename GlobalToLocal >
         void assign_sources_and_targets_global(
-            std::vector< vertex_descriptor >& sources,
-            std::vector< vertex_descriptor >& targets,
-            std::vector< typename inherited_edge_properties::edge_bundled >&
+            eastl::vector< vertex_descriptor >& sources,
+            eastl::vector< vertex_descriptor >& targets,
+            eastl::vector< typename inherited_edge_properties::edge_bundled >&
                 edge_props,
             vertices_size_type numverts, GlobalToLocal global_to_local)
         {
@@ -347,7 +347,7 @@ namespace detail
             typedef typename boost::graph_traits< Graph >::out_edge_iterator
                 g_out_edge_iter;
 
-            std::vector< g_vertex > ordered_verts_of_g(numverts);
+            eastl::vector< g_vertex > ordered_verts_of_g(numverts);
             BGL_FORALL_VERTICES_T(v, g, Graph)
             {
                 ordered_verts_of_g[get(vertex_index, g, v)] = v;
@@ -357,7 +357,7 @@ namespace detail
                 m_rowstart[i] = current_edge;
                 g_vertex v = ordered_verts_of_g[i];
                 g_out_edge_iter ei, ei_end;
-                for (boost::tie(ei, ei_end) = out_edges(v, g); ei != ei_end;
+                for (eastl::tie(ei, ei_end) = out_edges(v, g); ei != ei_end;
                      ++ei)
                 {
                     m_column[current_edge++] = get(vi, target(*ei, g));
@@ -382,10 +382,10 @@ namespace detail
             BidirectionalIterator last(first_sorted);
             typedef Vertex vertex_num;
             typedef EdgeIndex edge_num;
-            edge_num new_edge_count = std::distance(first, last);
+            edge_num new_edge_count = eastl::distance(first, last);
 
             EPIter ep_iter(ep_iter_sorted);
-            std::advance(ep_iter, -(std::ptrdiff_t)new_edge_count);
+            eastl::advance(ep_iter, -(std::ptrdiff_t)new_edge_count);
             edge_num edges_added_before_i
                 = new_edge_count; // Count increment to add to rowstarts
             m_column.resize(m_column.size() + new_edge_count);
@@ -421,7 +421,7 @@ namespace detail
                 // room new_rowstart > old_rowstart, so use copy_backwards
                 if (old_rowstart != new_rowstart)
                 {
-                    std::copy_backward(m_column.begin() + old_rowstart,
+                    eastl::copy_backward(m_column.begin() + old_rowstart,
                         m_column.begin() + old_rowstart + old_degree,
                         m_column.begin() + new_rowstart + old_degree);
                     inherited_edge_properties::move_range(
@@ -495,7 +495,7 @@ namespace detail
     template < typename CSRGraph >
     class csr_out_edge_iterator
     : public iterator_facade< csr_out_edge_iterator< CSRGraph >,
-          typename CSRGraph::edge_descriptor, std::random_access_iterator_tag,
+          typename CSRGraph::edge_descriptor, eastl::random_access_iterator_tag,
           const typename CSRGraph::edge_descriptor&,
           typename int_t< CHAR_BIT
               * sizeof(typename CSRGraph::edges_size_type) >::fast >
@@ -640,8 +640,8 @@ namespace detail
 
     template < typename A, typename B > struct transpose_pair
     {
-        typedef std::pair< B, A > result_type;
-        result_type operator()(const std::pair< A, B >& p) const
+        typedef eastl::pair< B, A > result_type;
+        result_type operator()(const eastl::pair< A, B >& p) const
         {
             return result_type(p.second, p.first);
         }
@@ -649,7 +649,7 @@ namespace detail
 
     template < typename Iter > struct transpose_iterator_gen
     {
-        typedef typename std::iterator_traits< Iter >::value_type vt;
+        typedef typename eastl::iterator_traits< Iter >::value_type vt;
         typedef typename vt::first_type first_type;
         typedef typename vt::second_type second_type;
         typedef transpose_pair< first_type, second_type > transpose;
@@ -672,7 +672,7 @@ namespace detail
             edge_descriptor;
 
     public:
-        typedef std::pair< vertices_size_type, vertices_size_type > result_type;
+        typedef eastl::pair< vertices_size_type, vertices_size_type > result_type;
 
         edge_to_index_pair() : g(0), index() {}
         edge_to_index_pair(const GraphT& g, const VertexIndexMap& index)

@@ -60,7 +60,7 @@ struct SampleGraph
         {
             bool b;
             Traits::edge_descriptor e;
-            boost::tie(e, b) = add_edge(vertex(v, m_g), vertex(w, m_g), m_g);
+            eastl::tie(e, b) = add_edge(vertex(v, m_g), vertex(w, m_g), m_g);
             if (!b)
             {
                 std::cerr << "Edge between " << v << " and " << w

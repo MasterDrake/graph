@@ -15,9 +15,9 @@
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/adjacency_list.hpp>
 
-#include <algorithm>
-#include <vector>
-#include <set>
+#include <EASTL/algorithm.h>
+#include <EASTL/vector.h>
+#include <EASTL/set.h>
 
 namespace boost
 {
@@ -29,7 +29,7 @@ namespace detail
     {
         typename graph_traits< Graph >::vertex_iterator vi, vi_end, inner_vi;
         Graph K_5(5);
-        for (boost::tie(vi, vi_end) = vertices(K_5); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(K_5); vi != vi_end; ++vi)
             for (inner_vi = next(vi); inner_vi != vi_end; ++inner_vi)
                 add_edge(*vi, *inner_vi, K_5);
         return K_5;
@@ -41,7 +41,7 @@ namespace detail
             bipartition_start, inner_vi;
         Graph K_3_3(6);
         bipartition_start = next(next(next(vertices(K_3_3).first)));
-        for (boost::tie(vi, vi_end) = vertices(K_3_3); vi != bipartition_start;
+        for (eastl::tie(vi, vi_end) = vertices(K_3_3); vi != bipartition_start;
              ++vi)
             for (inner_vi = bipartition_start; inner_vi != vi_end; ++inner_vi)
                 add_edge(*vi, *inner_vi, K_3_3);
@@ -53,7 +53,7 @@ namespace detail
     {
         // Remove u from v's neighbor list
         neighbors[v].erase(
-            std::remove(neighbors[v].begin(), neighbors[v].end(), u),
+            eastl::remove(neighbors[v].begin(), neighbors[v].end(), u),
             neighbors[v].end());
 
         // Replace any references to u with references to v
@@ -65,18 +65,18 @@ namespace detail
              u_neighbor_itr != u_neighbor_end; ++u_neighbor_itr)
         {
             Vertex u_neighbor(*u_neighbor_itr);
-            std::replace(neighbors[u_neighbor].begin(),
+            eastl::replace(neighbors[u_neighbor].begin(),
                 neighbors[u_neighbor].end(), u, v);
         }
 
         // Remove v from u's neighbor list
         neighbors[u].erase(
-            std::remove(neighbors[u].begin(), neighbors[u].end(), v),
+            eastl::remove(neighbors[u].begin(), neighbors[u].end(), v),
             neighbors[u].end());
 
         // Add everything in u's neighbor list to v's neighbor list
-        std::copy(neighbors[u].begin(), neighbors[u].end(),
-            std::back_inserter(neighbors[v]));
+        eastl::copy(neighbors[u].begin(), neighbors[u].end(),
+            eastl::back_inserter(neighbors[v]));
 
         // Clear u's neighbor list
         neighbors[u].clear();
@@ -100,9 +100,9 @@ bool is_kuratowski_subgraph(const Graph& g, ForwardIterator begin,
     typedef typename graph_traits< Graph >::edge_descriptor edge_t;
     typedef typename graph_traits< Graph >::edges_size_type e_size_t;
     typedef typename graph_traits< Graph >::vertices_size_type v_size_t;
-    typedef typename std::vector< vertex_t > v_list_t;
+    typedef typename eastl::vector< vertex_t > v_list_t;
     typedef typename v_list_t::iterator v_list_iterator_t;
-    typedef iterator_property_map< typename std::vector< v_list_t >::iterator,
+    typedef iterator_property_map< typename eastl::vector< v_list_t >::iterator,
         VertexIndexMap >
         vertex_to_v_list_map_t;
 
@@ -118,7 +118,7 @@ bool is_kuratowski_subgraph(const Graph& g, ForwardIterator begin,
     v_size_t n_vertices(num_vertices(g));
     v_size_t max_num_edges(3 * n_vertices - 5);
 
-    std::vector< v_list_t > neighbors_vector(n_vertices);
+    eastl::vector< v_list_t > neighbors_vector(n_vertices);
     vertex_to_v_list_map_t neighbors(neighbors_vector.begin(), vm);
 
     e_size_t count = 0;
@@ -140,7 +140,7 @@ bool is_kuratowski_subgraph(const Graph& g, ForwardIterator begin,
     {
 
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             vertex_t v(*vi);
 
@@ -218,7 +218,7 @@ bool is_kuratowski_subgraph(const Graph& g, ForwardIterator begin,
         if (max_size == 3)
         {
             // check to see whether we should go on to find a K_5
-            for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
                 if (neighbors[*vi].size() == 4)
                 {
                     target_graph = detail::tg_k_5;
@@ -236,7 +236,7 @@ bool is_kuratowski_subgraph(const Graph& g, ForwardIterator begin,
     v_list_t main_vertices;
     vertex_iterator_t vi, vi_end;
 
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         if (!neighbors[*vi].empty())
             main_vertices.push_back(*vi);
@@ -245,7 +245,7 @@ bool is_kuratowski_subgraph(const Graph& g, ForwardIterator begin,
     // create a graph isomorphic to the contracted graph to test
     // against K_5 and K_3_3
     small_graph_t contracted_graph(main_vertices.size());
-    std::map< vertex_t,
+    eastl::map< vertex_t,
         typename graph_traits< small_graph_t >::vertex_descriptor >
         contracted_vertex_map;
 

@@ -46,7 +46,7 @@
 #include <boost/graph/visitors.hpp>
 #include <boost/tuple/tuple.hpp>
 
-#include <set>
+#include <EASTL/set.h>
 
 namespace boost
 {
@@ -124,7 +124,7 @@ namespace detail
         typedef typename boost::property_traits< WeightMap >::value_type
             weight_type;
 
-        std::set< vertex_descriptor > assignedVertices;
+        eastl::set< vertex_descriptor > assignedVertices;
 
         // initialize `assignments` (all vertices are initially
         // assigned to themselves)
@@ -175,7 +175,7 @@ namespace detail
                 }
             }
 
-            typename std::set< vertex_descriptor >::const_iterator
+            typename eastl::set< vertex_descriptor >::const_iterator
                 assignedVertexIt,
                 assignedVertexEnd = assignedVertices.end();
             for (assignedVertexIt = assignedVertices.begin();
@@ -270,7 +270,7 @@ namespace graph
                 typedef boost::detail::make_priority_queue_from_arg_pack_gen<
                     boost::graph::keywords::tag::max_priority_queue,
                     weight_type, vertex_descriptor,
-                    std::greater< weight_type > >
+                    eastl::greater< weight_type > >
                     default_pq_gen_type;
 
                 default_pq_gen_type pq_gen(
@@ -321,7 +321,7 @@ namespace graph
                 typedef boost::detail::make_priority_queue_from_arg_pack_gen<
                     boost::graph::keywords::tag::max_priority_queue,
                     weight_type, vertex_descriptor,
-                    std::greater< weight_type > >
+                    eastl::greater< weight_type > >
                     default_pq_gen_type;
 
                 default_pq_gen_type pq_gen(

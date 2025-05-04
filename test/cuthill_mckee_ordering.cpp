@@ -63,7 +63,7 @@ int main(int, char*[])
     graph_traits< Graph >::vertex_iterator ui, ui_end;
 
     property_map< Graph, vertex_degree_t >::type deg = get(vertex_degree, G);
-    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
         deg[*ui] = degree(*ui, G);
 
     property_map< Graph, vertex_index_t >::type index_map

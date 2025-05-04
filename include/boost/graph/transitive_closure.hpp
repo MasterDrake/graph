@@ -9,9 +9,9 @@
 #ifndef BOOST_GRAPH_TRANSITIVE_CLOSURE_HPP
 #define BOOST_GRAPH_TRANSITIVE_CLOSURE_HPP
 
-#include <vector>
-#include <algorithm> // for std::min and std::max
-#include <functional> //for std::less
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h> // for eastl::min and eastl::max
+#include <EASTL/functional.h> //for eastl::lesss
 #include <boost/config.hpp>
 #include <boost/graph/strong_components.hpp>
 #include <boost/graph/topological_sort.hpp>
@@ -25,8 +25,8 @@ namespace boost
 
 namespace detail
 {
-    inline void union_successor_sets(const std::vector< std::size_t >& s1,
-        const std::vector< std::size_t >& s2, std::vector< std::size_t >& s3)
+    inline void union_successor_sets(const eastl::vector< std::size_t >& s1,
+        const eastl::vector< std::size_t >& s2, eastl::vector< std::size_t >& s3)
     {
         BOOST_USING_STD_MIN();
         for (std::size_t k = 0; k < s1.size(); ++k)
@@ -77,14 +77,14 @@ void transitive_closure(const Graph& g, GraphTC& tc,
         (ReadablePropertyMapConcept< VertexIndexMap, vertex >));
 
     typedef size_type cg_vertex;
-    std::vector< cg_vertex > component_number_vec(num_vertices(g));
+    eastl::vector< cg_vertex > component_number_vec(num_vertices(g));
     iterator_property_map< cg_vertex*, VertexIndexMap, cg_vertex, cg_vertex& >
         component_number(&component_number_vec[0], index_map);
 
     const cg_vertex num_scc
         = strong_components(g, component_number, vertex_index_map(index_map));
 
-    std::vector< std::vector< vertex > > components;
+    eastl::vector< eastl::vector< vertex > > components;
     build_component_lists(g, num_scc, component_number, components);
 
     typedef boost::adjacency_list< boost::vecS, boost::vecS, boost::directedS >
@@ -92,12 +92,12 @@ void transitive_closure(const Graph& g, GraphTC& tc,
     CG_t CG(num_scc);
     for (cg_vertex s = 0; s < components.size(); ++s)
     {
-        std::vector< cg_vertex > adj;
+        eastl::vector< cg_vertex > adj;
         for (size_type i = 0; i < components[s].size(); ++i)
         {
             vertex u = components[s][i];
             adjacency_iterator v, v_end;
-            for (boost::tie(v, v_end) = adjacent_vertices(u, g); v != v_end;
+            for (eastl::tie(v, v_end) = adjacent_vertices(u, g); v != v_end;
                  ++v)
             {
                 cg_vertex t = component_number[*v];
@@ -105,65 +105,65 @@ void transitive_closure(const Graph& g, GraphTC& tc,
                     adj.push_back(t);
             }
         }
-        std::sort(adj.begin(), adj.end());
-        const typename std::vector< cg_vertex >::iterator di
-            = std::unique(adj.begin(), adj.end());
+        eastl::sort(adj.begin(), adj.end());
+        const typename eastl::vector< cg_vertex >::iterator di
+            = eastl::unique(adj.begin(), adj.end());
 
-        for (typename std::vector< cg_vertex >::const_iterator i = adj.begin();
+        for (typename eastl::vector< cg_vertex >::const_iterator i = adj.begin();
              i != di; ++i)
         {
             add_edge(s, *i, CG);
         }
     }
 
-    std::vector< cg_vertex > topo_order;
-    std::vector< cg_vertex > topo_number(num_vertices(CG));
-    topological_sort(CG, std::back_inserter(topo_order),
+    eastl::vector< cg_vertex > topo_order;
+    eastl::vector< cg_vertex > topo_number(num_vertices(CG));
+    topological_sort(CG, eastl::back_inserter(topo_order),
         vertex_index_map(identity_property_map()));
-    std::reverse(topo_order.begin(), topo_order.end());
+    eastl::reverse(topo_order.begin(), topo_order.end());
     size_type n = 0;
-    for (typename std::vector< cg_vertex >::iterator iter = topo_order.begin();
+    for (typename eastl::vector< cg_vertex >::iterator iter = topo_order.begin();
          iter != topo_order.end(); ++iter)
         topo_number[*iter] = n++;
 
-    std::vector< std::vector< cg_vertex > > CG_vec(num_vertices(CG));
+    eastl::vector< eastl::vector< cg_vertex > > CG_vec(num_vertices(CG));
     for (size_type i = 0; i < num_vertices(CG); ++i)
     {
         typedef typename boost::graph_traits< CG_t >::adjacency_iterator
             cg_adj_iter;
-        std::pair< cg_adj_iter, cg_adj_iter > pr = adjacent_vertices(i, CG);
+        eastl::pair< cg_adj_iter, cg_adj_iter > pr = adjacent_vertices(i, CG);
         CG_vec[i].assign(pr.first, pr.second);
-        std::sort(CG_vec[i].begin(), CG_vec[i].end(),
+        eastl::sort(CG_vec[i].begin(), CG_vec[i].end(),
             [&topo_number](const auto& cg_0, const auto& cg_1)
             {
-                return std::less< cg_vertex >()(
+                return eastl::less< cg_vertex >()(
                     topo_number[cg_0], topo_number[cg_1]);
             });
     }
 
-    std::vector< std::vector< cg_vertex > > chains;
+    eastl::vector< eastl::vector< cg_vertex > > chains;
     {
-        std::vector< cg_vertex > in_a_chain(CG_vec.size());
-        for (typename std::vector< cg_vertex >::iterator i = topo_order.begin();
+        eastl::vector< cg_vertex > in_a_chain(CG_vec.size());
+        for (typename eastl::vector< cg_vertex >::iterator i = topo_order.begin();
              i != topo_order.end(); ++i)
         {
             cg_vertex v = *i;
             if (!in_a_chain[v])
             {
                 chains.emplace_back();
-                std::vector< cg_vertex >& chain = chains.back();
+                eastl::vector< cg_vertex >& chain = chains.back();
                 for (;;)
                 {
                     chain.push_back(v);
                     in_a_chain[v] = true;
 
-                    typename std::vector< cg_vertex >::const_iterator next
+                    typename eastl::vector< cg_vertex >::const_iterator next
                     #ifdef __cpp_lib_not_fn
-                        = std::find_if(CG_vec[v].begin(), CG_vec[v].end(),
-                                       std::not_fn(detail::subscript(in_a_chain)));
+                        = eastl::find_if(CG_vec[v].begin(), CG_vec[v].end(),
+                                       eastl::not_fn(detail::subscript(in_a_chain)));
                     #else
-                        = std::find_if(CG_vec[v].begin(), CG_vec[v].end(),
-                                       std::not1(detail::subscript(in_a_chain)));
+                        = eastl::find_if(CG_vec[v].begin(), CG_vec[v].end(),
+                                       eastl::not1(detail::subscript(in_a_chain)));
                     #endif
 
                     if (next != CG_vec[v].end())
@@ -174,8 +174,8 @@ void transitive_closure(const Graph& g, GraphTC& tc,
             }
         }
     }
-    std::vector< size_type > chain_number(CG_vec.size());
-    std::vector< size_type > pos_in_chain(CG_vec.size());
+    eastl::vector< size_type > chain_number(CG_vec.size());
+    eastl::vector< size_type > pos_in_chain(CG_vec.size());
     for (size_type i = 0; i < chains.size(); ++i)
         for (size_type j = 0; j < chains[i].size(); ++j)
         {
@@ -184,15 +184,15 @@ void transitive_closure(const Graph& g, GraphTC& tc,
             pos_in_chain[v] = j;
         }
 
-    cg_vertex inf = (std::numeric_limits< cg_vertex >::max)();
-    std::vector< std::vector< cg_vertex > > successors(
-        CG_vec.size(), std::vector< cg_vertex >(chains.size(), inf));
-    for (typename std::vector< cg_vertex >::reverse_iterator i
+    cg_vertex inf = (eastl::numeric_limits< cg_vertex >::max)();
+    eastl::vector< eastl::vector< cg_vertex > > successors(
+        CG_vec.size(), eastl::vector< cg_vertex >(chains.size(), inf));
+    for (typename eastl::vector< cg_vertex >::reverse_iterator i
          = topo_order.rbegin();
          i != topo_order.rend(); ++i)
     {
         cg_vertex u = *i;
-        typename std::vector< cg_vertex >::const_iterator adj, adj_last;
+        typename eastl::vector< cg_vertex >::const_iterator adj, adj_last;
         for (adj = CG_vec[u].begin(), adj_last = CG_vec[u].end();
              adj != adj_last; ++adj)
         {
@@ -225,15 +225,15 @@ void transitive_closure(const Graph& g, GraphTC& tc,
     // Add vertices to the transitive closure graph
     {
         vertex_iterator i, i_end;
-        for (boost::tie(i, i_end) = vertices(g); i != i_end; ++i)
+        for (eastl::tie(i, i_end) = vertices(g); i != i_end; ++i)
             g_to_tc_map[*i] = add_vertex(tc);
     }
     // Add edges between all the vertices in two adjacent SCCs
-    typename std::vector< std::vector< cg_vertex > >::const_iterator si, si_end;
+    typename eastl::vector< eastl::vector< cg_vertex > >::const_iterator si, si_end;
     for (si = CG_vec.begin(), si_end = CG_vec.end(); si != si_end; ++si)
     {
         cg_vertex s = si - CG_vec.begin();
-        typename std::vector< cg_vertex >::const_iterator i, i_end;
+        typename eastl::vector< cg_vertex >::const_iterator i, i_end;
         for (i = CG_vec[s].begin(), i_end = CG_vec[s].end(); i != i_end; ++i)
         {
             cg_vertex t = *i;
@@ -257,10 +257,10 @@ void transitive_closure(const Graph& g, GraphTC& tc,
     // Need to add it to transitive closure.
     {
         vertex_iterator i, i_end;
-        for (boost::tie(i, i_end) = vertices(g); i != i_end; ++i)
+        for (eastl::tie(i, i_end) = vertices(g); i != i_end; ++i)
         {
             adjacency_iterator ab, ae;
-            for (boost::tie(ab, ae) = adjacent_vertices(*i, g); ab != ae; ++ab)
+            for (eastl::tie(ab, ae) = adjacent_vertices(*i, g); ab != ae; ++ab)
             {
                 if (*ab == *i)
                     if (components[component_number[*i]].size() == 1)
@@ -280,7 +280,7 @@ void transitive_closure(const Graph& g, GraphTC& tc)
     VertexIndexMap index_map = get(vertex_index, g);
 
     typedef typename graph_traits< GraphTC >::vertex_descriptor tc_vertex;
-    std::vector< tc_vertex > to_tc_vec(num_vertices(g));
+    eastl::vector< tc_vertex > to_tc_vec(num_vertices(g));
     iterator_property_map< tc_vertex*, VertexIndexMap, tc_vertex, tc_vertex& >
         g_to_tc_map(&to_tc_vec[0], index_map);
 
@@ -295,9 +295,9 @@ namespace detail
         G_to_TC_VertexMap g_to_tc_map, VertexIndexMap index_map)
     {
         typedef typename graph_traits< GraphTC >::vertex_descriptor tc_vertex;
-        typename std::vector< tc_vertex >::size_type n
+        typename eastl::vector< tc_vertex >::size_type n
             = is_default_param(g_to_tc_map) ? num_vertices(g) : 1;
-        std::vector< tc_vertex > to_tc_vec(n);
+        eastl::vector< tc_vertex > to_tc_vec(n);
 
         transitive_closure(g, tc,
             choose_param(g_to_tc_map,
@@ -333,10 +333,10 @@ template < typename G > void warshall_transitive_closure(G& g)
     //      for j
     //        A[i,j] = A[i,j] | A[k,j]
     vertex_iterator ki, ke, ii, ie, ji, je;
-    for (boost::tie(ki, ke) = vertices(g); ki != ke; ++ki)
-        for (boost::tie(ii, ie) = vertices(g); ii != ie; ++ii)
+    for (eastl::tie(ki, ke) = vertices(g); ki != ke; ++ki)
+        for (eastl::tie(ii, ie) = vertices(g); ii != ie; ++ii)
             if (edge(*ii, *ki, g).second)
-                for (boost::tie(ji, je) = vertices(g); ji != je; ++ji)
+                for (eastl::tie(ji, je) = vertices(g); ji != je; ++ji)
                     if (!edge(*ii, *ji, g).second && edge(*ki, *ji, g).second)
                     {
                         add_edge(*ii, *ji, g);
@@ -362,10 +362,10 @@ template < typename G > void warren_transitive_closure(G& g)
     //          A[i,j] = A[i,j] | A[k,j]
 
     vertex_iterator ic, ie, jc, je, kc, ke;
-    for (boost::tie(ic, ie) = vertices(g), ++ic; ic != ie; ++ic)
-        for (boost::tie(kc, ke) = vertices(g); *kc != *ic; ++kc)
+    for (eastl::tie(ic, ie) = vertices(g), ++ic; ic != ie; ++ic)
+        for (eastl::tie(kc, ke) = vertices(g); *kc != *ic; ++kc)
             if (edge(*ic, *kc, g).second)
-                for (boost::tie(jc, je) = vertices(g); jc != je; ++jc)
+                for (eastl::tie(jc, je) = vertices(g); jc != je; ++jc)
                     if (!edge(*ic, *jc, g).second && edge(*kc, *jc, g).second)
                     {
                         add_edge(*ic, *jc, g);
@@ -376,10 +376,10 @@ template < typename G > void warren_transitive_closure(G& g)
     //        for j = 1 to n
     //          A[i,j] = A[i,j] | A[k,j]
 
-    for (boost::tie(ic, ie) = vertices(g), --ie; ic != ie; ++ic)
+    for (eastl::tie(ic, ie) = vertices(g), --ie; ic != ie; ++ic)
         for (kc = ic, ke = ie, ++kc; kc != ke; ++kc)
             if (edge(*ic, *kc, g).second)
-                for (boost::tie(jc, je) = vertices(g); jc != je; ++jc)
+                for (eastl::tie(jc, je) = vertices(g); jc != je; ++jc)
                     if (!edge(*ic, *jc, g).second && edge(*kc, *jc, g).second)
                     {
                         add_edge(*ic, *jc, g);

@@ -84,13 +84,13 @@ namespace detail
     };
 
     template < typename EdgeDesc, typename Iter >
-    std::pair< transform_iterator<
+    eastl::pair< transform_iterator<
                    reverse_graph_edge_descriptor_maker< EdgeDesc >, Iter >,
         transform_iterator< reverse_graph_edge_descriptor_maker< EdgeDesc >,
             Iter > >
-    reverse_edge_iter_pair(const std::pair< Iter, Iter >& ip)
+    reverse_edge_iter_pair(const eastl::pair< Iter, Iter >& ip)
     {
-        return std::make_pair(
+        return eastl::make_pair(
             make_transform_iterator(
                 ip.first, reverse_graph_edge_descriptor_maker< EdgeDesc >()),
             make_transform_iterator(
@@ -289,7 +289,7 @@ make_reverse_graph(BidirectionalGraph& g)
 }
 
 template < class BidirectionalGraph, class GRef >
-std::pair< typename reverse_graph< BidirectionalGraph >::vertex_iterator,
+eastl::pair< typename reverse_graph< BidirectionalGraph >::vertex_iterator,
     typename reverse_graph< BidirectionalGraph >::vertex_iterator >
 vertices(const reverse_graph< BidirectionalGraph, GRef >& g)
 {
@@ -297,7 +297,7 @@ vertices(const reverse_graph< BidirectionalGraph, GRef >& g)
 }
 
 template < class BidirectionalGraph, class GRef >
-std::pair< typename reverse_graph< BidirectionalGraph >::edge_iterator,
+eastl::pair< typename reverse_graph< BidirectionalGraph >::edge_iterator,
     typename reverse_graph< BidirectionalGraph >::edge_iterator >
 edges(const reverse_graph< BidirectionalGraph, GRef >& g)
 {
@@ -307,7 +307,7 @@ edges(const reverse_graph< BidirectionalGraph, GRef >& g)
 }
 
 template < class BidirectionalGraph, class GRef >
-inline std::pair<
+inline eastl::pair<
     typename reverse_graph< BidirectionalGraph >::out_edge_iterator,
     typename reverse_graph< BidirectionalGraph >::out_edge_iterator >
 out_edges(
@@ -350,7 +350,7 @@ inline typename graph_traits< BidirectionalGraph >::vertex_descriptor vertex(
 }
 
 template < class BidirectionalGraph, class GRef >
-inline std::pair< typename graph_traits< reverse_graph< BidirectionalGraph,
+inline eastl::pair< typename graph_traits< reverse_graph< BidirectionalGraph,
                       GRef > >::edge_descriptor,
     bool >
 edge(const typename graph_traits< BidirectionalGraph >::vertex_descriptor u,
@@ -359,15 +359,15 @@ edge(const typename graph_traits< BidirectionalGraph >::vertex_descriptor u,
 {
     typedef typename graph_traits< BidirectionalGraph >::edge_descriptor
         underlying_edge_descriptor;
-    std::pair< underlying_edge_descriptor, bool > e = edge(v, u, g.m_g);
-    return std::make_pair(
+    eastl::pair< underlying_edge_descriptor, bool > e = edge(v, u, g.m_g);
+    return eastl::make_pair(
         detail::reverse_graph_edge_descriptor< underlying_edge_descriptor >(
             e.first),
         e.second);
 }
 
 template < class BidirectionalGraph, class GRef >
-inline std::pair<
+inline eastl::pair<
     typename reverse_graph< BidirectionalGraph >::in_edge_iterator,
     typename reverse_graph< BidirectionalGraph >::in_edge_iterator >
 in_edges(const typename graph_traits< BidirectionalGraph >::vertex_descriptor u,
@@ -379,7 +379,7 @@ in_edges(const typename graph_traits< BidirectionalGraph >::vertex_descriptor u,
 }
 
 template < class BidirectionalGraph, class GRef >
-inline std::pair<
+inline eastl::pair<
     typename reverse_graph< BidirectionalGraph, GRef >::adjacency_iterator,
     typename reverse_graph< BidirectionalGraph, GRef >::adjacency_iterator >
 adjacent_vertices(
@@ -388,10 +388,10 @@ adjacent_vertices(
 {
     typedef reverse_graph< BidirectionalGraph, GRef > Graph;
     typename graph_traits< Graph >::out_edge_iterator first, last;
-    boost::tie(first, last) = out_edges(u, g);
+    eastl::tie(first, last) = out_edges(u, g);
     typedef
         typename graph_traits< Graph >::adjacency_iterator adjacency_iterator;
-    return std::make_pair(adjacency_iterator(first, const_cast< Graph* >(&g)),
+    return eastl::make_pair(adjacency_iterator(first, const_cast< Graph* >(&g)),
         adjacency_iterator(last, const_cast< Graph* >(&g)));
 }
 

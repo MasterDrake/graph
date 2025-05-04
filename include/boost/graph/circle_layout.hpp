@@ -10,7 +10,7 @@
 #define BOOST_GRAPH_CIRCLE_LAYOUT_HPP
 #include <boost/config/no_tr1/cmath.hpp>
 #include <boost/math/constants/constants.hpp>
-#include <utility>
+#include <EASTL/utility.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/graph/topology.hpp>
@@ -38,8 +38,8 @@ void circle_graph_layout(
     const double pi = boost::math::constants::pi< double >();
 
 #ifndef BOOST_NO_STDC_NAMESPACE
-    using std::cos;
-    using std::sin;
+    using eastl::cos;
+    using eastl::sin;
 #endif // BOOST_NO_STDC_NAMESPACE
 
     typedef typename graph_traits< VertexListGraph >::vertices_size_type

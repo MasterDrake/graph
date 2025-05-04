@@ -68,7 +68,7 @@ void assert_graphs_equal(const G1& g1, const VI1& vi1, const G2& g2,
     typedef typename boost::graph_traits< G1 >::vertex_iterator vertiter1;
     {
         vertiter1 i, iend;
-        for (boost::tie(i, iend) = vertices(g1); i != iend; ++i)
+        for (eastl::tie(i, iend) = vertices(g1); i != iend; ++i)
         {
             typename boost::graph_traits< G1 >::vertex_descriptor v1 = *i;
             typename boost::graph_traits< G2 >::vertex_descriptor v2 = iso[v1];
@@ -78,7 +78,7 @@ void assert_graphs_equal(const G1& g1, const VI1& vi1, const G2& g2,
             BOOST_TEST(out_degree(v1, g1) == out_degree(v2, g2));
             std::vector< std::size_t > edges1(out_degree(v1, g1));
             typename boost::graph_traits< G1 >::out_edge_iterator oe1, oe1end;
-            for (boost::tie(oe1, oe1end) = out_edges(v1, g1); oe1 != oe1end;
+            for (eastl::tie(oe1, oe1end) = out_edges(v1, g1); oe1 != oe1end;
                  ++oe1)
             {
                 BOOST_TEST(source(*oe1, g1) == v1);
@@ -86,7 +86,7 @@ void assert_graphs_equal(const G1& g1, const VI1& vi1, const G2& g2,
             }
             std::vector< std::size_t > edges2(out_degree(v2, g2));
             typename boost::graph_traits< G2 >::out_edge_iterator oe2, oe2end;
-            for (boost::tie(oe2, oe2end) = out_edges(v2, g2); oe2 != oe2end;
+            for (eastl::tie(oe2, oe2end) = out_edges(v2, g2); oe2 != oe2end;
                  ++oe2)
             {
                 BOOST_TEST(source(*oe2, g2) == v2);
@@ -115,11 +115,11 @@ void assert_graphs_equal(const G1& g1, const VI1& vi1, const G2& g2,
         std::vector< std::pair< std::size_t, std::size_t > > all_edges1;
         std::vector< std::pair< std::size_t, std::size_t > > all_edges2;
         typename boost::graph_traits< G1 >::edge_iterator ei1, ei1end;
-        for (boost::tie(ei1, ei1end) = edges(g1); ei1 != ei1end; ++ei1)
+        for (eastl::tie(ei1, ei1end) = edges(g1); ei1 != ei1end; ++ei1)
             all_edges1.push_back(
                 std::make_pair(vi1[source(*ei1, g1)], vi1[target(*ei1, g1)]));
         typename boost::graph_traits< G2 >::edge_iterator ei2, ei2end;
-        for (boost::tie(ei2, ei2end) = edges(g2); ei2 != ei2end; ++ei2)
+        for (eastl::tie(ei2, ei2end) = edges(g2); ei2 != ei2end; ++ei2)
             all_edges2.push_back(
                 std::make_pair(vi2[source(*ei2, g2)], vi2[target(*ei2, g2)]));
         std::sort(all_edges1.begin(), all_edges1.end());
@@ -294,7 +294,7 @@ template < typename OrigGraph > void graph_test(const OrigGraph& g)
     // Check edge_from_index (and implicitly the edge_index property map) for
     // each edge in g2
     std::size_t last_src = 0;
-    for (boost::tie(ei, ei_end) = edges(g2); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g2); ei != ei_end; ++ei)
     {
         BOOST_TEST(
             edge_from_index(get(boost::edge_index, g2, *ei), g2) == *ei);
@@ -308,7 +308,7 @@ template < typename OrigGraph > void graph_test(const OrigGraph& g)
     CSRGraphT::vertex_iterator vi, vi_end;
     std::size_t last_vertex = 0;
     bool first_iter = true;
-    for (boost::tie(vi, vi_end) = vertices(g2); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g2); vi != vi_end; ++vi)
     {
         std::size_t v = get(boost::vertex_index, g2, *vi);
         BOOST_TEST(first_iter || v > last_vertex);
@@ -316,7 +316,7 @@ template < typename OrigGraph > void graph_test(const OrigGraph& g)
         first_iter = false;
 
         CSRGraphT::out_edge_iterator oei, oei_end;
-        for (boost::tie(oei, oei_end) = out_edges(*vi, g2); oei != oei_end;
+        for (eastl::tie(oei, oei_end) = out_edges(*vi, g2); oei != oei_end;
              ++oei)
         {
             BOOST_TEST(source(*oei, g2) == *vi);
@@ -327,7 +327,7 @@ template < typename OrigGraph > void graph_test(const OrigGraph& g)
             = vertex(num_vertices(g2) / 2, g2);
         int edge_count = 0;
         CSRGraphT::out_edge_iterator oei2, oei2_end;
-        for (boost::tie(oei2, oei_end) = out_edges(*vi, g2); oei2 != oei_end;
+        for (eastl::tie(oei2, oei_end) = out_edges(*vi, g2); oei2 != oei_end;
              ++oei2)
         {
             if (target(*oei2, g2) == test_vertex)

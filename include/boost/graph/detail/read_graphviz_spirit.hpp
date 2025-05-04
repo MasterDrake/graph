@@ -45,25 +45,25 @@
 #include <boost/property_map/dynamic_property_map.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/detail/workaround.hpp>
-#include <algorithm>
+#include <EASTL/algorithm.h>
 #include <exception> // for std::exception
-#include <string>
-#include <vector>
-#include <set>
-#include <utility>
-#include <map>
+#include <EASTL/string.h>
+#include <EASTL/vector.h>
+#include <EASTL/set.h>
+#include <EASTL/utility.h>
+#include <EASTL/map.h>
 #include <boost/graph/graphviz.hpp>
 #include <boost/throw_exception.hpp>
 
 namespace phoenix
 {
-// Workaround:  std::map::operator[] uses a different return type than all
+// Workaround:  eastl::map::operator[] uses a different return type than all
 // other standard containers.  Phoenix doesn't account for that.
 template < typename TK, typename T0, typename T1 >
-struct binary_operator< index_op, std::map< TK, T0 >, T1 >
+struct binary_operator< index_op, eastl::map< TK, T0 >, T1 >
 {
-    typedef typename std::map< TK, T0 >::mapped_type& result_type;
-    static result_type eval(std::map< TK, T0 >& container, T1 const& index)
+    typedef typename eastl::map< TK, T0 >::mapped_type& result_type;
+    static result_type eval(eastl::map< TK, T0 >& container, T1 const& index)
     {
         return container[index];
     }
@@ -81,17 +81,17 @@ namespace detail
         // Application-specific type definitions
         /////////////////////////////////////////////////////////////////////////////
 
-        typedef std::set< edge_t > edges_t;
-        typedef std::set< node_t > nodes_t;
-        typedef std::set< id_t > ids_t;
-        typedef std::map< edge_t, ids_t > edge_map_t;
-        typedef std::map< node_t, ids_t > node_map_t;
-        typedef std::map< id_t, id_t > props_t;
-        typedef std::map< id_t, props_t > subgraph_props_t;
+        typedef eastl::set< edge_t > edges_t;
+        typedef eastl::set< node_t > nodes_t;
+        typedef eastl::set< id_t > ids_t;
+        typedef eastl::map< edge_t, ids_t > edge_map_t;
+        typedef eastl::map< node_t, ids_t > node_map_t;
+        typedef eastl::map< id_t, id_t > props_t;
+        typedef eastl::map< id_t, props_t > subgraph_props_t;
         typedef boost::function2< void, id_t const&, id_t const& > actor_t;
-        typedef std::vector< edge_t > edge_stack_t;
-        typedef std::map< id_t, nodes_t > subgraph_nodes_t;
-        typedef std::map< id_t, edges_t > subgraph_edges_t;
+        typedef eastl::vector< edge_t > edge_stack_t;
+        typedef eastl::map< id_t, nodes_t > subgraph_nodes_t;
+        typedef eastl::map< id_t, edges_t > subgraph_edges_t;
 
         /////////////////////////////////////////////////////////////////////////////
         // Stack frames used by semantic actions
@@ -168,7 +168,7 @@ namespace detail
                               (alpha_p | ch_p('_')) >> *(alnum_p | ch_p('_')))]
                         | real_p | lexeme_d[confix_p('"', *c_escape_ch_p, '"')]
                         | comment_nest_p('<', '>'))[ID.name
-                        = construct_< std::string >(arg1, arg2)];
+                        = construct_< eastl::string >(arg1, arg2)];
 
                     a_list = list_p(
                         ID[((a_list.key = arg1), (a_list.value = "true"))] >> !(
@@ -312,7 +312,7 @@ namespace detail
                         nodes.insert(node);
                         self.graph_.do_add_vertex(node);
 
-                        node_map.insert(std::make_pair(node, ids_t()));
+                        node_map.insert(eastl::make_pair(node, ids_t()));
 
 #ifdef BOOST_GRAPH_DEBUG
                         std::cout << "Add new node " << node << std::endl;
@@ -364,7 +364,7 @@ namespace detail
                             edge_t edge = edge_t::new_edge();
                             edge_stack.push_back(edge);
                             edges.insert(edge);
-                            edge_map.insert(std::make_pair(edge, ids_t()));
+                            edge_map.insert(eastl::make_pair(edge, ids_t()));
 
                             // Add the real edge.
                             self.graph_.do_add_edge(edge, *i, *j);
@@ -470,7 +470,7 @@ namespace detail
                 }
 
                 void call_prop_actor(
-                    std::string const& lhs, std::string const& rhs)
+                    eastl::string const& lhs, eastl::string const& rhs)
                 {
                     actor_t& actor = attr_list.prop_actor();
                     // If first and last characters of the rhs are
@@ -483,7 +483,7 @@ namespace detail
                 }
 
                 void call_graph_prop(
-                    std::string const& lhs, std::string const& rhs)
+                    eastl::string const& lhs, eastl::string const& rhs)
                 {
                     // If first and last characters of the rhs are
                     // double-quotes, remove them.
@@ -641,7 +641,7 @@ namespace detail
 template < typename MultiPassIterator, typename MutableGraph >
 bool read_graphviz_spirit(MultiPassIterator begin, MultiPassIterator end,
     MutableGraph& graph, dynamic_properties& dp,
-    std::string const& node_id = "node_id")
+    eastl::string const& node_id = "node_id")
 {
     using namespace boost;
     using namespace boost::spirit::classic;

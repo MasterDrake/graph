@@ -128,21 +128,21 @@ template < typename IterA, typename IterB > struct shadow_iterator_generator
     // random_access_iterator because we don't have a real reference.
     // However, we want the STL algorithms to treat the shadow
     // iterator like a random access iterator.
-    struct shadow_iterator_tag : public std::input_iterator_tag
+    struct shadow_iterator_tag : public eastl::input_iterator_tag
     {
-        operator std::random_access_iterator_tag()
+        operator eastl::random_access_iterator_tag()
         {
-            return std::random_access_iterator_tag();
+            return eastl::random_access_iterator_tag();
         };
     };
-    typedef typename std::iterator_traits< IterA >::value_type Aval;
-    typedef typename std::iterator_traits< IterB >::value_type Bval;
-    typedef typename std::iterator_traits< IterA >::reference Aref;
-    typedef typename std::iterator_traits< IterB >::reference Bref;
-    typedef typename std::iterator_traits< IterA >::difference_type D;
+    typedef typename eastl::iterator_traits< IterA >::value_type Aval;
+    typedef typename eastl::iterator_traits< IterB >::value_type Bval;
+    typedef typename eastl::iterator_traits< IterA >::reference Aref;
+    typedef typename eastl::iterator_traits< IterB >::reference Bref;
+    typedef typename eastl::iterator_traits< IterA >::difference_type D;
     typedef detail::shadow_proxy< Aval, Bval, Aval > V;
     typedef detail::shadow_proxy< Aref, Bref, Aval > R;
-    typedef iterator_adaptor< std::pair< IterA, IterB >,
+    typedef iterator_adaptor< eastl::pair< IterA, IterB >,
         detail::shadow_iterator_policies, V, R, V*, shadow_iterator_tag, D >
         type;
 };
@@ -153,7 +153,7 @@ inline typename shadow_iterator_generator< IterA, IterB >::type
 make_shadow_iter(IterA a, IterB b)
 {
     typedef typename shadow_iterator_generator< IterA, IterB >::type Iter;
-    return Iter(std::make_pair(a, b));
+    return Iter(eastl::make_pair(a, b));
 }
 
 template < class Cmp > struct shadow_cmp
@@ -175,8 +175,8 @@ template < class A1, class B1, class D1, class A2, class B2, class D2 >
 void swap(boost::detail::shadow_proxy< A1&, B1&, D1 > x,
     boost::detail::shadow_proxy< A2&, B2&, D2 > y)
 {
-    std::swap(x.a, y.a);
-    std::swap(x.b, y.b);
+    eastl::swap(x.a, y.a);
+    eastl::swap(x.b, y.b);
 }
 }
 

@@ -13,11 +13,11 @@
 #ifndef BOOST_GRAPH_INDEXED_PROPERTIES_HPP
 #define BOOST_GRAPH_INDEXED_PROPERTIES_HPP
 
-#include <vector>
-#include <utility>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
+#include <EASTL/algorithm.h>
+#include <EASTL/iterator.h>
 #include <climits>
-#include <iterator>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
 #include <boost/iterator/counting_iterator.hpp>
@@ -39,10 +39,10 @@ namespace detail
         typedef no_property vertex_property_type;
         typedef Property vertex_bundled;
         typedef iterator_property_map<
-            typename std::vector< Property >::iterator, IndexMap >
+            typename eastl::vector< Property >::iterator, IndexMap >
             vertex_map_type;
         typedef iterator_property_map<
-            typename std::vector< Property >::const_iterator, IndexMap >
+            typename eastl::vector< Property >::const_iterator, IndexMap >
             const_vertex_map_type;
 
         // Directly access a vertex or edge bundle
@@ -107,7 +107,7 @@ namespace detail
         }
 
     public: // should be private, but friend templates not portable
-        std::vector< Property > m_vertex_properties;
+        eastl::vector< Property > m_vertex_properties;
     };
 
     template < typename Derived, typename Descriptor, typename IndexMap >
@@ -147,10 +147,10 @@ namespace detail
         typedef Property edge_bundled;
         typedef Property edge_push_back_type;
         typedef iterator_property_map<
-            typename std::vector< Property >::iterator, IndexMap >
+            typename eastl::vector< Property >::iterator, IndexMap >
             edge_map_type;
         typedef iterator_property_map<
-            typename std::vector< Property >::const_iterator, IndexMap >
+            typename eastl::vector< Property >::const_iterator, IndexMap >
             const_edge_map_type;
 
         // Directly access a edge or edge bundle
@@ -211,12 +211,12 @@ namespace detail
         void move_range(
             std::size_t src_begin, std::size_t src_end, std::size_t dest_begin)
         {
-            std::copy_backward(m_edge_properties.begin() + src_begin,
+            eastl::copy_backward(m_edge_properties.begin() + src_begin,
                 m_edge_properties.begin() + src_end,
                 m_edge_properties.begin() + dest_begin + (src_end - src_begin));
         }
 
-        typedef typename std::vector< Property >::iterator iterator;
+        typedef typename eastl::vector< Property >::iterator iterator;
         iterator begin() { return m_edge_properties.begin(); }
         iterator end() { return m_edge_properties.end(); }
 
@@ -230,12 +230,12 @@ namespace detail
         }
 
     public: // should be private, but friend templates not portable
-        std::vector< Property > m_edge_properties;
+        eastl::vector< Property > m_edge_properties;
     };
 
     struct dummy_no_property_iterator
     : public boost::iterator_facade< dummy_no_property_iterator, no_property,
-          std::random_access_iterator_tag >
+          eastl::random_access_iterator_tag >
     {
         mutable no_property prop;
         no_property& dereference() const { return prop; }

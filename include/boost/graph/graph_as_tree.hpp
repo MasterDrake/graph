@@ -11,7 +11,7 @@
 #ifndef BOOST_GRAPH_GRAPH_AS_TREE_HPP
 #define BOOST_GRAPH_GRAPH_AS_TREE_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/config.hpp>
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/tree_traits.hpp>
@@ -36,7 +36,7 @@ public:
     friend Node root(const Tree& t) { return t._root; }
 
     template < class N >
-    friend std::pair< ChIt, ChIt > children(N n, const Tree& t)
+    friend eastl::pair< ChIt, ChIt > children(N n, const Tree& t)
     {
         return adjacent_vertices(n, t._g);
     }

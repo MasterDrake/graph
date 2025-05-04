@@ -13,11 +13,11 @@
 
 #include <boost/config.hpp>
 
-#include <vector>
-#include <list>
-#include <set>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
+#include <EASTL/set.h>
 
-#include <boost/unordered_set.hpp>
+#include <EASTL/unordered_set.h>
 
 #include <boost/scoped_ptr.hpp>
 
@@ -81,32 +81,32 @@ template < class Selector, class ValueType > struct container_gen
 
 template < class ValueType > struct container_gen< listS, ValueType >
 {
-    typedef std::list< ValueType > type;
+    typedef eastl::list< ValueType > type;
 };
 
 template < class ValueType > struct container_gen< vecS, ValueType >
 {
-    typedef std::vector< ValueType > type;
+    typedef eastl::vector< ValueType > type;
 };
 
 template < class ValueType > struct container_gen< mapS, ValueType >
 {
-    typedef std::set< ValueType > type;
+    typedef eastl::set< ValueType > type;
 };
 
 template < class ValueType > struct container_gen< setS, ValueType >
 {
-    typedef std::set< ValueType > type;
+    typedef eastl::set< ValueType > type;
 };
 
 template < class ValueType > struct container_gen< multisetS, ValueType >
 {
-    typedef std::multiset< ValueType > type;
+    typedef eastl::multiset< ValueType > type;
 };
 
 template < class ValueType > struct container_gen< multimapS, ValueType >
 {
-    typedef std::multiset< ValueType > type;
+    typedef eastl::multiset< ValueType > type;
 };
 
 template < class ValueType > struct container_gen< hash_setS, ValueType >

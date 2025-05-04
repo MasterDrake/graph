@@ -15,7 +15,7 @@
 #ifndef BOOST_GRAPH_DIJKSTRA_HPP
 #define BOOST_GRAPH_DIJKSTRA_HPP
 
-#include <functional>
+#include <EASTL/functional.h>
 #include <boost/limits.hpp>
 #include <boost/graph/named_function_params.hpp>
 #include <boost/graph/breadth_first_search.hpp>
@@ -240,7 +240,7 @@ namespace detail
             boost::scoped_array< Value >& array_holder)
         {
             array_holder.reset(new Value[num_vertices(g)]);
-            std::fill(array_holder.get(), array_holder.get() + num_vertices(g),
+            eastl::fill(array_holder.get(), array_holder.get() + num_vertices(g),
                 Value());
             return make_iterator_property_map(array_holder.get(), index);
         }
@@ -449,7 +449,7 @@ inline void dijkstra_shortest_paths(const VertexListGraph& g,
     typedef typename property_traits< ColorMap >::value_type ColorValue;
     typedef color_traits< ColorValue > Color;
     typename graph_traits< VertexListGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         vis.initialize_vertex(*ui, g);
         put(distance, *ui, inf);
@@ -523,15 +523,15 @@ namespace detail
 
         typedef typename property_traits< DistanceMap >::value_type D;
         D inf = choose_param(get_param(params, distance_inf_t()),
-            (std::numeric_limits< D >::max)());
+            (eastl::numeric_limits< D >::max)());
 
         dijkstra_shortest_paths(g, s,
             choose_param(get_param(params, vertex_predecessor), p_map),
             distance, weight, index_map,
             choose_param(
-                get_param(params, distance_compare_t()), std::less< D >()),
+                get_param(params, distance_compare_t()), eastl::less< D >()),
             choose_param(
-                get_param(params, distance_combine_t()), std::plus< D >()),
+                get_param(params, distance_combine_t()), eastl::plus< D >()),
             inf, choose_param(get_param(params, distance_zero_t()), D()),
             choose_param(get_param(params, graph_visitor),
                 make_dijkstra_visitor(null_visitor())),
@@ -547,9 +547,9 @@ namespace detail
     {
         // Default for distance map
         typedef typename property_traits< WeightMap >::value_type D;
-        typename std::vector< D >::size_type n
+        typename eastl::vector< D >::size_type n
             = is_default_param(distance) ? num_vertices(g) : 1;
-        std::vector< D > distance_map(n);
+        eastl::vector< D > distance_map(n);
 
         detail::dijkstra_dispatch2(g, s,
             choose_param(distance,

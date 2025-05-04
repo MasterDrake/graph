@@ -12,7 +12,7 @@
 #define BOOST_GRAPH_UNDIRECTED_DFS_HPP
 
 #include <boost/graph/depth_first_search.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/concept/assert.hpp>
 
 namespace boost
@@ -50,16 +50,16 @@ namespace detail
         typedef color_traits< ColorValue > Color;
         typedef color_traits< EColorValue > EColor;
         typedef typename graph_traits< IncidenceGraph >::out_edge_iterator Iter;
-        typedef std::pair< Vertex,
-            std::pair< boost::optional< Edge >, std::pair< Iter, Iter > > >
+        typedef eastl::pair< Vertex,
+            eastl::pair< boost::optional< Edge >, eastl::pair< Iter, Iter > > >
             VertexInfo;
 
-        std::vector< VertexInfo > stack;
+        eastl::vector< VertexInfo > stack;
 
         put(vertex_color, u, Color::gray());
         vis.discover_vertex(u, g);
-        stack.push_back(std::make_pair(
-            u, std::make_pair(boost::optional< Edge >(), out_edges(u, g))));
+        stack.push_back(eastl::make_pair(
+            u, eastl::make_pair(boost::optional< Edge >(), out_edges(u, g))));
         while (!stack.empty())
         {
             VertexInfo& back = stack.back();
@@ -78,13 +78,13 @@ namespace detail
                 if (v_color == Color::white())
                 {
                     vis.tree_edge(*ei, g);
-                    stack.push_back(std::make_pair(u,
-                        std::make_pair(src_e, std::make_pair(std::next(ei), ei_end))));
+                    stack.push_back(eastl::make_pair(u,
+                        eastl::make_pair(src_e, eastl::make_pair(eastl::next(ei), ei_end))));
                     u = v;
                     src_e = *ei;
                     put(vertex_color, u, Color::gray());
                     vis.discover_vertex(u, g);
-                    boost::tie(ei, ei_end) = out_edges(u, g);
+                    eastl::tie(ei, ei_end) = out_edges(u, g);
                 }
                 else if (v_color == Color::gray())
                 {
@@ -136,7 +136,7 @@ namespace detail
 
         put(vertex_color, u, Color::gray());
         vis.discover_vertex(u, g);
-        for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
         {
             Vertex v = target(*ei, g);
             vis.examine_edge(*ei, g);
@@ -172,13 +172,13 @@ void undirected_dfs(const Graph& g, DFSVisitor vis, VertexColorMap vertex_color,
     typedef color_traits< ColorValue > Color;
 
     typename graph_traits< Graph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(vertex_color, *ui, Color::white());
         vis.initialize_vertex(*ui, g);
     }
     typename graph_traits< Graph >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         put(edge_color, *ei, Color::white());
 
     if (start_vertex != *vertices(g).first)
@@ -187,7 +187,7 @@ void undirected_dfs(const Graph& g, DFSVisitor vis, VertexColorMap vertex_color,
         detail::undir_dfv_impl(g, start_vertex, vis, vertex_color, edge_color);
     }
 
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         ColorValue u_color = get(vertex_color, *ui);
         if (u_color == Color::white())
@@ -229,7 +229,7 @@ namespace detail
             const bgl_named_params< P, T, R >& params, EdgeColorMap edge_color,
             param_not_found)
         {
-            std::vector< default_color_type > color_vec(num_vertices(g));
+            eastl::vector< default_color_type > color_vec(num_vertices(g));
             default_color_type c = white_color; // avoid warning about un-init
             undirected_dfs(g, vis,
                 make_iterator_property_map(color_vec.begin(),

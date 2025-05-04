@@ -9,9 +9,9 @@
 #ifndef __CHROBAK_PAYNE_DRAWING_HPP__
 #define __CHROBAK_PAYNE_DRAWING_HPP__
 
-#include <vector>
-#include <list>
-#include <stack>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
+#include <EASTL/stack.h>
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
@@ -37,8 +37,8 @@ namespace graph
                 vertex_descriptor;
             // Suggestion of explicit stack from Aaron Windsor to avoid system
             // stack overflows.
-            typedef std::pair< vertex_descriptor, std::size_t > stack_entry;
-            std::stack< stack_entry > st;
+            typedef eastl::pair< vertex_descriptor, std::size_t > stack_entry;
+            eastl::stack< stack_entry > st;
             st.push(stack_entry(v, offset));
             while (!st.empty())
             {
@@ -69,9 +69,9 @@ void chrobak_payne_straight_line_drawing(const Graph& g,
     typedef typename PlanarEmbedding::value_type::const_iterator
         edge_permutation_iterator_t;
     typedef typename graph_traits< Graph >::vertices_size_type v_size_t;
-    typedef std::vector< vertex_t > vertex_vector_t;
-    typedef std::vector< v_size_t > vsize_vector_t;
-    typedef std::vector< bool > bool_vector_t;
+    typedef eastl::vector< vertex_t > vertex_vector_t;
+    typedef eastl::vector< v_size_t > vsize_vector_t;
+    typedef eastl::vector< bool > bool_vector_t;
     typedef boost::iterator_property_map< typename vertex_vector_t::iterator,
         VertexIndexMap >
         vertex_to_vertex_map_t;
@@ -228,7 +228,7 @@ void chrobak_payne_straight_line_drawing(const Graph& g,
         *ordering_begin, 0, g, x, delta_x, left, right);
 
     vertex_iterator_t vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         vertex_t v(*vi);
         drawing[v].x = x[v];

@@ -127,7 +127,7 @@ int main(int, char*[])
                 = g.create_subgraph(vertices(g).first, vertices(g).second);
 
             graph_traits< Graph >::edge_iterator ei, ee;
-            for (boost::tie(ei, ee) = edges(sub); ei != ee; ++ei)
+            for (eastl::tie(ei, ee) = edges(sub); ei != ee; ++ei)
             {
                 // This used to segfault.
                 get(&arc::weight, sub, *ei);

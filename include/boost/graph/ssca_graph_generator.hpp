@@ -9,10 +9,10 @@
 #ifndef BOOST_GRAPH_SSCA_GENERATOR_HPP
 #define BOOST_GRAPH_SSCA_GENERATOR_HPP
 
-#include <iterator>
-#include <utility>
-#include <vector>
-#include <queue>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
+#include <EASTL/vector.h>
+#include <EASTL/queue.h>
 #include <boost/config.hpp>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_01.hpp>
@@ -40,8 +40,8 @@ template < typename RandomGenerator, typename Graph > class ssca_iterator
         typename graph_traits< Graph >::vertices_size_type vertices_size_type;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< vertices_size_type, vertices_size_type > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< vertices_size_type, vertices_size_type > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef void difference_type;
@@ -62,8 +62,8 @@ public:
     , currentClique(0)
     , verticesRemaining(totVertices)
     {
-        cliqueNum = std::vector< int >(totVertices, -1);
-        current = std::make_pair(0, 0);
+        cliqueNum = eastl::vector< int >(totVertices, -1);
+        current = eastl::make_pair(0, 0);
     }
 
     reference operator*() const { return current; }
@@ -79,7 +79,7 @@ public:
             uniform_int< int > num_parallel_edges(1, maxParallelEdges);
             uniform_int< short > direction(0, 1);
             uniform_01< RandomGenerator > prob(*gen);
-            std::vector< vertices_size_type > cliqueVertices;
+            eastl::vector< vertices_size_type > cliqueVertices;
 
             cliqueVertices.clear();
             vertices_size_type size = min BOOST_PREVENT_MACRO_SUBSTITUTION(
@@ -97,7 +97,7 @@ public:
               //       I should probably just select the remaining vertices
               //       in order when only a certain fraction remain.
 
-            typename std::vector< vertices_size_type >::iterator first, second;
+            typename eastl::vector< vertices_size_type >::iterator first, second;
             for (first = cliqueVertices.begin(); first != cliqueVertices.end();
                  ++first)
                 for (second = first + 1; second != cliqueVertices.end();
@@ -114,14 +114,14 @@ public:
                     {
                         edges = num_parallel_edges(*gen);
                         for (int i = 0; i < edges; ++i)
-                            values.push(std::make_pair(*first, *second));
+                            values.push(eastl::make_pair(*first, *second));
                     }
 
                     if (d & BACKWARD)
                     {
                         edges = num_parallel_edges(*gen);
                         for (int i = 0; i < edges; ++i)
-                            values.push(std::make_pair(*second, *first));
+                            values.push(eastl::make_pair(*second, *first));
                     }
                 }
 
@@ -139,7 +139,7 @@ public:
                         {
                             int edges = num_parallel_edges(*gen);
                             for (int i = 0; i < edges; ++i)
-                                values.push(std::make_pair(i, j));
+                                values.push(eastl::make_pair(i, j));
                         }
                     }
                 }
@@ -185,8 +185,8 @@ private:
     double probIntercliqueEdges;
 
     // Internal data structures
-    std::vector< int > cliqueNum;
-    std::queue< value_type > values;
+    eastl::vector< int > cliqueNum;
+    eastl::queue< value_type > values;
     int currentClique;
     vertices_size_type verticesRemaining;
     value_type current;

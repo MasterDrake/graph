@@ -13,8 +13,8 @@
 #ifndef BOOST_GRAPH_ASTAR_SEARCH_HPP
 #define BOOST_GRAPH_ASTAR_SEARCH_HPP
 
-#include <functional>
-#include <vector>
+#include <EASTL/functional.h>
+#include <EASTL/vector.h>
 #include <boost/limits.hpp>
 #include <boost/throw_exception.hpp>
 #include <boost/graph/named_function_params.hpp>
@@ -280,9 +280,9 @@ namespace graph_detail
 {
     template < typename A, typename B > struct select1st
     {
-        typedef std::pair< A, B > argument_type;
+        typedef eastl::pair< A, B > argument_type;
         typedef A result_type;
-        A operator()(const std::pair< A, B >& p) const { return p.first; }
+        A operator()(const eastl::pair< A, B >& p) const { return p.first; }
     };
 }
 
@@ -299,24 +299,24 @@ inline void astar_search_no_init_tree(const VertexListGraph& g,
 {
     typedef typename graph_traits< VertexListGraph >::vertex_descriptor Vertex;
     typedef typename property_traits< DistanceMap >::value_type Distance;
-    typedef d_ary_heap_indirect< std::pair< Distance, Vertex >, 4,
-        null_property_map< std::pair< Distance, Vertex >, std::size_t >,
+    typedef d_ary_heap_indirect< eastl::pair< Distance, Vertex >, 4,
+        null_property_map< eastl::pair< Distance, Vertex >, std::size_t >,
         function_property_map< graph_detail::select1st< Distance, Vertex >,
-            std::pair< Distance, Vertex > >,
+            eastl::pair< Distance, Vertex > >,
         CompareFunction >
         MutableQueue;
-    MutableQueue Q(make_function_property_map< std::pair< Distance, Vertex > >(
+    MutableQueue Q(make_function_property_map< eastl::pair< Distance, Vertex > >(
                        graph_detail::select1st< Distance, Vertex >()),
-        null_property_map< std::pair< Distance, Vertex >, std::size_t >(),
+        null_property_map< eastl::pair< Distance, Vertex >, std::size_t >(),
         compare);
 
     vis.discover_vertex(s, g);
-    Q.push(std::make_pair(get(cost, s), s));
+    Q.push(eastl::make_pair(get(cost, s), s));
     while (!Q.empty())
     {
         Vertex v;
         Distance v_rank;
-        boost::tie(v_rank, v) = Q.top();
+        eastl::tie(v_rank, v) = Q.top();
         Q.pop();
         vis.examine_vertex(v, g);
         BGL_FORALL_OUTEDGES_T(v, e, g, VertexListGraph)
@@ -334,7 +334,7 @@ inline void astar_search_no_init_tree(const VertexListGraph& g,
                 Distance w_rank = combine(get(distance, w), h(w));
                 put(cost, w, w_rank);
                 vis.discover_vertex(w, g);
-                Q.push(std::make_pair(w_rank, w));
+                Q.push(eastl::make_pair(w_rank, w));
             }
             else
             {
@@ -362,7 +362,7 @@ inline void astar_search(const VertexListGraph& g,
     typedef typename property_traits< ColorMap >::value_type ColorValue;
     typedef color_traits< ColorValue > Color;
     typename graph_traits< VertexListGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(color, *ui, Color::white());
         put(distance, *ui, inf);
@@ -391,7 +391,7 @@ inline void astar_search_tree(const VertexListGraph& g,
 {
 
     typename graph_traits< VertexListGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(distance, *ui, inf);
         put(cost, *ui, inf);
@@ -459,9 +459,9 @@ void astar_search(const VertexListGraph& g,
         boost::graph::keywords::tag::color_map,
         boost::default_color_type >::map_type c_map
         = boost::detail::make_color_map_from_arg_pack(g, arg_pack);
-    std::less< D > default_compare;
+    eastl::less< D > default_compare;
     typename boost::parameter::binding< arg_pack_type,
-        boost::graph::keywords::tag::distance_compare, std::less< D >& >::type
+        boost::graph::keywords::tag::distance_compare, eastl::less< D >& >::type
         dist_comp
         = arg_pack[_distance_compare | default_compare];
     closed_plus< D > default_combine(inf);
@@ -517,9 +517,9 @@ void astar_search_tree(const VertexListGraph& g,
         = dist_map_gen(g, arg_pack);
     weight_map_type w_map = detail::override_const_property(
         arg_pack, _weight_map, g, edge_weight);
-    std::less< D > default_compare;
+    eastl::less< D > default_compare;
     typename boost::parameter::binding< arg_pack_type,
-        boost::graph::keywords::tag::distance_compare, std::less< D >& >::type
+        boost::graph::keywords::tag::distance_compare, eastl::less< D >& >::type
         dist_comp
         = arg_pack[_distance_compare | default_compare];
     closed_plus< D > default_combine(inf);
@@ -581,9 +581,9 @@ void astar_search_no_init(const VertexListGraph& g,
         VertexListGraph >::type v_i_map
         = detail::override_const_property(
             arg_pack, _vertex_index_map, g, vertex_index);
-    std::less< D > default_compare;
+    eastl::less< D > default_compare;
     typename boost::parameter::binding< arg_pack_type,
-        boost::graph::keywords::tag::distance_compare, std::less< D >& >::type
+        boost::graph::keywords::tag::distance_compare, eastl::less< D >& >::type
         dist_comp
         = arg_pack[_distance_compare | default_compare];
     closed_plus< D > default_combine(inf);
@@ -636,9 +636,9 @@ void astar_search_no_init_tree(const VertexListGraph& g,
         = dist_map_gen(g, arg_pack);
     weight_map_type w_map = detail::override_const_property(
         arg_pack, _weight_map, g, edge_weight);
-    std::less< D > default_compare;
+    eastl::less< D > default_compare;
     typename boost::parameter::binding< arg_pack_type,
-        boost::graph::keywords::tag::distance_compare, std::less< D >& >::type
+        boost::graph::keywords::tag::distance_compare, eastl::less< D >& >::type
         dist_comp
         = arg_pack[_distance_compare | default_compare];
     closed_plus< D > default_combine(inf);

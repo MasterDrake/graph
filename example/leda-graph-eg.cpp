@@ -21,7 +21,7 @@ int main()
     typedef property_map< graph_t, vertex_all_t >::type NodeMap;
     auto node_name_map = get(vertex_all, g);
     graph_traits< graph_t >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         std::cout << node_name_map[*vi] << std::endl;
     return EXIT_SUCCESS;
 }

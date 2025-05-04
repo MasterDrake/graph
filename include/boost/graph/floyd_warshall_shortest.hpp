@@ -58,15 +58,15 @@ namespace detail
         typename graph_traits< VertexListGraph >::vertex_iterator i, lasti, j,
             lastj, k, lastk;
 
-        for (boost::tie(k, lastk) = vertices(g); k != lastk; k++)
-            for (boost::tie(i, lasti) = vertices(g); i != lasti; i++)
+        for (eastl::tie(k, lastk) = vertices(g); k != lastk; k++)
+            for (eastl::tie(i, lasti) = vertices(g); i != lasti; i++)
                 if (d[*i][*k] != inf)
-                    for (boost::tie(j, lastj) = vertices(g); j != lastj; j++)
+                    for (eastl::tie(j, lastj) = vertices(g); j != lastj; j++)
                         if (d[*k][*j] != inf)
                             d[*i][*j] = detail::min_with_compare(d[*i][*j],
                                 combine(d[*i][*k], d[*k][*j]), compare);
 
-        for (boost::tie(i, lasti) = vertices(g); i != lasti; i++)
+        for (eastl::tie(i, lasti) = vertices(g); i != lasti; i++)
             if (compare(d[*i][*i], zero))
                 return false;
         return true;
@@ -100,15 +100,15 @@ bool floyd_warshall_all_pairs_shortest_paths(const VertexAndEdgeListGraph& g,
         lastv, firstv2, lastv2;
     typename graph_traits< VertexAndEdgeListGraph >::edge_iterator first, last;
 
-    for (boost::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
-        for (boost::tie(firstv2, lastv2) = vertices(g); firstv2 != lastv2;
+    for (eastl::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
+        for (eastl::tie(firstv2, lastv2) = vertices(g); firstv2 != lastv2;
              firstv2++)
             d[*firstv][*firstv2] = inf;
 
-    for (boost::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
+    for (eastl::tie(firstv, lastv) = vertices(g); firstv != lastv; firstv++)
         d[*firstv][*firstv] = zero;
 
-    for (boost::tie(first, last) = edges(g); first != last; first++)
+    for (eastl::tie(first, last) = edges(g); first != last; first++)
     {
         if (d[source(*first, g)][target(*first, g)] != inf)
         {
@@ -125,7 +125,7 @@ bool floyd_warshall_all_pairs_shortest_paths(const VertexAndEdgeListGraph& g,
         undirected_tag >::value;
     if (is_undirected)
     {
-        for (boost::tie(first, last) = edges(g); first != last; first++)
+        for (eastl::tie(first, last) = edges(g); first != last; first++)
         {
             if (d[target(*first, g)][source(*first, g)] != inf)
                 d[target(*first, g)][source(*first, g)]
@@ -149,11 +149,11 @@ namespace detail
     {
         typedef typename property_traits< WeightMap >::value_type WM;
         WM inf = choose_param(get_param(params, distance_inf_t()),
-            std::numeric_limits< WM >::max BOOST_PREVENT_MACRO_SUBSTITUTION());
+            eastl::numeric_limits< WM >::max BOOST_PREVENT_MACRO_SUBSTITUTION());
 
         return floyd_warshall_initialized_all_pairs_shortest_paths(g, d,
             choose_param(
-                get_param(params, distance_compare_t()), std::less< WM >()),
+                get_param(params, distance_compare_t()), eastl::less< WM >()),
             choose_param(get_param(params, distance_combine_t()),
                 closed_plus< WM >(inf)),
             inf, choose_param(get_param(params, distance_zero_t()), WM()));
@@ -168,10 +168,10 @@ namespace detail
         typedef typename property_traits< WeightMap >::value_type WM;
 
         WM inf = choose_param(get_param(params, distance_inf_t()),
-            std::numeric_limits< WM >::max BOOST_PREVENT_MACRO_SUBSTITUTION());
+            eastl::numeric_limits< WM >::max BOOST_PREVENT_MACRO_SUBSTITUTION());
         return floyd_warshall_all_pairs_shortest_paths(g, d, w,
             choose_param(
-                get_param(params, distance_compare_t()), std::less< WM >()),
+                get_param(params, distance_compare_t()), eastl::less< WM >()),
             choose_param(get_param(params, distance_combine_t()),
                 closed_plus< WM >(inf)),
             inf, choose_param(get_param(params, distance_zero_t()), WM()));

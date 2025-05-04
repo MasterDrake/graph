@@ -158,13 +158,13 @@ template < typename Graph > struct dfs_test
                 boost::depth_first_search(g, visitor(vis).color_map(color));
 
                 // all vertices should be black
-                for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+                for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
                     BOOST_TEST(get(color, *vi) == Color::black());
 
                 // check parenthesis structure of discover/finish times
                 // See CLR p.480
-                for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
-                    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end;
+                for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+                    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end;
                          ++vi)
                     {
                         vertex_descriptor u = *ui, v = *vi;

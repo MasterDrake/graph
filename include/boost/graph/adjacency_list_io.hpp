@@ -10,7 +10,7 @@
 #define BOOST_GRAPH_ADJACENCY_LIST_IO_HPP
 
 #include <iostream>
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/iteration_macros.hpp>
 #include <cctype>
@@ -120,7 +120,7 @@ struct GraphParser
     GraphParser& operator()(std::istream& in)
     {
         typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
-        std::vector< Vertex > nodes;
+        eastl::vector< Vertex > nodes;
 
         GraphParserState state = PARSE_VERTEX;
 
@@ -286,7 +286,7 @@ template < class Graph_t, class EdgeProperty > struct EdgePrinter
     const EdgePrinter& operator()(std::ostream& out) const
     {
         // assign indices to vertices
-        std::map< Vertex, int > indices;
+        eastl::map< Vertex, int > indices;
         int num = 0;
         BGL_FORALL_VERTICES_T(v, graph, Graph) { indices[v] = num++; }
 

@@ -15,12 +15,12 @@
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/graph/topology.hpp> // For topology concepts
 #include <boost/graph/detail/mpi_include.hpp>
-#include <vector>
-#include <list>
-#include <algorithm> // for std::min and std::max
-#include <numeric> // for std::accumulate
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
+#include <EASTL/algorithm.h> // for eastl::min and eastl::max
+#include <EASTL/numeric.h> // for eastl::accumulate
 #include <cmath> // for std::sqrt and std::fabs
-#include <functional>
+#include <EASTL/functional.h>
 
 namespace boost
 {
@@ -81,7 +81,7 @@ struct all_force_pairs
     {
         typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator;
         vertex_iterator v, end;
-        for (boost::tie(v, end) = vertices(g); v != end; ++v)
+        for (eastl::tie(v, end) = vertices(g); v != end; ++v)
         {
             vertex_iterator u = v;
             for (++u; u != end; ++u)
@@ -114,14 +114,14 @@ template < typename Topology, typename PositionMap > struct grid_force_pairs
         typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator;
         typedef
             typename graph_traits< Graph >::vertex_descriptor vertex_descriptor;
-        typedef std::list< vertex_descriptor > bucket_t;
-        typedef std::vector< bucket_t > buckets_t;
+        typedef eastl::list< vertex_descriptor > bucket_t;
+        typedef eastl::vector< bucket_t > buckets_t;
 
         std::size_t columns = std::size_t(topology.extent()[0] / two_k + 1.);
         std::size_t rows = std::size_t(topology.extent()[1] / two_k + 1.);
         buckets_t buckets(rows * columns);
         vertex_iterator v, v_end;
-        for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+        for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
         {
             std::size_t column = std::size_t(
                 (get(position, *v)[0] + topology.extent()[0] / 2) / two_k);
@@ -330,13 +330,13 @@ void fruchterman_reingold_force_directed_layout(const Graph& g,
     {
         // Calculate repulsive forces
         vertex_iterator v, v_end;
-        for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+        for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
             put(displacement, *v, typename Topology::point_difference_type());
         force_pairs(g, apply_force);
 
         // Calculate attractive forces
         edge_iterator e, e_end;
-        for (boost::tie(e, e_end) = edges(g); e != e_end; ++e)
+        for (eastl::tie(e, e_end) = edges(g); e != e_end; ++e)
         {
             vertex_descriptor v = source(*e, g);
             vertex_descriptor u = target(*e, g);
@@ -412,7 +412,7 @@ namespace detail
             const bgl_named_params< Param, Tag, Rest >& params)
         {
             typedef typename Topology::point_difference_type PointDiff;
-            std::vector< PointDiff > displacements(num_vertices(g));
+            eastl::vector< PointDiff > displacements(num_vertices(g));
             fruchterman_reingold_force_directed_layout(g, position, topology,
                 attractive_force, repulsive_force, force_pairs, cool,
                 make_iterator_property_map(displacements.begin(),

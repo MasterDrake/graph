@@ -9,13 +9,13 @@
 #ifndef BOOST_GRAPH_PLOD_GENERATOR_HPP
 #define BOOST_GRAPH_PLOD_GENERATOR_HPP
 
-#include <iterator>
-#include <utility>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
 #include <boost/random/uniform_int.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/graph/graph_traits.hpp>
-#include <vector>
-#include <map>
+#include <EASTL/vector.h>
+#include <EASTL/map.h>
 #include <boost/config/no_tr1/cmath.hpp>
 #include <boost/mpl/if.hpp>
 
@@ -24,8 +24,8 @@ namespace boost
 template < typename RandomGenerator > class out_directed_plod_iterator
 {
 public:
-    typedef std::forward_iterator_tag iterator_category;
-    typedef std::pair< std::size_t, std::size_t > value_type;
+    typedef eastl::forward_iterator_tag iterator_category;
+    typedef eastl::pair< std::size_t, std::size_t > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef std::ptrdiff_t difference_type;
@@ -114,11 +114,11 @@ private:
 
 template < typename RandomGenerator > class undirected_plod_iterator
 {
-    typedef std::vector< std::pair< std::size_t, std::size_t > > out_degrees_t;
+    typedef eastl::vector< eastl::pair< std::size_t, std::size_t > > out_degrees_t;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< std::size_t, std::size_t > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< std::size_t, std::size_t > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef std::ptrdiff_t difference_type;
@@ -148,7 +148,7 @@ public:
                 degree = 1;
             else if (degree >= n)
                 degree = n - 1;
-            out_degrees->push_back(std::make_pair(i, degree));
+            out_degrees->push_back(eastl::make_pair(i, degree));
             degrees_left += degree;
         }
 

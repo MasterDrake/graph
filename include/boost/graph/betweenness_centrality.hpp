@@ -9,8 +9,9 @@
 #ifndef BOOST_GRAPH_BRANDES_BETWEENNESS_CENTRALITY_HPP
 #define BOOST_GRAPH_BRANDES_BETWEENNESS_CENTRALITY_HPP
 
-#include <stack>
-#include <vector>
+#include <EASTL/algorithm.h>
+#include <EASTL/stack.h>
+#include <EASTL/vector.h>
 #include <boost/graph/overloading.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/breadth_first_search.hpp>
@@ -22,7 +23,6 @@
 #include <boost/mpl/if.hpp>
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/named_function_params.hpp>
-#include <algorithm>
 
 namespace boost
 {
@@ -49,7 +49,7 @@ namespace detail
                 typename graph_traits< Graph >::edge_descriptor edge_descriptor;
 
             brandes_dijkstra_visitor(
-                std::stack< vertex_descriptor >& ordered_vertices,
+                eastl::stack< vertex_descriptor >& ordered_vertices,
                 WeightMap weight, IncomingMap incoming, DistanceMap distance,
                 PathCountMap path_count)
             : ordered_vertices(ordered_vertices)
@@ -104,7 +104,7 @@ namespace detail
             }
 
         private:
-            std::stack< vertex_descriptor >& ordered_vertices;
+            eastl::stack< vertex_descriptor >& ordered_vertices;
             WeightMap weight;
             IncomingMap incoming;
             DistanceMap distance;
@@ -128,7 +128,7 @@ namespace detail
                 typename VertexIndexMap >
             void operator()(Graph& g,
                 typename graph_traits< Graph >::vertex_descriptor s,
-                std::stack< typename graph_traits< Graph >::vertex_descriptor >&
+                eastl::stack< typename graph_traits< Graph >::vertex_descriptor >&
                     ov,
                 IncomingMap incoming, DistanceMap distance,
                 PathCountMap path_count, VertexIndexMap vertex_index)
@@ -172,7 +172,7 @@ namespace detail
 
                 visitor_type(IncomingMap incoming, DistanceMap distance,
                     PathCountMap path_count,
-                    std::stack< vertex_descriptor >& ordered_vertices)
+                    eastl::stack< vertex_descriptor >& ordered_vertices)
                 : incoming(incoming)
                 , distance(distance)
                 , path_count(path_count)
@@ -223,7 +223,7 @@ namespace detail
                 IncomingMap incoming;
                 DistanceMap distance;
                 PathCountMap path_count;
-                std::stack< vertex_descriptor >& ordered_vertices;
+                eastl::stack< vertex_descriptor >& ordered_vertices;
             };
 
             template < typename Graph, typename IncomingMap,
@@ -231,7 +231,7 @@ namespace detail
                 typename VertexIndexMap >
             void operator()(Graph& g,
                 typename graph_traits< Graph >::vertex_descriptor s,
-                std::stack< typename graph_traits< Graph >::vertex_descriptor >&
+                eastl::stack< typename graph_traits< Graph >::vertex_descriptor >&
                     ov,
                 IncomingMap incoming, DistanceMap distance,
                 PathCountMap path_count, VertexIndexMap vertex_index)
@@ -242,7 +242,7 @@ namespace detail
                 visitor_type< Graph, IncomingMap, DistanceMap, PathCountMap >
                     visitor(incoming, distance, path_count, ov);
 
-                std::vector< default_color_type > colors(num_vertices(g),
+                eastl::vector< default_color_type > colors(num_vertices(g),
                     color_traits< default_color_type >::white());
                 boost::queue< vertex_descriptor > Q;
                 breadth_first_visit(g, s, Q, visitor,
@@ -254,7 +254,7 @@ namespace detail
         // initialization is needed.
         template < typename Iter >
         inline void init_centrality_map(
-            std::pair< Iter, Iter >, dummy_property_map)
+            eastl::pair< Iter, Iter >, dummy_property_map)
         {
         }
 
@@ -262,7 +262,7 @@ namespace detail
         // centralities to zero.
         template < typename Iter, typename Centrality >
         void init_centrality_map(
-            std::pair< Iter, Iter > keys, Centrality centrality_map)
+            eastl::pair< Iter, Iter > keys, Centrality centrality_map)
         {
             typedef typename property_traits< Centrality >::value_type
                 centrality_type;
@@ -290,13 +290,13 @@ namespace detail
 
         template < typename Iter >
         inline void divide_centrality_by_two(
-            std::pair< Iter, Iter >, dummy_property_map)
+            eastl::pair< Iter, Iter >, dummy_property_map)
         {
         }
 
         template < typename Iter, typename CentralityMap >
         inline void divide_centrality_by_two(
-            std::pair< Iter, Iter > keys, CentralityMap centrality_map)
+            eastl::pair< Iter, Iter > keys, CentralityMap centrality_map)
         {
             typename property_traits< CentralityMap >::value_type two(2);
             while (keys.first != keys.second)
@@ -329,13 +329,13 @@ namespace detail
             init_centrality_map(vertices(g), centrality);
             init_centrality_map(edges(g), edge_centrality_map);
 
-            std::stack< vertex_descriptor > ordered_vertices;
+            eastl::stack< vertex_descriptor > ordered_vertices;
             vertex_iterator s, s_end;
-            for (boost::tie(s, s_end) = vertices(g); s != s_end; ++s)
+            for (eastl::tie(s, s_end) = vertices(g); s != s_end; ++s)
             {
                 // Initialize for this iteration
                 vertex_iterator w, w_end;
-                for (boost::tie(w, w_end) = vertices(g); w != w_end; ++w)
+                for (eastl::tie(w, w_end) = vertices(g); w != w_end; ++w)
                 {
                     incoming[*w].clear();
                     put(path_count, *w, 0);
@@ -460,10 +460,10 @@ namespace detail
             typename graph_traits< Graph >::vertices_size_type V
                 = num_vertices(g);
 
-            std::vector< std::vector< edge_descriptor > > incoming(V);
-            std::vector< centrality_type > distance(V);
-            std::vector< centrality_type > dependency(V);
-            std::vector< degree_size_type > path_count(V);
+            eastl::vector< eastl::vector< edge_descriptor > > incoming(V);
+            eastl::vector< centrality_type > distance(V);
+            eastl::vector< centrality_type > dependency(V);
+            eastl::vector< degree_size_type > path_count(V);
 
             brandes_betweenness_centrality(g, centrality, edge_centrality_map,
                 make_iterator_property_map(incoming.begin(), vertex_index),
@@ -492,10 +492,10 @@ namespace detail
             typename graph_traits< Graph >::vertices_size_type V
                 = num_vertices(g);
 
-            std::vector< std::vector< edge_descriptor > > incoming(V);
-            std::vector< centrality_type > distance(V);
-            std::vector< centrality_type > dependency(V);
-            std::vector< degree_size_type > path_count(V);
+            eastl::vector< eastl::vector< edge_descriptor > > incoming(V);
+            eastl::vector< centrality_type > distance(V);
+            eastl::vector< centrality_type > dependency(V);
+            eastl::vector< degree_size_type > path_count(V);
 
             brandes_betweenness_centrality(g, centrality, edge_centrality_map,
                 make_iterator_property_map(incoming.begin(), vertex_index),
@@ -602,7 +602,7 @@ void relative_betweenness_centrality(const Graph& g, CentralityMap centrality)
     centrality_type factor
         = centrality_type(2) / centrality_type(n * n - 3 * n + 2);
     vertex_iterator v, v_end;
-    for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+    for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
     {
         put(centrality, *v, factor * get(centrality, *v));
     }
@@ -615,7 +615,7 @@ typename property_traits< CentralityMap >::value_type central_point_dominance(
     CentralityMap centrality BOOST_GRAPH_ENABLE_IF_MODELS_PARM(
         Graph, vertex_list_graph_tag))
 {
-    using std::max;
+    using eastl::max;
 
     typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator;
     typedef
@@ -626,14 +626,14 @@ typename property_traits< CentralityMap >::value_type central_point_dominance(
     // Find max centrality
     centrality_type max_centrality(0);
     vertex_iterator v, v_end;
-    for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+    for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
     {
         max_centrality = (max)(max_centrality, get(centrality, *v));
     }
 
     // Compute central point dominance
     centrality_type sum(0);
-    for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+    for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
     {
         sum += (max_centrality - get(centrality, *v));
     }

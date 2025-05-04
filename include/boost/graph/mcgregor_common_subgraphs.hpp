@@ -10,9 +10,9 @@
 #ifndef BOOST_GRAPH_MCGREGOR_COMMON_SUBGRAPHS_HPP
 #define BOOST_GRAPH_MCGREGOR_COMMON_SUBGRAPHS_HPP
 
-#include <algorithm>
-#include <vector>
-#include <stack>
+#include <EASTL/algorithm.h>
+#include <EASTL/vector.h>
+#include <EASTL/stack.h>
 
 #include <boost/make_shared.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -312,8 +312,8 @@ namespace detail
         typename graph_traits< GraphSecond >::vertex_iterator vertex2_begin,
             vertex2_end, vertex2_iter;
 
-        boost::tie(vertex1_iter, vertex1_end) = vertices(graph1);
-        boost::tie(vertex2_begin, vertex2_end) = vertices(graph2);
+        eastl::tie(vertex1_iter, vertex1_end) = vertices(graph1);
+        eastl::tie(vertex2_begin, vertex2_end) = vertices(graph2);
         vertex2_iter = vertex2_begin;
 
         // Iterate until all vertices have been visited
@@ -449,7 +449,7 @@ namespace detail
         typedef
             typename graph_traits< GraphFirst >::vertex_descriptor VertexFirst;
 
-        std::stack< VertexFirst > vertex_stack1;
+        eastl::stack< VertexFirst > vertex_stack1;
 
         mcgregor_common_subgraphs_internal(graph1, graph2, vindex_map1,
             vindex_map2, correspondence_map_1_to_2, correspondence_map_2_to_1,
@@ -544,12 +544,12 @@ namespace detail
         typedef typename SubGraphTraits::correspondence_map_second_to_first_type
             CachedCorrespondenceMapSecondToFirst;
 
-        typedef std::pair< VertexSizeFirst,
-            std::pair< CachedCorrespondenceMapFirstToSecond,
+        typedef eastl::pair< VertexSizeFirst,
+            eastl::pair< CachedCorrespondenceMapFirstToSecond,
                 CachedCorrespondenceMapSecondToFirst > >
             SubGraph;
 
-        typedef std::vector< SubGraph > SubGraphList;
+        typedef eastl::vector< SubGraph > SubGraphList;
 
         unique_subgraph_interceptor(const GraphFirst& graph1,
             const GraphSecond& graph2, const VertexIndexMapFirst vindex_map1,
@@ -615,8 +615,8 @@ namespace detail
                     get(correspondence_map_2_to_1, vertex2));
             }
 
-            m_subgraphs->push_back(std::make_pair(subgraph_size,
-                std::make_pair(new_subgraph_1_to_2, new_subgraph_2_to_1)));
+            m_subgraphs->push_back(eastl::make_pair(subgraph_size,
+                eastl::make_pair(new_subgraph_1_to_2, new_subgraph_2_to_1)));
 
             return (m_user_callback(correspondence_map_1_to_2,
                 correspondence_map_2_to_1, subgraph_size));
@@ -717,12 +717,12 @@ namespace detail
         typedef typename SubGraphTraits::correspondence_map_second_to_first_type
             CachedCorrespondenceMapSecondToFirst;
 
-        typedef std::pair< VertexSizeFirst,
-            std::pair< CachedCorrespondenceMapFirstToSecond,
+        typedef eastl::pair< VertexSizeFirst,
+            eastl::pair< CachedCorrespondenceMapFirstToSecond,
                 CachedCorrespondenceMapSecondToFirst > >
             SubGraph;
 
-        typedef std::vector< SubGraph > SubGraphList;
+        typedef eastl::vector< SubGraph > SubGraphList;
 
         maximum_subgraph_interceptor(const GraphFirst& graph1,
             const GraphSecond& graph2, const VertexIndexMapFirst vindex_map1,
@@ -776,8 +776,8 @@ namespace detail
                         get(correspondence_map_2_to_1, vertex2));
                 }
 
-                m_subgraphs->push_back(std::make_pair(subgraph_size,
-                    std::make_pair(new_subgraph_1_to_2, new_subgraph_2_to_1)));
+                m_subgraphs->push_back(eastl::make_pair(subgraph_size,
+                    eastl::make_pair(new_subgraph_1_to_2, new_subgraph_2_to_1)));
             }
 
             return (true);
@@ -895,12 +895,12 @@ namespace detail
         typedef typename SubGraphTraits::correspondence_map_second_to_first_type
             CachedCorrespondenceMapSecondToFirst;
 
-        typedef std::pair< VertexSizeFirst,
-            std::pair< CachedCorrespondenceMapFirstToSecond,
+        typedef eastl::pair< VertexSizeFirst,
+            eastl::pair< CachedCorrespondenceMapFirstToSecond,
                 CachedCorrespondenceMapSecondToFirst > >
             SubGraph;
 
-        typedef std::vector< SubGraph > SubGraphList;
+        typedef eastl::vector< SubGraph > SubGraphList;
 
         unique_maximum_subgraph_interceptor(const GraphFirst& graph1,
             const GraphSecond& graph2, const VertexIndexMapFirst vindex_map1,
@@ -971,8 +971,8 @@ namespace detail
                         get(correspondence_map_2_to_1, vertex2));
                 }
 
-                m_subgraphs->push_back(std::make_pair(subgraph_size,
-                    std::make_pair(new_subgraph_1_to_2, new_subgraph_2_to_1)));
+                m_subgraphs->push_back(eastl::make_pair(subgraph_size,
+                    eastl::make_pair(new_subgraph_1_to_2, new_subgraph_2_to_1)));
             }
 
             return (true);

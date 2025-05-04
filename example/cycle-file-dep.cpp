@@ -38,7 +38,7 @@ bool has_cycle_dfs(
 {
     color[u] = gray_color;
     graph_traits< file_dep_graph >::adjacency_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = adjacent_vertices(u, g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = adjacent_vertices(u, g); vi != vi_end; ++vi)
         if (color[*vi] == white_color)
         {
             if (has_cycle_dfs(g, *vi, color))
@@ -54,7 +54,7 @@ bool has_cycle(const file_dep_graph& g)
 {
     std::vector< default_color_type > color(num_vertices(g), white_color);
     graph_traits< file_dep_graph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         if (color[*vi] == white_color)
             if (has_cycle_dfs(g, *vi, &color[0]))
                 return true;
@@ -76,7 +76,7 @@ int main(int argc, const char** argv)
     while (input_begin != input_end)
     {
         size_type i, j;
-        boost::tie(i, j) = *input_begin++;
+        eastl::tie(i, j) = *input_begin++;
         add_edge(i, j, g);
     }
 #else
@@ -86,7 +86,7 @@ int main(int argc, const char** argv)
     std::vector< std::string > name(num_vertices(g));
     std::ifstream name_in(argc >= 3 ? argv[2] : "makefile-target-names.dat");
     graph_traits< file_dep_graph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         name_in >> name[*vi];
 
     assert(has_cycle(g) == false);

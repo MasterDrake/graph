@@ -33,7 +33,7 @@ int main()
     auto name_map = get(vertex_name, G);
     char name = 'a';
     graph_traits< graph_t >::vertex_iterator v, v_end;
-    for (boost::tie(v, v_end) = vertices(G); v != v_end; ++v, ++name)
+    for (eastl::tie(v, v_end) = vertices(G); v != v_end; ++v, ++name)
         name_map[*v] = name;
 
     typedef std::pair< int, int > E;
@@ -51,7 +51,7 @@ int main()
     print_graph(G_T, name_map);
 
     graph_traits< graph_t >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(G); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(G); ei != ei_end; ++ei)
         assert(edge(target(*ei, G), source(*ei, G), G_T).second == true);
     return 0;
 }

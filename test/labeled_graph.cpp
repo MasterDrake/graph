@@ -91,7 +91,7 @@ template < typename Graph > void label_graph(Graph& g)
     typedef typename graph_traits< Graph >::vertex_iterator Iter;
     Iter f, l;
     int x = 0;
-    for (boost::tie(f, l) = vertices(g); f != l; ++f, ++x)
+    for (eastl::tie(f, l) = vertices(g); f != l; ++f, ++x)
     {
         label_vertex(*f, x, g);
     }

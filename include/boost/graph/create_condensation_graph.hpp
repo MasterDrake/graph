@@ -26,19 +26,19 @@ void create_condensation_graph(const Graph& g, const ComponentLists& components,
     typedef typename graph_traits< Graph >::vertices_size_type size_type;
     typedef
         typename graph_traits< CondensationGraph >::vertex_descriptor cg_vertex;
-    std::vector< cg_vertex > to_cg_vertex(components.size());
+    eastl::vector< cg_vertex > to_cg_vertex(components.size());
     for (size_type s = 0; s < components.size(); ++s)
         to_cg_vertex[s] = add_vertex(cg);
 
     for (size_type si = 0; si < components.size(); ++si)
     {
         cg_vertex s = to_cg_vertex[si];
-        std::vector< cg_vertex > adj;
+        eastl::vector< cg_vertex > adj;
         for (size_type i = 0; i < components[si].size(); ++i)
         {
             vertex u = components[s][i];
             typename graph_traits< Graph >::adjacency_iterator v, v_end;
-            for (boost::tie(v, v_end) = adjacent_vertices(u, g); v != v_end;
+            for (eastl::tie(v, v_end) = adjacent_vertices(u, g); v != v_end;
                  ++v)
             {
                 cg_vertex t = to_cg_vertex[component_number[*v]];
@@ -46,14 +46,14 @@ void create_condensation_graph(const Graph& g, const ComponentLists& components,
                     adj.push_back(t);
             }
         }
-        std::sort(adj.begin(), adj.end());
+        eastl::sort(adj.begin(), adj.end());
         if (!adj.empty())
         {
             size_type i = 0;
             cg_vertex t = adj[i];
             typename graph_traits< CondensationGraph >::edge_descriptor e;
             bool inserted;
-            boost::tie(e, inserted) = add_edge(s, t, cg);
+            eastl::tie(e, inserted) = add_edge(s, t, cg);
             put(edge_mult_map, e, 1);
             ++i;
             while (i < adj.size())
@@ -63,7 +63,7 @@ void create_condensation_graph(const Graph& g, const ComponentLists& components,
                 else
                 {
                     t = adj[i];
-                    boost::tie(e, inserted) = add_edge(s, t, cg);
+                    eastl::tie(e, inserted) = add_edge(s, t, cg);
                     put(edge_mult_map, e, 1);
                 }
                 ++i;

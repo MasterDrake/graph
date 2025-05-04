@@ -22,9 +22,9 @@
 
 #include <boost/numeric/conversion/cast.hpp>
 
-#include <algorithm>
-#include <vector>
-#include <map>
+#include <EASTL/algorithm.h>
+#include <EASTL/vector.h>
+#include <EASTL/map.h>
 
 namespace boost
 {
@@ -68,19 +68,19 @@ bool is_straight_line_drawing(
     typedef std::size_t x_coord_t;
     typedef std::size_t y_coord_t;
     typedef boost::tuple< edge_t, x_coord_t, y_coord_t > edge_event_t;
-    typedef typename std::vector< edge_event_t > edge_event_queue_t;
+    typedef typename eastl::vector< edge_event_t > edge_event_queue_t;
 
     typedef tuple< y_coord_t, y_coord_t, x_coord_t, x_coord_t >
         active_map_key_t;
     typedef edge_t active_map_value_t;
-    typedef std::map< active_map_key_t, active_map_value_t > active_map_t;
+    typedef eastl::map< active_map_key_t, active_map_value_t > active_map_t;
     typedef typename active_map_t::iterator active_map_iterator_t;
 
     edge_event_queue_t edge_event_queue;
     active_map_t active_edges;
 
     edge_iterator_t ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
     {
         edge_t e(*ei);
         vertex_t s(source(e, g));
@@ -110,7 +110,7 @@ bool is_straight_line_drawing(
         vertex_t source_v(source(e, g));
         vertex_t target_v(target(e, g));
         if (drawing[source_v].y > drawing[target_v].y)
-            std::swap(source_v, target_v);
+            eastl::swap(source_v, target_v);
 
         active_map_key_t key(get(drawing, source_v).y, get(drawing, target_v).y,
             get(drawing, source_v).x, get(drawing, target_v).x);

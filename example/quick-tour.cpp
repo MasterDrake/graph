@@ -45,7 +45,7 @@ void print_trans_delays(
     const Graph& g, TransDelayMap trans_delay_map, VertexNameMap name_map)
 {
     typename graph_traits< Graph >::edge_iterator first, last;
-    for (boost::tie(first, last) = edges(g); first != last; ++first)
+    for (eastl::tie(first, last) = edges(g); first != last; ++first)
     {
         print_trans_delay(*first, g, trans_delay_map, name_map);
         std::cout << std::endl;
@@ -71,19 +71,19 @@ void build_router_network(
     typename graph_traits< Graph >::edge_descriptor ed;
     bool inserted;
 
-    boost::tie(ed, inserted) = add_edge(a, b, g);
+    eastl::tie(ed, inserted) = add_edge(a, b, g);
     delay_map[ed] = 1.2;
-    boost::tie(ed, inserted) = add_edge(a, d, g);
+    eastl::tie(ed, inserted) = add_edge(a, d, g);
     delay_map[ed] = 4.5;
-    boost::tie(ed, inserted) = add_edge(b, d, g);
+    eastl::tie(ed, inserted) = add_edge(b, d, g);
     delay_map[ed] = 1.8;
-    boost::tie(ed, inserted) = add_edge(c, a, g);
+    eastl::tie(ed, inserted) = add_edge(c, a, g);
     delay_map[ed] = 2.6;
-    boost::tie(ed, inserted) = add_edge(c, e, g);
+    eastl::tie(ed, inserted) = add_edge(c, e, g);
     delay_map[ed] = 5.2;
-    boost::tie(ed, inserted) = add_edge(d, c, g);
+    eastl::tie(ed, inserted) = add_edge(d, c, g);
     delay_map[ed] = 0.4;
-    boost::tie(ed, inserted) = add_edge(d, e, g);
+    eastl::tie(ed, inserted) = add_edge(d, e, g);
     delay_map[ed] = 3.3;
 }
 

@@ -13,7 +13,7 @@
 
 #include <stdlib.h>
 #include <iostream>
-#include <algorithm>
+#include <EASTL/algorithm.h>
 #include <assert.h>
 #include <boost/config.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -32,18 +32,18 @@ namespace boost
 // Provide an undirected graph interface alternative to the
 // the source() and target() edge functions.
 template < class UndirectedGraph >
-inline std::pair< typename graph_traits< UndirectedGraph >::vertex_descriptor,
+inline eastl::pair< typename graph_traits< UndirectedGraph >::vertex_descriptor,
     typename graph_traits< UndirectedGraph >::vertex_descriptor >
 incident(typename graph_traits< UndirectedGraph >::edge_descriptor e,
     UndirectedGraph& g)
 {
-    return std::make_pair(source(e, g), target(e, g));
+    return eastl::make_pair(source(e, g), target(e, g));
 }
 
 // Provide an undirected graph interface alternative
 // to the out_edges() function.
 template < class Graph >
-inline std::pair< typename graph_traits< Graph >::out_edge_iterator,
+inline eastl::pair< typename graph_traits< Graph >::out_edge_iterator,
     typename graph_traits< Graph >::out_edge_iterator >
 incident_edges(typename graph_traits< Graph >::vertex_descriptor u, Graph& g)
 {
@@ -150,11 +150,11 @@ void print_in_edges(
     const IncidenceGraph& G, Name name, std::ostream& os = std::cout)
 {
     typename graph_traits< IncidenceGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
     {
         os << get(name, *ui) << " <-- ";
         typename graph_traits< IncidenceGraph >::in_edge_iterator ei, ei_end;
-        for (boost::tie(ei, ei_end) = in_edges(*ui, G); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = in_edges(*ui, G); ei != ei_end; ++ei)
             os << get(name, source(*ei, G)) << " ";
         os << '\n';
     }
@@ -165,11 +165,11 @@ void print_graph_dispatch(const IncidenceGraph& G, Name name, directed_tag,
     std::ostream& os = std::cout)
 {
     typename graph_traits< IncidenceGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
     {
         os << get(name, *ui) << " --> ";
         typename graph_traits< IncidenceGraph >::out_edge_iterator ei, ei_end;
-        for (boost::tie(ei, ei_end) = out_edges(*ui, G); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = out_edges(*ui, G); ei != ei_end; ++ei)
             os << get(name, target(*ei, G)) << " ";
         os << '\n';
     }
@@ -179,11 +179,11 @@ void print_graph_dispatch(const IncidenceGraph& G, Name name, undirected_tag,
     std::ostream& os = std::cout)
 {
     typename graph_traits< IncidenceGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
     {
         os << get(name, *ui) << " <--> ";
         typename graph_traits< IncidenceGraph >::out_edge_iterator ei, ei_end;
-        for (boost::tie(ei, ei_end) = out_edges(*ui, G); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = out_edges(*ui, G); ei != ei_end; ++ei)
             os << get(name, target(*ei, G)) << " ";
         os << '\n';
     }
@@ -206,7 +206,7 @@ void print_edges(
     const EdgeListGraph& G, Name name, std::ostream& os = std::cout)
 {
     typename graph_traits< EdgeListGraph >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(G); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(G); ei != ei_end; ++ei)
         os << "(" << get(name, source(*ei, G)) << ","
            << get(name, target(*ei, G)) << ") ";
     os << '\n';
@@ -217,7 +217,7 @@ void print_edges2(const EdgeListGraph& G, VertexName vname, EdgeName ename,
     std::ostream& os = std::cout)
 {
     typename graph_traits< EdgeListGraph >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(G); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(G); ei != ei_end; ++ei)
         os << get(ename, *ei) << "(" << get(vname, source(*ei, G)) << ","
            << get(vname, target(*ei, G)) << ") ";
     os << '\n';
@@ -228,7 +228,7 @@ void print_vertices(
     const VertexListGraph& G, Name name, std::ostream& os = std::cout)
 {
     typename graph_traits< VertexListGraph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(G); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(G); vi != vi_end; ++vi)
         os << get(name, *vi) << " ";
     os << '\n';
 }
@@ -237,20 +237,20 @@ template < class Graph, class Vertex >
 bool is_adj_dispatch(Graph& g, Vertex a, Vertex b, bidirectional_tag)
 {
     typename graph_traits< Graph >::adjacency_iterator vi, viend, adj_found;
-    boost::tie(vi, viend) = adjacent_vertices(a, g);
-    adj_found = std::find(vi, viend, b);
+    eastl::tie(vi, viend) = adjacent_vertices(a, g);
+    adj_found = eastl::find(vi, viend, b);
     if (adj_found == viend)
         return false;
 
     typename graph_traits< Graph >::out_edge_iterator oi, oiend, out_found;
-    boost::tie(oi, oiend) = out_edges(a, g);
-    out_found = std::find_if(oi, oiend, incident_to(b, g));
+    eastl::tie(oi, oiend) = out_edges(a, g);
+    out_found = eastl::find_if(oi, oiend, incident_to(b, g));
     if (out_found == oiend)
         return false;
 
     typename graph_traits< Graph >::in_edge_iterator ii, iiend, in_found;
-    boost::tie(ii, iiend) = in_edges(b, g);
-    in_found = std::find_if(ii, iiend, incident_from(a, g));
+    eastl::tie(ii, iiend) = in_edges(b, g);
+    in_found = eastl::find_if(ii, iiend, incident_from(a, g));
     if (in_found == iiend)
         return false;
 
@@ -260,15 +260,15 @@ template < class Graph, class Vertex >
 bool is_adj_dispatch(Graph& g, Vertex a, Vertex b, directed_tag)
 {
     typename graph_traits< Graph >::adjacency_iterator vi, viend, found;
-    boost::tie(vi, viend) = adjacent_vertices(a, g);
-    found = std::find(vi, viend, b);
+    eastl::tie(vi, viend) = adjacent_vertices(a, g);
+    found = eastl::find(vi, viend, b);
     if (found == viend)
         return false;
 
     typename graph_traits< Graph >::out_edge_iterator oi, oiend, out_found;
-    boost::tie(oi, oiend) = out_edges(a, g);
+    eastl::tie(oi, oiend) = out_edges(a, g);
 
-    out_found = std::find_if(oi, oiend, incident_to(b, g));
+    out_found = eastl::find_if(oi, oiend, incident_to(b, g));
     if (out_found == oiend)
         return false;
     return true;
@@ -289,16 +289,16 @@ bool is_adjacent(Graph& g, Vertex a, Vertex b)
 template < class Graph, class Edge > bool in_edge_set(Graph& g, Edge e)
 {
     typename Graph::edge_iterator ei, ei_end, found;
-    boost::tie(ei, ei_end) = edges(g);
-    found = std::find(ei, ei_end, e);
+    eastl::tie(ei, ei_end) = edges(g);
+    found = eastl::find(ei, ei_end, e);
     return found != ei_end;
 }
 
 template < class Graph, class Vertex > bool in_vertex_set(Graph& g, Vertex v)
 {
     typename Graph::vertex_iterator vi, vi_end, found;
-    boost::tie(vi, vi_end) = vertices(g);
-    found = std::find(vi, vi_end, v);
+    eastl::tie(vi, vi_end) = vertices(g);
+    found = eastl::find(vi, vi_end, v);
     return found != vi_end;
 }
 
@@ -306,7 +306,7 @@ template < class Graph, class Vertex >
 bool in_edge_set(Graph& g, Vertex u, Vertex v)
 {
     typename Graph::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         if (source(*ei, g) == u && target(*ei, g) == v)
             return true;
     return false;
@@ -348,11 +348,11 @@ inline bool is_connected(const VertexListGraph& g, VertexColorMap color)
     typedef color_traits< ColorValue > Color;
     typename graph_traits< VertexListGraph >::vertex_iterator ui, ui_end, vi,
         vi_end, ci, ci_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             if (*ui != *vi)
             {
-                for (boost::tie(ci, ci_end) = vertices(g); ci != ci_end; ++ci)
+                for (eastl::tie(ci, ci_end) = vertices(g); ci != ci_end; ++ci)
                     put(color, *ci, Color::white());
                 if (!is_reachable(*ui, *vi, g, color))
                     return false;
@@ -368,31 +368,31 @@ bool is_self_loop(
 }
 
 template < class T1, class T2 >
-std::pair< T1, T2 > make_list(const T1& t1, const T2& t2)
+eastl::pair< T1, T2 > make_list(const T1& t1, const T2& t2)
 {
-    return std::make_pair(t1, t2);
+    return eastl::make_pair(t1, t2);
 }
 
 template < class T1, class T2, class T3 >
-std::pair< T1, std::pair< T2, T3 > > make_list(
+eastl::pair< T1, eastl::pair< T2, T3 > > make_list(
     const T1& t1, const T2& t2, const T3& t3)
 {
-    return std::make_pair(t1, std::make_pair(t2, t3));
+    return eastl::make_pair(t1, eastl::make_pair(t2, t3));
 }
 
 template < class T1, class T2, class T3, class T4 >
-std::pair< T1, std::pair< T2, std::pair< T3, T4 > > > make_list(
+eastl::pair< T1, eastl::pair< T2, eastl::pair< T3, T4 > > > make_list(
     const T1& t1, const T2& t2, const T3& t3, const T4& t4)
 {
-    return std::make_pair(t1, std::make_pair(t2, std::make_pair(t3, t4)));
+    return eastl::make_pair(t1, eastl::make_pair(t2, eastl::make_pair(t3, t4)));
 }
 
 template < class T1, class T2, class T3, class T4, class T5 >
-std::pair< T1, std::pair< T2, std::pair< T3, std::pair< T4, T5 > > > >
+eastl::pair< T1, eastl::pair< T2, eastl::pair< T3, eastl::pair< T4, T5 > > > >
 make_list(const T1& t1, const T2& t2, const T3& t3, const T4& t4, const T5& t5)
 {
-    return std::make_pair(
-        t1, std::make_pair(t2, std::make_pair(t3, std::make_pair(t4, t5))));
+    return eastl::make_pair(
+        t1, eastl::make_pair(t2, eastl::make_pair(t3, eastl::make_pair(t4, t5))));
 }
 
 namespace graph
@@ -426,14 +426,14 @@ namespace graph
     template < typename Graph > bool has_no_vertices(const Graph& g)
     {
         typedef typename boost::graph_traits< Graph >::vertex_iterator vi;
-        std::pair< vi, vi > p = vertices(g);
+        eastl::pair< vi, vi > p = vertices(g);
         return (p.first == p.second);
     }
 
     template < typename Graph > bool has_no_edges(const Graph& g)
     {
         typedef typename boost::graph_traits< Graph >::edge_iterator ei;
-        std::pair< ei, ei > p = edges(g);
+        eastl::pair< ei, ei > p = edges(g);
         return (p.first == p.second);
     }
 
@@ -443,7 +443,7 @@ namespace graph
         const Graph& g)
     {
         typedef typename boost::graph_traits< Graph >::out_edge_iterator ei;
-        std::pair< ei, ei > p = out_edges(v, g);
+        eastl::pair< ei, ei > p = out_edges(v, g);
         return (p.first == p.second);
     }
 

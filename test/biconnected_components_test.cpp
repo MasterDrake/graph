@@ -39,7 +39,7 @@ void check_articulation_points(const Graph& g, std::vector< Vertex > art_points)
     std::vector< Vertex > art_points_check;
 
     typename graph_traits< Graph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         Graph g_copy(g);
         Vertex victim = vertex(get(vertex_index, g, *vi), g_copy);
@@ -110,7 +110,7 @@ bool test_graph(Graph& g)
         }
 
         graph_traits< Graph >::edge_iterator ei, ei_end;
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
             out << source(*ei, g) << " -- " << target(*ei, g) << "[label=\""
                 << g[*ei].component << "\"]\n";
         out << "}\n";

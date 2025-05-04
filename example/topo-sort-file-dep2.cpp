@@ -40,7 +40,7 @@ void dfs_v1(
     color[u] = gray_color;
     vis.discover_vertex(u, g);
     graph_traits< file_dep_graph >::out_edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
     {
         if (color[target(*ei, g)] == white_color)
         {
@@ -61,7 +61,7 @@ void generic_dfs_v1(const file_dep_graph& g, Visitor vis)
 {
     std::vector< default_color_type > color(num_vertices(g), white_color);
     graph_traits< file_dep_graph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         if (color[*vi] == white_color)
             dfs_v1(g, *vi, &color[0], vis);
@@ -112,7 +112,7 @@ int main(int argc, const char** argv)
     while (input_begin != input_end)
     {
         size_type i, j;
-        boost::tie(i, j) = *input_begin++;
+        eastl::tie(i, j) = *input_begin++;
         add_edge(i, j, g);
     }
 #else
@@ -122,7 +122,7 @@ int main(int argc, const char** argv)
     std::vector< std::string > name(num_vertices(g));
     std::ifstream name_in(argc >= 2 ? argv[1] : "makefile-target-names.dat");
     graph_traits< file_dep_graph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         name_in >> name[*vi];
 
     std::vector< vertex_t > order(num_vertices(g));

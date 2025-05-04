@@ -19,14 +19,14 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/max_cardinality_matching.hpp>  // for empty_matching
 
-#include <algorithm>
-#include <deque>
-#include <limits>
-#include <list>
-#include <stack>
-#include <tuple>  // for std::tie
-#include <utility>  // for std::pair, std::swap
-#include <vector>
+#include <EASTL/algorithm.h>
+#include <EASTL/deque.h>
+#include <EASTL/limits.h>
+#include <EASTL/list.h>
+#include <EASTL/stack.h>
+#include <EASTL/tuple.h>  // for eastl::tie
+#include <EASTL/utility.h>  // for eastl::pair, eastl::swap
+#include <EASTL/vector.h>
 
 namespace boost
 {
@@ -44,7 +44,7 @@ matching_weight_sum(const Graph& g, MateMap mate, VertexIndexMap vm)
     edge_property_t weight_sum = 0;
     vertex_iterator_t vi, vi_end;
 
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         vertex_descriptor_t v = *vi;
         if (get(mate, v) != graph_traits<Graph>::null_vertex()
@@ -72,7 +72,7 @@ public:
     using vertex_descriptor_t = typename graph_traits<Graph>::vertex_descriptor;
     using vertex_iterator_t = typename graph_traits<Graph>::vertex_iterator;
     using vertex_vec_iter_t =
-        typename std::vector<vertex_descriptor_t>::iterator;
+        typename eastl::vector<vertex_descriptor_t>::iterator;
     using edge_iterator_t = typename graph_traits<Graph>::edge_iterator;
     using vertex_to_vertex_map_t =
         boost::iterator_property_map<vertex_vec_iter_t, VertexIndexMap>;
@@ -87,25 +87,25 @@ public:
     , best_mate(best_mate_vector.begin(), vm)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(*g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(*g); vi != vi_end; ++vi)
             best_mate[*vi] = mate[*vi] = get(arg_mate, *vi);
     }
 
     template <typename PropertyMap> void find_matching(PropertyMap pm)
     {
         edge_iterator_t ei;
-        boost::tie(ei, ei_end) = edges(*g);
+        eastl::tie(ei, ei_end) = edges(*g);
         select_edge(ei);
 
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(*g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(*g); vi != vi_end; ++vi)
             put(pm, *vi, best_mate[*vi]);
     }
 
 private:
     const Graph* g;
     VertexIndexMap vm;
-    std::vector<vertex_descriptor_t> mate_vector, best_mate_vector;
+    eastl::vector<vertex_descriptor_t> mate_vector, best_mate_vector;
     vertex_to_vertex_map_t mate, best_mate;
     edge_iterator_t ei_end;
 
@@ -117,7 +117,7 @@ private:
                 > matching_weight_sum(*g, best_mate))
             {
                 vertex_iterator_t vi, vi_end;
-                for (boost::tie(vi, vi_end) = vertices(*g); vi != vi_end; ++vi)
+                for (eastl::tie(vi, vi_end) = vertices(*g); vi != vi_end; ++vi)
                     best_mate[*vi] = mate[*vi];
             }
             return;
@@ -166,9 +166,9 @@ template <typename Graph, typename VertexIndexMap>
 void check_vertex_index_range(const Graph& g, VertexIndexMap vm)
 {
     using index_t = typename property_traits<VertexIndexMap>::value_type;
-    using unsigned_index_t = typename std::make_unsigned<index_t>::type;
+    using unsigned_index_t = typename eastl::make_unsigned<index_t>::type;
     auto nv = num_vertices(g);
-    std::vector<bool> got_vertex(nv);
+    eastl::vector<bool> got_vertex(nv);
     for (const auto& x : make_iterator_range(vertices(g)))
     {
         index_t i = get(vm, x);
@@ -188,7 +188,7 @@ void check_maximum_weighted_matching_edge_weights(
     for (const auto& e : make_iterator_range(edges(g)))
     {
         auto w = get(edge_weights, e);
-        auto max_weight = (std::numeric_limits<decltype(w)>::max)() / 4;
+        auto max_weight = (eastl::numeric_limits<decltype(w)>::max)() / 4;
         if (!(w <= max_weight))  // inverted logic to catch NaN
             throw bad_graph("Edge weight exceeds maximum supported value.");
     }
@@ -205,7 +205,7 @@ struct maximum_weighted_matching_context
     using weight_t = typename property_traits<EdgeWeightMap>::value_type;
 
     /** Ordered pair of vertices. */
-    using vertex_pair_t = std::pair<vertex_t, vertex_t>;
+    using vertex_pair_t = eastl::pair<vertex_t, vertex_t>;
 
     /**
      * List of edges forming an alternating path or alternating cycle.
@@ -214,7 +214,7 @@ struct maximum_weighted_matching_context
      * that are internal to blossoms. Vertex pairs are oriented to match the
      * direction of the path.
      */
-    using alternating_path_t = std::deque<vertex_pair_t>;
+    using alternating_path_t = eastl::deque<vertex_pair_t>;
 
     /** Top-level blossoms may be labeled "S" or "T" or unlabeled. */
     enum blossom_label_t { LABEL_NONE = 0, LABEL_S = 1, LABEL_T = 2 };
@@ -296,18 +296,18 @@ struct maximum_weighted_matching_context
         };
 
         /** List of sub-blossoms, ordered along the alternating cycle. */
-        std::list<sub_blossom_t> subblossoms;
+        eastl::list<sub_blossom_t> subblossoms;
 
         /** Dual LPP variable for this blossom. */
         weight_t dual_var;
 
         /** Least-slack edges to other S-blossoms. */
-        std::list<edge_t> best_edge_set;
+        eastl::list<edge_t> best_edge_set;
 
         /** Initialize a non-trivial blossom. */
         nontrivial_blossom_t(
-            const std::vector<blossom_t*>& blossoms,
-            const std::deque<vertex_pair_t>& edges)
+            const eastl::vector<blossom_t*>& blossoms,
+            const eastl::deque<vertex_pair_t>& edges)
           : blossom_t(blossoms.front()->base_vertex, true)
           , dual_var(0)
         {
@@ -326,7 +326,7 @@ struct maximum_weighted_matching_context
         }
 
         /** Find the position of the specified subblossom. */
-        std::pair<vertices_size_t, typename std::list<sub_blossom_t>::iterator>
+        eastl::pair<vertices_size_t, typename eastl::list<sub_blossom_t>::iterator>
         find_subblossom(blossom_t* child)
         {
             vertices_size_t pos = 0;
@@ -336,7 +336,7 @@ struct maximum_weighted_matching_context
                 ++pos;
                 BOOST_ASSERT(it != subblossoms.end());
             }
-            return std::make_pair(pos, it);
+            return eastl::make_pair(pos, it);
         }
     };
 
@@ -361,7 +361,7 @@ struct maximum_weighted_matching_context
     struct vertex_map
     {
         using key_type = typename property_traits<VertexIndexMap>::key_type;
-        std::vector<T> vec;
+        eastl::vector<T> vec;
         VertexIndexMap vm;
 
         vertex_map(vertices_size_t arg_size, VertexIndexMap arg_vm)
@@ -400,7 +400,7 @@ struct maximum_weighted_matching_context
 
     /** Scale integer edge weights to enable integer-only calculations. */
     static constexpr weight_t weight_factor =
-        std::numeric_limits<weight_t>::is_integer ? 2 : 1;
+        eastl::numeric_limits<weight_t>::is_integer ? 2 : 1;
 
     /** Input graph. */
     const Graph* g;
@@ -425,7 +425,7 @@ struct maximum_weighted_matching_context
      * This must be a linked list to ensure that elements can be added
      * and removed without invalidating pointers to other elements.
      */
-    std::list<nontrivial_blossom_t> nontrivial_blossom;
+    eastl::list<nontrivial_blossom_t> nontrivial_blossom;
 
     /** For each vertex, the unique top-level blossom that contains it. */
     vertex_map<blossom_t*> vertex_top_blossom;
@@ -437,7 +437,7 @@ struct maximum_weighted_matching_context
     vertex_map<optional<edge_t>> vertex_best_edge;
 
     /** Queue of S-vertices to be scanned. */
-    std::deque<vertex_t> scan_queue;
+    eastl::deque<vertex_t> scan_queue;
 
     /** Initialize the matching algorithm. */
     explicit maximum_weighted_matching_context(
@@ -454,7 +454,7 @@ struct maximum_weighted_matching_context
         // Vertex duals are initialized to half the maximum edge weight.
         weight_t max_weight = 0;
         for (const edge_t& e : make_iterator_range(edges(*g)))
-            max_weight = (std::max)(max_weight, get(weights, e));
+            max_weight = (eastl::max)(max_weight, get(weights, e));
         weight_t init_vertex_dual = max_weight * (weight_factor / 2);
 
         for (const vertex_t& x : make_iterator_range(vertices(*g)))
@@ -480,7 +480,7 @@ struct maximum_weighted_matching_context
         if (ntb) {
             // Visit all vertices in the non-trivial blossom.
             // Use an explicit stack to avoid deep call chains.
-            std::vector<const nontrivial_blossom_t*> stack;
+            eastl::vector<const nontrivial_blossom_t*> stack;
             stack.push_back(ntb);
             while (!stack.empty()) {
                 auto cur = stack.back();
@@ -581,7 +581,7 @@ struct maximum_weighted_matching_context
     {
         // Build a temporary array holding the least-slack edges to
         // other S-blossoms. The array is indexed by base vertex.
-        std::vector<least_slack_edge_t> tmp_best_edge(num_vertices(*g));
+        eastl::vector<least_slack_edge_t> tmp_best_edge(num_vertices(*g));
 
         // Collect edges from sub-blossoms that were S-blossoms.
         for (auto& sub : blossom.subblossoms)
@@ -721,7 +721,7 @@ struct maximum_weighted_matching_context
         BOOST_ASSERT(path.size() >= 3);
 
         // Collect pointers to sub-blossoms.
-        std::vector<blossom_t*> subblossoms;
+        eastl::vector<blossom_t*> subblossoms;
         subblossoms.reserve(path.size());
         for (const vertex_pair_t& edge : path)
             subblossoms.push_back(vertex_top_blossom[edge.first]);
@@ -788,7 +788,7 @@ struct maximum_weighted_matching_context
 
         // Get the edge that attached this blossom to the alternating tree.
         vertex_t x, y;
-        std::tie(x, y) = blossom->tree_edge;
+        eastl::tie(x, y) = blossom->tree_edge;
 
         // Reconstruct the tree in an even number of steps from entry to base.
         auto sub_it = entry_it;
@@ -802,7 +802,7 @@ struct maximum_weighted_matching_context
                 --sub_it;
                 BOOST_ASSERT(sub_it != sub_begin);
                 --sub_it;
-                std::tie(y, x) = sub_it->edge;
+                eastl::tie(y, x) = sub_it->edge;
             }
         }
         else
@@ -813,7 +813,7 @@ struct maximum_weighted_matching_context
                 extend_tree_s_to_t(x, y);
                 ++sub_it;
                 BOOST_ASSERT(sub_it != sub_end);
-                std::tie(x, y) = sub_it->edge;
+                eastl::tie(x, y) = sub_it->edge;
                 ++sub_it;
             }
         }
@@ -821,11 +821,11 @@ struct maximum_weighted_matching_context
         // Assign label T to the base sub-blossom.
         blossom_t* base = blossom->subblossoms.front().blossom;
         base->label = LABEL_T;
-        base->tree_edge = std::make_pair(x, y);
+        base->tree_edge = eastl::make_pair(x, y);
         base->tree_root = blossom->tree_root;
 
         // Delete the expanded blossom.
-        auto blossom_it = std::find_if(
+        auto blossom_it = eastl::find_if(
             nontrivial_blossom.begin(),
             nontrivial_blossom.end(),
             [blossom](const nontrivial_blossom_t& b)
@@ -838,7 +838,7 @@ struct maximum_weighted_matching_context
 
     void augment_blossom_rec(
         nontrivial_blossom_t& blossom, blossom_t& entry,
-        std::stack<std::pair<nontrivial_blossom_t*, blossom_t*>>& stack)
+        eastl::stack<eastl::pair<nontrivial_blossom_t*, blossom_t*>>& stack)
     {
         auto subblossom_loc = blossom.find_subblossom(&entry);
         auto entry_pos = subblossom_loc.first;
@@ -861,14 +861,14 @@ struct maximum_weighted_matching_context
                 BOOST_ASSERT(sub_it != sub_begin);
                 --sub_it;
                 bx = sub_it->blossom;
-                std::tie(x, y) = sub_it->edge;
+                eastl::tie(x, y) = sub_it->edge;
             }
             else
             {
                 // Walk forward around the blossom.
                 ++sub_it;
                 BOOST_ASSERT(sub_it != sub_end);
-                std::tie(x, y) = sub_it->edge;
+                eastl::tie(x, y) = sub_it->edge;
                 bx = sub_it->blossom;
                 ++sub_it;
                 by = (sub_it == sub_end) ?
@@ -900,19 +900,19 @@ struct maximum_weighted_matching_context
     void augment_blossom(nontrivial_blossom_t& blossom, blossom_t& entry)
     {
         // Use an explicit stack to avoid deep call chains.
-        std::stack<std::pair<nontrivial_blossom_t*, blossom_t*>> stack;
+        eastl::stack<eastl::pair<nontrivial_blossom_t*, blossom_t*>> stack;
         stack.emplace(&blossom, &entry);
 
         while (!stack.empty()) {
             nontrivial_blossom_t* outer_blossom;
             blossom_t* inner_entry;
-            std::tie(outer_blossom, inner_entry) = stack.top();
+            eastl::tie(outer_blossom, inner_entry) = stack.top();
 
             nontrivial_blossom_t* inner_blossom = inner_entry->parent;
             BOOST_ASSERT(inner_blossom);
 
             if (inner_blossom != outer_blossom)
-                stack.top() = std::make_pair(outer_blossom, inner_blossom);
+                stack.top() = eastl::make_pair(outer_blossom, inner_blossom);
             else
                 stack.pop();
 
@@ -962,13 +962,13 @@ struct maximum_weighted_matching_context
      */
     void refresh_scan_queue()
     {
-        std::deque<vertex_t> new_scan_queue;
+        eastl::deque<vertex_t> new_scan_queue;
         for (const vertex_t& x : scan_queue)
         {
             if (vertex_top_blossom[x]->label == LABEL_S)
                 new_scan_queue.push_back(x);
         }
-        scan_queue = std::move(new_scan_queue);
+        scan_queue = eastl::move(new_scan_queue);
     }
 
     /** Remove edges to non-S-vertices from delta3 edge tracking. */
@@ -1048,7 +1048,7 @@ struct maximum_weighted_matching_context
     void remove_alternating_tree(vertex_t r1, vertex_t r2)
     {
         // Find blossoms that are part of the specified alternating trees.
-        std::vector<blossom_t*> former_s_blossoms;
+        eastl::vector<blossom_t*> former_s_blossoms;
         for (vertex_t x : make_iterator_range(vertices(*g)))
         {
             blossom_t* b = vertex_top_blossom[x];
@@ -1138,7 +1138,7 @@ struct maximum_weighted_matching_context
         BOOST_ASSERT(bx->label == LABEL_S);
         BOOST_ASSERT(by->label == LABEL_NONE);
         by->label = LABEL_T;
-        by->tree_edge = std::make_pair(x, y);
+        by->tree_edge = eastl::make_pair(x, y);
         by->tree_root = bx->tree_root;
 
         vertex_t y2 = by->base_vertex;
@@ -1149,7 +1149,7 @@ struct maximum_weighted_matching_context
         BOOST_ASSERT(bz->label == LABEL_NONE);
         BOOST_ASSERT(!bz->best_edge.has_value());
         bz->label = LABEL_S;
-        bz->tree_edge = std::make_pair(y2, z);
+        bz->tree_edge = eastl::make_pair(y2, z);
         bz->tree_root = by->tree_root;
         add_vertices_to_scan_queue(*bz);
     }
@@ -1262,11 +1262,11 @@ struct maximum_weighted_matching_context
 
         // Compute delta1: minimum dual variable of any S-vertex.
         delta.kind = 1;
-        delta.value = (std::numeric_limits<weight_t>::max)();
+        delta.value = (eastl::numeric_limits<weight_t>::max)();
         for (vertex_t x : make_iterator_range(vertices(*g)))
         {
             if (vertex_top_blossom[x]->label == LABEL_S)
-                delta.value = (std::min)(delta.value, vertex_dual[x]);
+                delta.value = (eastl::min)(delta.value, vertex_dual[x]);
         }
 
         // Compute delta2: minimum slack of edge from S-vertex to unlabeled.
@@ -1349,7 +1349,7 @@ struct maximum_weighted_matching_context
                 vertex_t x = source(delta.edge, *g);
                 vertex_t y = target(delta.edge, *g);
                 if (vertex_top_blossom[x]->label != LABEL_S)
-                    std::swap(x, y);
+                    eastl::swap(x, y);
                 extend_tree_s_to_t(x, y);
             }
             else if (delta.kind == 3)
@@ -1385,7 +1385,7 @@ struct maximum_weighted_matching_context
             BOOST_ASSERT(bx->label == LABEL_NONE);
             BOOST_ASSERT(bx->base_vertex == x);
             bx->label = LABEL_S;
-            bx->tree_edge = std::make_pair(null_vertex(), x);
+            bx->tree_edge = eastl::make_pair(null_vertex(), x);
             bx->tree_root = x;
             scan_queue.push_back(x);
         }

@@ -10,7 +10,7 @@
 #ifndef BOOST_GRAPH_LOOKUP_EDGE_HPP
 #define BOOST_GRAPH_LOOKUP_EDGE_HPP
 
-#include <utility>
+#include <EASTL/utility.h>
 #include <boost/config.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -22,7 +22,7 @@ namespace boost
 {
 
 template < typename Graph >
-std::pair< typename boost::graph_traits< Graph >::edge_descriptor, bool >
+eastl::pair< typename boost::graph_traits< Graph >::edge_descriptor, bool >
 lookup_edge(typename boost::graph_traits< Graph >::vertex_descriptor src,
     typename boost::graph_traits< Graph >::vertex_descriptor tgt,
     const Graph& g,
@@ -32,7 +32,7 @@ lookup_edge(typename boost::graph_traits< Graph >::vertex_descriptor src,
 }
 
 template < typename Graph >
-std::pair< typename boost::graph_traits< Graph >::edge_descriptor, bool >
+eastl::pair< typename boost::graph_traits< Graph >::edge_descriptor, bool >
 lookup_edge(typename boost::graph_traits< Graph >::vertex_descriptor src,
     typename boost::graph_traits< Graph >::vertex_descriptor tgt,
     const Graph& g,
@@ -40,14 +40,14 @@ lookup_edge(typename boost::graph_traits< Graph >::vertex_descriptor src,
 {
     typedef typename boost::graph_traits< Graph >::out_edge_iterator it;
     typedef typename boost::graph_traits< Graph >::edge_descriptor edesc;
-    std::pair< it, it > oe = out_edges(src, g);
+    eastl::pair< it, it > oe = out_edges(src, g);
     for (; oe.first != oe.second; ++oe.first)
     {
         edesc e = *oe.first;
         if (target(e, g) == tgt)
-            return std::make_pair(e, true);
+            return eastl::make_pair(e, true);
     }
-    return std::make_pair(edesc(), false);
+    return eastl::make_pair(edesc(), false);
 }
 
 }

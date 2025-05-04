@@ -20,9 +20,9 @@
 
 #include <iostream>
 #include <iomanip>
-#include <iterator>
-#include <vector>
-#include <utility>
+#include <EASTL/iterator.h>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
 
 #include <boost/assert.hpp>
 #include <boost/concept/assert.hpp>
@@ -96,16 +96,16 @@ namespace detail
         IndexMapThis index_map_this_;
         IndexMapOther index_map_other_;
 
-        std::vector< vertex_other_type > core_vec_;
+        eastl::vector< vertex_other_type > core_vec_;
         typedef iterator_property_map<
-            typename std::vector< vertex_other_type >::iterator, IndexMapThis,
+            typename eastl::vector< vertex_other_type >::iterator, IndexMapThis,
             vertex_other_type, vertex_other_type& >
             core_map_type;
         core_map_type core_;
 
-        std::vector< size_type > in_vec_, out_vec_;
+        eastl::vector< size_type > in_vec_, out_vec_;
         typedef iterator_property_map<
-            typename std::vector< size_type >::iterator, IndexMapThis,
+            typename eastl::vector< size_type >::iterator, IndexMapThis,
             size_type, size_type& >
             in_out_map_type;
         in_out_map_type in_, out_;
@@ -340,7 +340,7 @@ namespace detail
         }
 
     private:
-        std::set< edge_type > matched_edges_;
+        eastl::set< edge_type > matched_edges_;
     };
 
     template < typename Graph >
@@ -355,7 +355,7 @@ namespace detail
 
             typename graph_traits< Graph >::edge_descriptor e;
             bool found;
-            boost::tie(e, found) = edge(s, t, g);
+            eastl::tie(e, found) = edge(s, t, g);
             if (!found)
                 return false;
             else if (is_valid_edge(e))
@@ -769,7 +769,7 @@ namespace detail
 
         typedef vf2_match_continuation< Graph1, Graph2, VertexOrder1 >
             match_continuation_type;
-        std::vector< match_continuation_type > k;
+        eastl::vector< match_continuation_type > k;
         bool found_match = false;
 
     recur:
@@ -792,7 +792,7 @@ namespace detail
             ++graph1_verts_iter;
         }
 
-        boost::tie(graph2_verts_iter, graph2_verts_iter_end) = vertices(graph2);
+        eastl::tie(graph2_verts_iter, graph2_verts_iter_end) = vertices(graph2);
         while (graph2_verts_iter != graph2_verts_iter_end)
         {
             if (s.possible_candidate2(*graph2_verts_iter))
@@ -836,8 +836,8 @@ namespace detail
         bool operator()(const vertex_type& v, const vertex_type& w) const
         {
             // lexicographical comparison
-            return std::make_pair(in_degree(v, graph_), out_degree(v, graph_))
-                < std::make_pair(in_degree(w, graph_), out_degree(w, graph_));
+            return eastl::make_pair(in_degree(v, graph_), out_degree(v, graph_))
+                < eastl::make_pair(in_degree(w, graph_), out_degree(w, graph_));
         }
 
         const Graph& graph_;
@@ -857,9 +857,9 @@ namespace detail
         bool operator()(const vertex_type& v, const vertex_type& w) const
         {
             // lexicographical comparison
-            return std::make_pair(
+            return eastl::make_pair(
                        freq_[v], in_degree(v, graph_) + out_degree(v, graph_))
-                < std::make_pair(
+                < eastl::make_pair(
                     freq_[w], in_degree(w, graph_) + out_degree(w, graph_));
         }
 
@@ -876,9 +876,9 @@ namespace detail
 
         boost::range::sort(order, vertex_in_out_degree_cmp< Graph >(graph));
 
-        std::vector< size_type > freq_vec(num_vertices(graph), 0);
+        eastl::vector< size_type > freq_vec(num_vertices(graph), 0);
         typedef iterator_property_map<
-            typename std::vector< size_type >::iterator, IndexMap, size_type,
+            typename eastl::vector< size_type >::iterator, IndexMap, size_type,
             size_type& >
             frequency_map_type;
 
@@ -1014,14 +1014,14 @@ namespace detail
 
 // Returns vertex order (vertices sorted by multiplicity of in/out degrees)
 template < typename Graph >
-std::vector< typename graph_traits< Graph >::vertex_descriptor >
+eastl::vector< typename graph_traits< Graph >::vertex_descriptor >
 vertex_order_by_mult(const Graph& graph)
 {
 
-    std::vector< typename graph_traits< Graph >::vertex_descriptor >
+    eastl::vector< typename graph_traits< Graph >::vertex_descriptor >
         vertex_order;
-    std::copy(vertices(graph).first, vertices(graph).second,
-        std::back_inserter(vertex_order));
+    eastl::copy(vertices(graph).first, vertices(graph).second,
+        eastl::back_inserter(vertex_order));
 
     detail::sort_vertices(graph, get(vertex_index, graph), vertex_order);
     return vertex_order;

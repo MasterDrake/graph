@@ -90,7 +90,7 @@ inline typename Measure::result_type closeness_centrality(
     BOOST_CONCEPT_ASSERT((ReadablePropertyMapConcept< DistanceMap, Vertex >));
     typedef typename property_traits< DistanceMap >::value_type Distance;
 
-    return closeness_centrality(g, dist, measure, std::plus< Distance >());
+    return closeness_centrality(g, dist, measure, eastl::plus< Distance >());
 }
 
 template < typename Graph, typename DistanceMap >
@@ -121,7 +121,7 @@ inline void all_closeness_centralities(
     typedef typename property_traits< CentralityMap >::value_type Centrality;
 
     typename graph_traits< Graph >::vertex_iterator i, end;
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         DistanceMap dm = get(dist, *i);
         Centrality c = closeness_centrality(g, dm, measure);

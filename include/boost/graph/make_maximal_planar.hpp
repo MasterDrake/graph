@@ -12,9 +12,9 @@
 #include <boost/tuple/tuple.hpp> //for tie
 #include <boost/graph/biconnected_components.hpp>
 #include <boost/property_map/property_map.hpp>
-#include <vector>
-#include <iterator>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/iterator.h>
+#include <EASTL/algorithm.h>
 
 #include <boost/graph/planar_face_traversal.hpp>
 #include <boost/graph/planar_detail/add_edge_visitors.hpp>
@@ -34,9 +34,9 @@ struct triangulation_visitor : public planar_face_traversal_visitor
     typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator_t;
     typedef
         typename graph_traits< Graph >::adjacency_iterator adjacency_iterator_t;
-    typedef typename std::vector< vertex_t > vertex_vector_t;
-    typedef typename std::vector< v_size_t > v_size_vector_t;
-    typedef typename std::vector< degree_size_t > degree_size_vector_t;
+    typedef typename eastl::vector< vertex_t > vertex_vector_t;
+    typedef typename eastl::vector< v_size_t > v_size_vector_t;
+    typedef typename eastl::vector< degree_size_t > degree_size_vector_t;
     typedef iterator_property_map< typename v_size_vector_t::iterator,
         VertexIndexMap >
         vertex_to_v_size_map_t;
@@ -57,7 +57,7 @@ struct triangulation_visitor : public planar_face_traversal_visitor
     , degree(degree_vector.begin(), vm)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             put(degree, *vi, out_degree(*vi, g));
     }
 
@@ -102,15 +102,15 @@ struct triangulation_visitor : public planar_face_traversal_visitor
         // (counter-clockwise) order of the vertices on this face, but now the
         // min_degree_vertex is the first element in vertices_on_face.
         vertex_vector_t temp_vector;
-        std::copy(min_degree_vertex_itr, vertices_on_face.end(),
-            std::back_inserter(temp_vector));
-        std::copy(vertices_on_face.begin(), min_degree_vertex_itr,
-            std::back_inserter(temp_vector));
+        eastl::copy(min_degree_vertex_itr, vertices_on_face.end(),
+            eastl::back_inserter(temp_vector));
+        eastl::copy(vertices_on_face.begin(), min_degree_vertex_itr,
+            eastl::back_inserter(temp_vector));
         vertices_on_face.swap(temp_vector);
 
         // Mark all of the min degree vertex's neighbors
         adjacency_iterator_t ai, ai_end;
-        for (boost::tie(ai, ai_end)
+        for (eastl::tie(ai, ai_end)
              = adjacent_vertices(vertices_on_face.front(), g);
              ai != ai_end; ++ai)
         {

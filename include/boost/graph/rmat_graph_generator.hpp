@@ -10,11 +10,11 @@
 #define BOOST_GRAPH_RMAT_GENERATOR_HPP
 
 #include <math.h>
-#include <iterator>
-#include <utility>
-#include <vector>
-#include <queue>
-#include <map>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
+#include <EASTL/vector.h>
+#include <EASTL/queue.h>
+#include <EASTL/map.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/assert.hpp>
 #include <boost/random/uniform_int.hpp>
@@ -65,7 +65,7 @@ private:
 
 template < typename RandomGenerator, typename T >
 void generate_permutation_vector(
-    RandomGenerator& gen, std::vector< T >& vertexPermutation, T n)
+    RandomGenerator& gen, eastl::vector< T >& vertexPermutation, T n)
 {
     using boost::uniform_int;
 
@@ -79,11 +79,11 @@ void generate_permutation_vector(
     // Can't use std::random_shuffle unless we create another (synchronized)
     // PRNG
     for (T i = 0; i < n; ++i)
-        std::swap(vertexPermutation[i], vertexPermutation[rand_vertex(gen)]);
+        eastl::swap(vertexPermutation[i], vertexPermutation[rand_vertex(gen)]);
 }
 
 template < typename RandomGenerator, typename T >
-std::pair< T, T > generate_edge(
+eastl::pair< T, T > generate_edge(
     shared_ptr< uniform_01< RandomGenerator > > prob, T n, unsigned int SCALE,
     double a, double b, double c, double d)
 {
@@ -124,7 +124,7 @@ std::pair< T, T > generate_edge(
         d = 1. - a - b - c;
     }
 
-    return std::make_pair(u, v);
+    return eastl::make_pair(u, v);
 }
 
 namespace boost
@@ -148,8 +148,8 @@ template < typename RandomGenerator, typename Graph > class rmat_iterator
     typedef typename graph_traits< Graph >::edges_size_type edges_size_type;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< vertices_size_type, vertices_size_type > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< vertices_size_type, vertices_size_type > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef std::ptrdiff_t difference_type; // Not used
@@ -184,13 +184,13 @@ public:
 
         // Generate the first edge
         vertices_size_type u, v;
-        boost::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
+        eastl::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
 
         if (permute_vertices)
             current
-                = std::make_pair(vertexPermutation[u], vertexPermutation[v]);
+                = eastl::make_pair(vertexPermutation[u], vertexPermutation[v]);
         else
-            current = std::make_pair(u, v);
+            current = eastl::make_pair(u, v);
 
         --edge;
     }
@@ -201,13 +201,13 @@ public:
     rmat_iterator& operator++()
     {
         vertices_size_type u, v;
-        boost::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
+        eastl::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
 
         if (permute_vertices)
             current
-                = std::make_pair(vertexPermutation[u], vertexPermutation[v]);
+                = eastl::make_pair(vertexPermutation[u], vertexPermutation[v]);
         else
-            current = std::make_pair(u, v);
+            current = eastl::make_pair(u, v);
 
         --edge;
 
@@ -241,14 +241,14 @@ private:
     int SCALE;
 
     // Internal data structures
-    std::vector< vertices_size_type > vertexPermutation;
+    eastl::vector< vertices_size_type > vertexPermutation;
     value_type current;
 };
 
 // Sorted version for CSR
 template < typename T > struct sort_pair
 {
-    bool operator()(const std::pair< T, T >& x, const std::pair< T, T >& y)
+    bool operator()(const eastl::pair< T, T >& x, const eastl::pair< T, T >& y)
     {
         if (x.first == y.first)
             return x.second > y.second;
@@ -267,8 +267,8 @@ class sorted_rmat_iterator
     typedef typename graph_traits< Graph >::edges_size_type edges_size_type;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< vertices_size_type, vertices_size_type > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< vertices_size_type, vertices_size_type > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef std::ptrdiff_t difference_type; // Not used
@@ -294,7 +294,7 @@ public:
 
         this->gen.reset(new uniform_01< RandomGenerator >(gen));
 
-        std::vector< vertices_size_type > vertexPermutation;
+        eastl::vector< vertices_size_type > vertexPermutation;
         if (permute_vertices)
             generate_permutation_vector(gen, vertexPermutation, n);
 
@@ -305,18 +305,18 @@ public:
         {
 
             vertices_size_type u, v;
-            boost::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
+            eastl::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
 
             if (permute_vertices)
             {
                 if (ep(vertexPermutation[u], vertexPermutation[v]))
-                    values.push(std::make_pair(
+                    values.push(eastl::make_pair(
                         vertexPermutation[u], vertexPermutation[v]));
             }
             else
             {
                 if (ep(u, v))
-                    values.push(std::make_pair(u, v));
+                    values.push(eastl::make_pair(u, v));
             }
         }
 
@@ -363,7 +363,7 @@ private:
     bool permute_vertices;
 
     // Internal data structures
-    std::priority_queue< value_type, std::vector< value_type >,
+    eastl::priority_queue< value_type, eastl::vector< value_type >,
         sort_pair< vertices_size_type > >
         values;
     value_type current;
@@ -381,8 +381,8 @@ class unique_rmat_iterator
     typedef typename graph_traits< Graph >::edges_size_type edges_size_type;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< vertices_size_type, vertices_size_type > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< vertices_size_type, vertices_size_type > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef std::ptrdiff_t difference_type; // Not used
@@ -402,40 +402,40 @@ public:
 
         this->gen.reset(new uniform_01< RandomGenerator >(gen));
 
-        std::vector< vertices_size_type > vertexPermutation;
+        eastl::vector< vertices_size_type > vertexPermutation;
         if (permute_vertices)
             generate_permutation_vector(gen, vertexPermutation, n);
 
         int SCALE = int_log2(n);
 
-        std::map< value_type, bool > edge_map;
+        eastl::map< value_type, bool > edge_map;
 
         edges_size_type edges = 0;
         do
         {
             vertices_size_type u, v;
-            boost::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
+            eastl::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
 
             // Lowest vertex number always comes first
             // (this means we don't have to worry about i->j and j->i being in
             // the edge list)
             if (u > v && is_same< directed_category, undirected_tag >::value)
-                std::swap(u, v);
+                eastl::swap(u, v);
 
-            if (edge_map.find(std::make_pair(u, v)) == edge_map.end())
+            if (edge_map.find(eastl::make_pair(u, v)) == edge_map.end())
             {
-                edge_map[std::make_pair(u, v)] = true;
+                edge_map[eastl::make_pair(u, v)] = true;
 
                 if (permute_vertices)
                 {
                     if (ep(vertexPermutation[u], vertexPermutation[v]))
-                        values.push_back(std::make_pair(
+                        values.push_back(eastl::make_pair(
                             vertexPermutation[u], vertexPermutation[v]));
                 }
                 else
                 {
                     if (ep(u, v))
-                        values.push_back(std::make_pair(u, v));
+                        values.push_back(eastl::make_pair(u, v));
                 }
 
                 edges++;
@@ -487,7 +487,7 @@ private:
     shared_ptr< uniform_01< RandomGenerator > > gen;
 
     // Internal data structures
-    std::vector< value_type > values;
+    eastl::vector< value_type > values;
     value_type current;
     bool done;
 };
@@ -503,8 +503,8 @@ class sorted_unique_rmat_iterator
     typedef typename graph_traits< Graph >::edges_size_type edges_size_type;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< vertices_size_type, vertices_size_type > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< vertices_size_type, vertices_size_type > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef std::ptrdiff_t difference_type; // Not used
@@ -531,41 +531,41 @@ public:
 
         this->gen.reset(new uniform_01< RandomGenerator >(gen));
 
-        std::vector< vertices_size_type > vertexPermutation;
+        eastl::vector< vertices_size_type > vertexPermutation;
         if (permute_vertices)
             generate_permutation_vector(gen, vertexPermutation, n);
 
         int SCALE = int_log2(n);
 
-        std::map< value_type, bool > edge_map;
+        eastl::map< value_type, bool > edge_map;
 
         edges_size_type edges = 0;
         do
         {
 
             vertices_size_type u, v;
-            boost::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
+            eastl::tie(u, v) = generate_edge(this->gen, n, SCALE, a, b, c, d);
 
             if (bidirectional)
             {
-                if (edge_map.find(std::make_pair(u, v)) == edge_map.end())
+                if (edge_map.find(eastl::make_pair(u, v)) == edge_map.end())
                 {
-                    edge_map[std::make_pair(u, v)] = true;
-                    edge_map[std::make_pair(v, u)] = true;
+                    edge_map[eastl::make_pair(u, v)] = true;
+                    edge_map[eastl::make_pair(v, u)] = true;
 
                     if (ep(u, v))
                     {
                         if (permute_vertices)
                         {
-                            values.push(std::make_pair(
+                            values.push(eastl::make_pair(
                                 vertexPermutation[u], vertexPermutation[v]));
-                            values.push(std::make_pair(
+                            values.push(eastl::make_pair(
                                 vertexPermutation[v], vertexPermutation[u]));
                         }
                         else
                         {
-                            values.push(std::make_pair(u, v));
-                            values.push(std::make_pair(v, u));
+                            values.push(eastl::make_pair(u, v));
+                            values.push(eastl::make_pair(v, u));
                         }
                     }
 
@@ -579,22 +579,22 @@ public:
                 // in the edge list)
                 if (u > v
                     && is_same< directed_category, undirected_tag >::value)
-                    std::swap(u, v);
+                    eastl::swap(u, v);
 
-                if (edge_map.find(std::make_pair(u, v)) == edge_map.end())
+                if (edge_map.find(eastl::make_pair(u, v)) == edge_map.end())
                 {
-                    edge_map[std::make_pair(u, v)] = true;
+                    edge_map[eastl::make_pair(u, v)] = true;
 
                     if (permute_vertices)
                     {
                         if (ep(vertexPermutation[u], vertexPermutation[v]))
-                            values.push(std::make_pair(
+                            values.push(eastl::make_pair(
                                 vertexPermutation[u], vertexPermutation[v]));
                     }
                     else
                     {
                         if (ep(u, v))
-                            values.push(std::make_pair(u, v));
+                            values.push(eastl::make_pair(u, v));
                     }
 
                     ++edges;
@@ -649,7 +649,7 @@ private:
     bool bidirectional;
 
     // Internal data structures
-    std::priority_queue< value_type, std::vector< value_type >,
+    eastl::priority_queue< value_type, eastl::vector< value_type >,
         sort_pair< vertices_size_type > >
         values;
     value_type current;

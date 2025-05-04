@@ -6,14 +6,14 @@
 #ifndef BOOST_SET_ADAPTOR_HPP
 #define BOOST_SET_ADAPTOR_HPP
 
-#include <set>
+#include <EASTL/set.h>
 #include <boost/unordered_set.hpp>
 
 namespace boost
 {
 
 template < class K, class C, class A, class T >
-bool set_contains(const std::set< K, C, A >& s, const T& x)
+bool set_contains(const eastl::set< K, C, A >& s, const T& x)
 {
     return s.find(x) != s.end();
 }
@@ -25,17 +25,17 @@ bool set_contains(const boost::unordered_set< K, H, C, A >& s, const T& x)
 }
 
 template < class K, class C, class A >
-bool set_equal(const std::set< K, C, A >& x, const std::set< K, C, A >& y)
+bool set_equal(const eastl::set< K, C, A >& x, const eastl::set< K, C, A >& y)
 {
     return x == y;
 }
 
-// Not the same as lexicographical_compare_3way applied to std::set.
+// Not the same as lexicographical_compare_3way applied to eastl::set.
 // this is equivalent semantically to bitset::operator<()
 template < class K, class C, class A >
-int set_lex_order(const std::set< K, C, A >& x, const std::set< K, C, A >& y)
+int set_lex_order(const eastl::set< K, C, A >& x, const eastl::set< K, C, A >& y)
 {
-    typename std::set< K, C, A >::iterator xi = x.begin(), yi = y.begin(),
+    typename eastl::set< K, C, A >::iterator xi = x.begin(), yi = y.begin(),
                                            xend = x.end(), yend = y.end();
     for (; xi != xend && yi != yend; ++xi, ++yi)
     {
@@ -50,65 +50,65 @@ int set_lex_order(const std::set< K, C, A >& x, const std::set< K, C, A >& y)
         return 1;
 }
 
-template < class K, class C, class A > void set_clear(std::set< K, C, A >& x)
+template < class K, class C, class A > void set_clear(eastl::set< K, C, A >& x)
 {
     x.clear();
 }
 
 template < class K, class C, class A >
-bool set_empty(const std::set< K, C, A >& x)
+bool set_empty(const eastl::set< K, C, A >& x)
 {
     return x.empty();
 }
 
 template < class K, class C, class A, class T >
-void set_insert(std::set< K, C, A >& x, const T& a)
+void set_insert(eastl::set< K, C, A >& x, const T& a)
 {
     x.insert(a);
 }
 
 template < class K, class C, class A, class T >
-void set_remove(std::set< K, C, A >& x, const T& a)
+void set_remove(eastl::set< K, C, A >& x, const T& a)
 {
     x.erase(a);
 }
 
 template < class K, class C, class A >
-void set_intersect(const std::set< K, C, A >& x, const std::set< K, C, A >& y,
-    std::set< K, C, A >& z)
+void set_intersect(const eastl::set< K, C, A >& x, const eastl::set< K, C, A >& y,
+    eastl::set< K, C, A >& z)
 {
     z.clear();
-    std::set_intersection(
-        x.begin(), x.end(), y.begin(), y.end(), std::inserter(z));
+    eastl::set_intersection(
+        x.begin(), x.end(), y.begin(), y.end(), eastl::inserter(z));
 }
 
 template < class K, class C, class A >
-void set_union(const std::set< K, C, A >& x, const std::set< K, C, A >& y,
-    std::set< K, C, A >& z)
+void set_union(const eastl::set< K, C, A >& x, const eastl::set< K, C, A >& y,
+    eastl::set< K, C, A >& z)
 {
     z.clear();
-    std::set_union(x.begin(), x.end(), y.begin(), y.end(), std::inserter(z));
+    eastl::set_union(x.begin(), x.end(), y.begin(), y.end(), eastl::inserter(z));
 }
 
 template < class K, class C, class A >
-void set_difference(const std::set< K, C, A >& x, const std::set< K, C, A >& y,
-    std::set< K, C, A >& z)
+void set_difference(const eastl::set< K, C, A >& x, const eastl::set< K, C, A >& y,
+    eastl::set< K, C, A >& z)
 {
     z.clear();
-    std::set_difference(
-        x.begin(), x.end(), y.begin(), y.end(), std::inserter(z, z.begin()));
+    eastl::set_difference(
+        x.begin(), x.end(), y.begin(), y.end(), eastl::inserter(z, z.begin()));
 }
 
 template < class K, class C, class A >
-bool set_subset(const std::set< K, C, A >& x, const std::set< K, C, A >& y)
+bool set_subset(const eastl::set< K, C, A >& x, const eastl::set< K, C, A >& y)
 {
-    return std::includes(x.begin(), x.end(), y.begin(), y.end());
+    return eastl::includes(x.begin(), x.end(), y.begin(), y.end());
 }
 
 // Shit, can't implement this without knowing the size of the
 // universe.
 template < class K, class C, class A >
-void set_compliment(const std::set< K, C, A >& /*x*/, std::set< K, C, A >& z)
+void set_compliment(const eastl::set< K, C, A >& /*x*/, eastl::set< K, C, A >& z)
 {
     z.clear();
 }

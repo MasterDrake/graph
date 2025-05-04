@@ -103,7 +103,7 @@ int main(int, char*[])
 #endif
             Edge e;
             bool inserted;
-            boost::tie(e, inserted) = add_edge(a, b, current_edge_id++, g);
+            eastl::tie(e, inserted) = add_edge(a, b, current_edge_id++, g);
 #if VERBOSE
             std::cout << "inserted: " << inserted << std::endl;
             std::cout << "source(e,g)" << source(e, g) << endl;
@@ -125,7 +125,7 @@ int main(int, char*[])
 
     TLinkIterator itEdgeBegin, itEdgeEnd;
 
-    boost::tie(itEdgeBegin, itEdgeEnd) = get_property_iter_range(g, edge_id);
+    eastl::tie(itEdgeBegin, itEdgeEnd) = get_property_iter_range(g, edge_id);
 
     cout << "Edge iteration:" << endl;
     for (; itEdgeBegin != itEdgeEnd; ++itEdgeBegin)
@@ -136,7 +136,7 @@ int main(int, char*[])
 
     TNodeIterator itVertexBegin, itVertexEnd;
 
-    boost::tie(itVertexBegin, itVertexEnd)
+    eastl::tie(itVertexBegin, itVertexEnd)
         = get_property_iter_range(g, vertex_id);
 
     cout << "Vertex iteration:" << endl;

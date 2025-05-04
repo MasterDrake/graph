@@ -106,7 +106,7 @@ bool bellman_ford_shortest_paths(EdgeListGraph& g, Size N, WeightMap weight,
     for (Size k = 0; k < N; ++k)
     {
         bool at_least_one_edge_relaxed = false;
-        for (boost::tie(i, end) = edges(g); i != end; ++i)
+        for (eastl::tie(i, end) = edges(g); i != end; ++i)
         {
             v.examine_edge(*i, g);
             if (relax(*i, g, weight, pred, distance, combine, compare))
@@ -121,7 +121,7 @@ bool bellman_ford_shortest_paths(EdgeListGraph& g, Size N, WeightMap weight,
             break;
     }
 
-    for (boost::tie(i, end) = edges(g); i != end; ++i)
+    for (eastl::tie(i, end) = edges(g); i != end; ++i)
         if (compare(combine(get(distance, source(*i, g)), get(weight, *i)),
                 get(distance, target(*i, g))))
         {
@@ -150,9 +150,9 @@ namespace detail
         typedef typename property_traits< WeightMap >::value_type weight_type;
         typename graph_traits< VertexAndEdgeListGraph >::vertex_iterator v,
             v_end;
-        for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+        for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
         {
-            put(distance, *v, (std::numeric_limits< weight_type >::max)());
+            put(distance, *v, (eastl::numeric_limits< weight_type >::max)());
             put(pred, *v, *v);
         }
         put(distance, s, weight_type(0));
@@ -160,7 +160,7 @@ namespace detail
             choose_param(
                 get_param(params, distance_combine_t()), closed_plus< D >()),
             choose_param(
-                get_param(params, distance_compare_t()), std::less< D >()),
+                get_param(params, distance_compare_t()), eastl::less< D >()),
             choose_param(get_param(params, graph_visitor), null_vis));
     }
 
@@ -177,7 +177,7 @@ namespace detail
             choose_param(
                 get_param(params, distance_combine_t()), closed_plus< D >()),
             choose_param(
-                get_param(params, distance_compare_t()), std::less< D >()),
+                get_param(params, distance_compare_t()), eastl::less< D >()),
             choose_param(get_param(params, graph_visitor), null_vis));
     }
 

@@ -10,9 +10,9 @@
 #ifndef BOOST_GRAPH_BICONNECTED_COMPONENTS_HPP
 #define BOOST_GRAPH_BICONNECTED_COMPONENTS_HPP
 
-#include <stack>
-#include <vector>
-#include <algorithm> // for std::min and std::max
+#include <EASTL/stack.h>
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h> // for eastl::min and eastl::max
 #include <boost/config.hpp>
 #include <boost/limits.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -178,7 +178,7 @@ namespace detail
     template < typename Graph, typename ComponentMap, typename OutputIterator,
         typename VertexIndexMap, typename DiscoverTimeMap, typename LowPointMap,
         typename PredecessorMap, typename DFSVisitor >
-    std::pair< std::size_t, OutputIterator > biconnected_components_impl(
+    eastl::pair< std::size_t, OutputIterator > biconnected_components_impl(
         const Graph& g, ComponentMap comp, OutputIterator out,
         VertexIndexMap index_map, DiscoverTimeMap dtm, LowPointMap lowpt,
         PredecessorMap pred, DFSVisitor dfs_vis)
@@ -199,18 +199,18 @@ namespace detail
         std::size_t num_components = 0;
         std::size_t children_of_root;
         std::size_t dfs_time = 0;
-        std::stack< edge_t > S;
-        std::vector< char > is_articulation_point(num_vertices(g));
+        eastl::stack< edge_t > S;
+        eastl::vector< char > is_articulation_point(num_vertices(g));
 
         biconnected_components_visitor< ComponentMap, DiscoverTimeMap,
-            LowPointMap, PredecessorMap, OutputIterator, std::stack< edge_t >,
-            std::vector< char >, VertexIndexMap, DFSVisitor >
+            LowPointMap, PredecessorMap, OutputIterator, eastl::stack< edge_t >,
+            eastl::vector< char >, VertexIndexMap, DFSVisitor >
             vis(comp, num_components, children_of_root, dtm, dfs_time, lowpt,
                 pred, out, S, is_articulation_point, index_map, dfs_vis);
 
         depth_first_search(g, visitor(vis).vertex_index_map(index_map));
 
-        return std::pair< std::size_t, OutputIterator >(
+        return eastl::pair< std::size_t, OutputIterator >(
             num_components, vis.out);
     }
 
@@ -220,7 +220,7 @@ namespace detail
             typename OutputIterator, typename VertexIndexMap,
             typename DiscoverTimeMap, typename LowPointMap, class P, class T,
             class R >
-        static std::pair< std::size_t, OutputIterator > apply(const Graph& g,
+        static eastl::pair< std::size_t, OutputIterator > apply(const Graph& g,
             ComponentMap comp, OutputIterator out, VertexIndexMap index_map,
             DiscoverTimeMap dtm, LowPointMap lowpt,
             const bgl_named_params< P, T, R >& params, PredecessorMap pred)
@@ -238,13 +238,13 @@ namespace detail
             typename OutputIterator, typename VertexIndexMap,
             typename DiscoverTimeMap, typename LowPointMap, class P, class T,
             class R >
-        static std::pair< std::size_t, OutputIterator > apply(const Graph& g,
+        static eastl::pair< std::size_t, OutputIterator > apply(const Graph& g,
             ComponentMap comp, OutputIterator out, VertexIndexMap index_map,
             DiscoverTimeMap dtm, LowPointMap lowpt,
             const bgl_named_params< P, T, R >& params, param_not_found)
         {
             typedef typename graph_traits< Graph >::vertex_descriptor vertex_t;
-            std::vector< vertex_t > pred(num_vertices(g));
+            eastl::vector< vertex_t > pred(num_vertices(g));
             vertex_t vert = graph_traits< Graph >::null_vertex();
 
             return biconnected_components_impl(g, comp, out, index_map, dtm,
@@ -260,7 +260,7 @@ namespace detail
         template < typename Graph, typename ComponentMap,
             typename OutputIterator, typename VertexIndexMap,
             typename DiscoverTimeMap, typename P, typename T, typename R >
-        static std::pair< std::size_t, OutputIterator > apply(const Graph& g,
+        static eastl::pair< std::size_t, OutputIterator > apply(const Graph& g,
             ComponentMap comp, OutputIterator out, VertexIndexMap index_map,
             DiscoverTimeMap dtm, const bgl_named_params< P, T, R >& params,
             LowPointMap lowpt)
@@ -279,14 +279,14 @@ namespace detail
         template < typename Graph, typename ComponentMap,
             typename OutputIterator, typename VertexIndexMap,
             typename DiscoverTimeMap, typename P, typename T, typename R >
-        static std::pair< std::size_t, OutputIterator > apply(const Graph& g,
+        static eastl::pair< std::size_t, OutputIterator > apply(const Graph& g,
             ComponentMap comp, OutputIterator out, VertexIndexMap index_map,
             DiscoverTimeMap dtm, const bgl_named_params< P, T, R >& params,
             param_not_found)
         {
             typedef typename graph_traits< Graph >::vertices_size_type
                 vertices_size_type;
-            std::vector< vertices_size_type > lowpt(num_vertices(g));
+            eastl::vector< vertices_size_type > lowpt(num_vertices(g));
             vertices_size_type vst(0);
 
             typedef typename get_param_type< vertex_predecessor_t,
@@ -304,7 +304,7 @@ namespace detail
         template < typename Graph, typename ComponentMap,
             typename OutputIterator, typename VertexIndexMap, class P, class T,
             class R >
-        static std::pair< std::size_t, OutputIterator > apply(const Graph& g,
+        static eastl::pair< std::size_t, OutputIterator > apply(const Graph& g,
             ComponentMap comp, OutputIterator out, VertexIndexMap index_map,
             const bgl_named_params< P, T, R >& params, DiscoverTimeMap dtm)
         {
@@ -321,13 +321,13 @@ namespace detail
         template < typename Graph, typename ComponentMap,
             typename OutputIterator, typename VertexIndexMap, class P, class T,
             class R >
-        static std::pair< std::size_t, OutputIterator > apply(const Graph& g,
+        static eastl::pair< std::size_t, OutputIterator > apply(const Graph& g,
             ComponentMap comp, OutputIterator out, VertexIndexMap index_map,
             const bgl_named_params< P, T, R >& params, param_not_found)
         {
             typedef typename graph_traits< Graph >::vertices_size_type
                 vertices_size_type;
-            std::vector< vertices_size_type > discover_time(num_vertices(g));
+            eastl::vector< vertices_size_type > discover_time(num_vertices(g));
             vertices_size_type vst(0);
 
             typedef typename get_param_type< vertex_lowpoint_t,
@@ -345,7 +345,7 @@ namespace detail
 
 template < typename Graph, typename ComponentMap, typename OutputIterator,
     typename DiscoverTimeMap, typename LowPointMap >
-std::pair< std::size_t, OutputIterator > biconnected_components(const Graph& g,
+eastl::pair< std::size_t, OutputIterator > biconnected_components(const Graph& g,
     ComponentMap comp, OutputIterator out, DiscoverTimeMap dtm,
     LowPointMap lowpt)
 {
@@ -358,7 +358,7 @@ std::pair< std::size_t, OutputIterator > biconnected_components(const Graph& g,
 
 template < typename Graph, typename ComponentMap, typename OutputIterator,
     typename P, typename T, typename R >
-std::pair< std::size_t, OutputIterator > biconnected_components(const Graph& g,
+eastl::pair< std::size_t, OutputIterator > biconnected_components(const Graph& g,
     ComponentMap comp, OutputIterator out,
     const bgl_named_params< P, T, R >& params)
 {
@@ -371,7 +371,7 @@ std::pair< std::size_t, OutputIterator > biconnected_components(const Graph& g,
 }
 
 template < typename Graph, typename ComponentMap, typename OutputIterator >
-std::pair< std::size_t, OutputIterator > biconnected_components(
+eastl::pair< std::size_t, OutputIterator > biconnected_components(
     const Graph& g, ComponentMap comp, OutputIterator out)
 {
     return biconnected_components(
@@ -382,7 +382,7 @@ namespace graph_detail
 {
     struct dummy_output_iterator
     {
-        typedef std::output_iterator_tag iterator_category;
+        typedef eastl::output_iterator_tag iterator_category;
         typedef void value_type;
         typedef void pointer;
         typedef void difference_type;

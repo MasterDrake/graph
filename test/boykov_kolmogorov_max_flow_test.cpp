@@ -71,7 +71,7 @@ fill_random_max_flow_graph(Graph& g, CapacityMap cap, ReverseEdgeMap rev,
     // randomize_property<edge_capacity, Graph, tIntGen> (g,int_gen); //we
     // cannot use this, as we have no idea how properties are stored, right?
     typename graph_traits< Graph >::edge_iterator ei, e_end;
-    for (boost::tie(ei, e_end) = edges(g); ei != e_end; ++ei)
+    for (eastl::tie(ei, e_end) = edges(g); ei != e_end; ++ei)
         put(cap, *ei, int_gen());
 
     // get source and sink node
@@ -82,7 +82,7 @@ fill_random_max_flow_graph(Graph& g, CapacityMap cap, ReverseEdgeMap rev,
 
     // add reverse edges (ugly... how to do better?!)
     std::list< edge_descriptor > edges_copy;
-    boost::tie(ei, e_end) = edges(g);
+    eastl::tie(ei, e_end) = edges(g);
     std::copy(ei, e_end,
         std::back_insert_iterator< std::list< edge_descriptor > >(edges_copy));
     while (!edges_copy.empty())
@@ -93,7 +93,7 @@ fill_random_max_flow_graph(Graph& g, CapacityMap cap, ReverseEdgeMap rev,
         vertex_descriptor target_vertex = source(old_edge, g);
         bool inserted;
         edge_descriptor new_edge;
-        boost::tie(new_edge, inserted)
+        eastl::tie(new_edge, inserted)
             = add_edge(source_vertex, target_vertex, g);
         assert(inserted);
         put(rev, old_edge, new_edge);
@@ -119,7 +119,7 @@ long test_adjacency_list_vecS(int n_verts, int n_edges, std::size_t seed)
     tVectorGraph g;
 
     graph_traits< tVectorGraph >::vertex_descriptor src, sink;
-    boost::tie(src, sink) = fill_random_max_flow_graph(
+    eastl::tie(src, sink) = fill_random_max_flow_graph(
         g, get(edge_capacity, g), get(edge_reverse, g), n_verts, n_edges, seed);
 
     return boykov_kolmogorov_max_flow(g, get(edge_capacity, g),
@@ -144,13 +144,13 @@ long test_adjacency_list_listS(int n_verts, int n_edges, std::size_t seed)
     tListGraph g;
 
     graph_traits< tListGraph >::vertex_descriptor src, sink;
-    boost::tie(src, sink) = fill_random_max_flow_graph(
+    eastl::tie(src, sink) = fill_random_max_flow_graph(
         g, get(edge_capacity, g), get(edge_reverse, g), n_verts, n_edges, seed);
 
     // initialize vertex indices
     graph_traits< tListGraph >::vertex_iterator vi, v_end;
     graph_traits< tListGraph >::vertices_size_type index = 0;
-    for (boost::tie(vi, v_end) = vertices(g); vi != v_end; ++vi)
+    for (eastl::tie(vi, v_end) = vertices(g); vi != v_end; ++vi)
     {
         put(vertex_index, g, *vi, index++);
     }
@@ -280,7 +280,7 @@ long test_bundled_properties(int n_verts, int n_edges, std::size_t seed)
     tBundleGraph g;
 
     graph_traits< tBundleGraph >::vertex_descriptor src, sink;
-    boost::tie(src, sink)
+    eastl::tie(src, sink)
         = fill_random_max_flow_graph(g, get(&tEdge::edge_capacity, g),
             get(&tEdge::edge_reverse, g), n_verts, n_edges, seed);
 
@@ -325,7 +325,7 @@ long test_overloads(int n_verts, int n_edges, std::size_t seed)
     tGraph g;
 
     graph_traits< tGraph >::vertex_descriptor src, sink;
-    boost::tie(src, sink) = fill_random_max_flow_graph(
+    eastl::tie(src, sink) = fill_random_max_flow_graph(
         g, get(edge_capacity, g), get(edge_reverse, g), n_verts, n_edges, seed);
 
     std::vector< graph_traits< tGraph >::edge_descriptor > predecessor_vec(
@@ -397,7 +397,7 @@ public:
         if (this->get_tree(v) != tColorTraits::gray() && !is_active)
         {
             typename graph_traits< Graph >::out_edge_iterator ei, e_end;
-            for (boost::tie(ei, e_end) = out_edges(v, tSuper::m_g); ei != e_end;
+            for (eastl::tie(ei, e_end) = out_edges(v, tSuper::m_g); ei != e_end;
                  ++ei)
             {
                 const tVertex& other_node = target(*ei, tSuper::m_g);
@@ -493,7 +493,7 @@ public:
     void check_invariants()
     {
         tVertexIterator vi, v_end;
-        for (boost::tie(vi, v_end) = vertices(tSuper::m_g); vi != v_end; ++vi)
+        for (eastl::tie(vi, v_end) = vertices(tSuper::m_g); vi != v_end; ++vi)
         {
             invariant_four(*vi);
             invariant_five(*vi);
@@ -513,7 +513,7 @@ public:
         {
             bool path_found;
             tEdge connecting_edge;
-            boost::tie(connecting_edge, path_found)
+            eastl::tie(connecting_edge, path_found)
                 = this->grow(); // find a path from source to sink
             if (!path_found)
             {
@@ -531,7 +531,7 @@ public:
         // check if flow is the sum of outgoing edges of src
         tOutEdgeIterator ei, e_end;
         tEdgeVal src_sum = 0;
-        for (boost::tie(ei, e_end) = out_edges(this->m_source, this->m_g);
+        for (eastl::tie(ei, e_end) = out_edges(this->m_source, this->m_g);
              ei != e_end; ++ei)
         {
             src_sum += this->m_cap_map[*ei] - this->m_res_cap_map[*ei];
@@ -539,7 +539,7 @@ public:
         BOOST_TEST(this->m_flow == src_sum);
         // check if flow is the sum of ingoing edges of sink
         tEdgeVal sink_sum = 0;
-        for (boost::tie(ei, e_end) = out_edges(this->m_sink, this->m_g);
+        for (eastl::tie(ei, e_end) = out_edges(this->m_sink, this->m_g);
              ei != e_end; ++ei)
         {
             tEdge in_edge = this->m_rev_edge_map[*ei];
@@ -566,7 +566,7 @@ long test_algorithms_invariant(int n_verts, int n_edges, std::size_t seed)
     tVectorGraph g;
 
     graph_traits< tVectorGraph >::vertex_descriptor src, sink;
-    boost::tie(src, sink) = fill_random_max_flow_graph(
+    eastl::tie(src, sink) = fill_random_max_flow_graph(
         g, get(edge_capacity, g), get(edge_reverse, g), n_verts, n_edges, seed);
 
     typedef property_map< tVectorGraph, edge_capacity_t >::type tEdgeCapMap;

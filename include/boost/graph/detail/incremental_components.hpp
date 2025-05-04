@@ -27,12 +27,12 @@ namespace detail
     class component_index_iterator
     : boost::forward_iterator_helper<
           component_index_iterator< IndexRandomAccessIterator >,
-          typename std::iterator_traits<
+          typename eastl::iterator_traits<
               IndexRandomAccessIterator >::value_type,
-          typename std::iterator_traits<
+          typename eastl::iterator_traits<
               IndexRandomAccessIterator >::difference_type,
-          typename std::iterator_traits< IndexRandomAccessIterator >::pointer,
-          typename std::iterator_traits<
+          typename eastl::iterator_traits< IndexRandomAccessIterator >::pointer,
+          typename eastl::iterator_traits<
               IndexRandomAccessIterator >::reference >
     {
 
@@ -40,15 +40,15 @@ namespace detail
         typedef component_index_iterator< IndexRandomAccessIterator > self;
 
     public:
-        typedef std::forward_iterator_tag iterator_category;
-        typedef typename std::iterator_traits<
+        typedef eastl::forward_iterator_tag iterator_category;
+        typedef typename eastl::iterator_traits<
             IndexRandomAccessIterator >::value_type value_type;
-        typedef typename std::iterator_traits<
+        typedef typename eastl::iterator_traits<
             IndexRandomAccessIterator >::difference_type reference;
         typedef
-            typename std::iterator_traits< IndexRandomAccessIterator >::pointer
+            typename eastl::iterator_traits< IndexRandomAccessIterator >::pointer
                 pointer;
-        typedef typename std::iterator_traits<
+        typedef typename eastl::iterator_traits<
             IndexRandomAccessIterator >::reference difference_type;
 
         // Constructor for "begin" iterator

@@ -190,7 +190,7 @@ int main(int, char**)
     {
         edge_descriptor e;
         bool inserted;
-        boost::tie(e, inserted)
+        eastl::tie(e, inserted)
             = add_edge(edge_array[j].first, edge_array[j].second, g);
         weightmap[e] = weights[j];
     }

@@ -366,7 +366,7 @@ typename graph_traits< leda::GRAPH< vtype, etype > >::vertex_descriptor target(
 }
 
 template < class vtype, class etype >
-inline std::pair<
+inline eastl::pair<
     typename graph_traits< leda::GRAPH< vtype, etype > >::vertex_iterator,
     typename graph_traits< leda::GRAPH< vtype, etype > >::vertex_iterator >
 vertices(const leda::GRAPH< vtype, etype >& g)
@@ -374,22 +374,22 @@ vertices(const leda::GRAPH< vtype, etype >& g)
     typedef
         typename graph_traits< leda::GRAPH< vtype, etype > >::vertex_iterator
             Iter;
-    return std::make_pair(Iter(g.first_node(), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_node(), &g), Iter(0, &g));
 }
 
 template < class vtype, class etype >
-inline std::pair<
+inline eastl::pair<
     typename graph_traits< leda::GRAPH< vtype, etype > >::edge_iterator,
     typename graph_traits< leda::GRAPH< vtype, etype > >::edge_iterator >
 edges(const leda::GRAPH< vtype, etype >& g)
 {
     typedef typename graph_traits< leda::GRAPH< vtype, etype > >::edge_iterator
         Iter;
-    return std::make_pair(Iter(g.first_edge(), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_edge(), &g), Iter(0, &g));
 }
 
 template < class vtype, class etype >
-inline std::pair<
+inline eastl::pair<
     typename graph_traits< leda::GRAPH< vtype, etype > >::out_edge_iterator,
     typename graph_traits< leda::GRAPH< vtype, etype > >::out_edge_iterator >
 out_edges(
@@ -399,11 +399,11 @@ out_edges(
     typedef
         typename graph_traits< leda::GRAPH< vtype, etype > >::out_edge_iterator
             Iter;
-    return std::make_pair(Iter(g.first_adj_edge(u, 0), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_adj_edge(u, 0), &g), Iter(0, &g));
 }
 
 template < class vtype, class etype >
-inline std::pair<
+inline eastl::pair<
     typename graph_traits< leda::GRAPH< vtype, etype > >::in_edge_iterator,
     typename graph_traits< leda::GRAPH< vtype, etype > >::in_edge_iterator >
 in_edges(
@@ -413,11 +413,11 @@ in_edges(
     typedef
         typename graph_traits< leda::GRAPH< vtype, etype > >::in_edge_iterator
             Iter;
-    return std::make_pair(Iter(g.first_adj_edge(u, 1), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_adj_edge(u, 1), &g), Iter(0, &g));
 }
 
 template < class vtype, class etype >
-inline std::pair<
+inline eastl::pair<
     typename graph_traits< leda::GRAPH< vtype, etype > >::adjacency_iterator,
     typename graph_traits< leda::GRAPH< vtype, etype > >::adjacency_iterator >
 adjacent_vertices(
@@ -427,7 +427,7 @@ adjacent_vertices(
     typedef
         typename graph_traits< leda::GRAPH< vtype, etype > >::adjacency_iterator
             Iter;
-    return std::make_pair(Iter(g.first_adj_edge(u, 0), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_adj_edge(u, 0), &g), Iter(0, &g));
 }
 
 template < class vtype, class etype >
@@ -491,12 +491,12 @@ void clear_vertex(
 {
     typename graph_traits< leda::GRAPH< vtype, etype > >::out_edge_iterator ei,
         ei_end;
-    for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ei++)
+    for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ei++)
         remove_edge(*ei);
 
     typename graph_traits< leda::GRAPH< vtype, etype > >::in_edge_iterator iei,
         iei_end;
-    for (boost::tie(iei, iei_end) = in_edges(u, g); iei != iei_end; iei++)
+    for (eastl::tie(iei, iei_end) = in_edges(u, g); iei != iei_end; iei++)
         remove_edge(*iei);
 }
 
@@ -509,7 +509,7 @@ void remove_vertex(
 }
 
 template < class vtype, class etype >
-std::pair<
+eastl::pair<
     typename graph_traits< leda::GRAPH< vtype, etype > >::edge_descriptor,
     bool >
 add_edge(
@@ -517,11 +517,11 @@ add_edge(
     typename graph_traits< leda::GRAPH< vtype, etype > >::vertex_descriptor v,
     leda::GRAPH< vtype, etype >& g)
 {
-    return std::make_pair(g.new_edge(u, v), true);
+    return eastl::make_pair(g.new_edge(u, v), true);
 }
 
 template < class vtype, class etype >
-std::pair<
+eastl::pair<
     typename graph_traits< leda::GRAPH< vtype, etype > >::edge_descriptor,
     bool >
 add_edge(
@@ -529,7 +529,7 @@ add_edge(
     typename graph_traits< leda::GRAPH< vtype, etype > >::vertex_descriptor v,
     const etype& et, leda::GRAPH< vtype, etype >& g)
 {
-    return std::make_pair(g.new_edge(u, v, et), true);
+    return eastl::make_pair(g.new_edge(u, v, et), true);
 }
 
 template < class vtype, class etype >
@@ -540,7 +540,7 @@ void remove_edge(
 {
     typename graph_traits< leda::GRAPH< vtype, etype > >::out_edge_iterator i,
         iend;
-    for (boost::tie(i, iend) = out_edges(u, g); i != iend; ++i)
+    for (eastl::tie(i, iend) = out_edges(u, g); i != iend; ++i)
         if (target(*i, g) == v)
             g.del_edge(*i);
 }
@@ -568,46 +568,46 @@ graph_traits< leda::graph >::vertex_descriptor target(
     return target(e);
 }
 
-inline std::pair< graph_traits< leda::graph >::vertex_iterator,
+inline eastl::pair< graph_traits< leda::graph >::vertex_iterator,
     graph_traits< leda::graph >::vertex_iterator >
 vertices(const leda::graph& g)
 {
     typedef graph_traits< leda::graph >::vertex_iterator Iter;
-    return std::make_pair(Iter(g.first_node(), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_node(), &g), Iter(0, &g));
 }
 
-inline std::pair< graph_traits< leda::graph >::edge_iterator,
+inline eastl::pair< graph_traits< leda::graph >::edge_iterator,
     graph_traits< leda::graph >::edge_iterator >
 edges(const leda::graph& g)
 {
     typedef graph_traits< leda::graph >::edge_iterator Iter;
-    return std::make_pair(Iter(g.first_edge(), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_edge(), &g), Iter(0, &g));
 }
 
-inline std::pair< graph_traits< leda::graph >::out_edge_iterator,
+inline eastl::pair< graph_traits< leda::graph >::out_edge_iterator,
     graph_traits< leda::graph >::out_edge_iterator >
 out_edges(
     graph_traits< leda::graph >::vertex_descriptor u, const leda::graph& g)
 {
     typedef graph_traits< leda::graph >::out_edge_iterator Iter;
-    return std::make_pair(Iter(g.first_adj_edge(u), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_adj_edge(u), &g), Iter(0, &g));
 }
 
-inline std::pair< graph_traits< leda::graph >::in_edge_iterator,
+inline eastl::pair< graph_traits< leda::graph >::in_edge_iterator,
     graph_traits< leda::graph >::in_edge_iterator >
 in_edges(graph_traits< leda::graph >::vertex_descriptor u, const leda::graph& g)
 {
     typedef graph_traits< leda::graph >::in_edge_iterator Iter;
-    return std::make_pair(Iter(g.first_in_edge(u), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_in_edge(u), &g), Iter(0, &g));
 }
 
-inline std::pair< graph_traits< leda::graph >::adjacency_iterator,
+inline eastl::pair< graph_traits< leda::graph >::adjacency_iterator,
     graph_traits< leda::graph >::adjacency_iterator >
 adjacent_vertices(
     graph_traits< leda::graph >::vertex_descriptor u, const leda::graph& g)
 {
     typedef graph_traits< leda::graph >::adjacency_iterator Iter;
-    return std::make_pair(Iter(g.first_adj_edge(u), &g), Iter(0, &g));
+    return eastl::make_pair(Iter(g.first_adj_edge(u), &g), Iter(0, &g));
 }
 
 graph_traits< leda::graph >::vertices_size_type num_vertices(
@@ -648,7 +648,7 @@ void remove_edge(graph_traits< leda::graph >::vertex_descriptor u,
     graph_traits< leda::graph >::vertex_descriptor v, leda::graph& g)
 {
     graph_traits< leda::graph >::out_edge_iterator i, iend;
-    for (boost::tie(i, iend) = out_edges(u, g); i != iend; ++i)
+    for (eastl::tie(i, iend) = out_edges(u, g); i != iend; ++i)
         if (target(*i, g) == v)
             g.del_edge(*i);
 }
@@ -662,11 +662,11 @@ void clear_vertex(
     graph_traits< leda::graph >::vertex_descriptor u, leda::graph& g)
 {
     graph_traits< leda::graph >::out_edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ei++)
+    for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ei++)
         remove_edge(*ei, g);
 
     graph_traits< leda::graph >::in_edge_iterator iei, iei_end;
-    for (boost::tie(iei, iei_end) = in_edges(u, g); iei != iei_end; iei++)
+    for (eastl::tie(iei, iei_end) = in_edges(u, g); iei != iei_end; iei++)
         remove_edge(*iei, g);
 }
 
@@ -676,11 +676,11 @@ void remove_vertex(
     g.del_node(u);
 }
 
-std::pair< graph_traits< leda::graph >::edge_descriptor, bool > add_edge(
+eastl::pair< graph_traits< leda::graph >::edge_descriptor, bool > add_edge(
     graph_traits< leda::graph >::vertex_descriptor u,
     graph_traits< leda::graph >::vertex_descriptor v, leda::graph& g)
 {
-    return std::make_pair(g.new_edge(u, v), true);
+    return eastl::make_pair(g.new_edge(u, v), true);
 }
 
 //===========================================================================

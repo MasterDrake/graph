@@ -14,7 +14,7 @@
 #ifndef BOOST_GRAPH_SUCCESSIVE_SHORTEST_PATH_HPP
 #define BOOST_GRAPH_SUCCESSIVE_SHORTEST_PATH_HPP
 
-#include <numeric>
+#include <EASTL/numeric.h>
 
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -145,7 +145,7 @@ namespace detail
     {
         typedef typename property_traits< Weight >::value_type D;
 
-        std::vector< D > d_map(num_vertices(g));
+        eastl::vector< D > d_map(num_vertices(g));
 
         successive_shortest_path_nonnegative_weights(g, s, t, capacity,
             residual_capacity, weight, rev, index, pred, dist,
@@ -180,7 +180,7 @@ namespace detail
     {
         typedef typename property_traits< Weight >::value_type D;
 
-        std::vector< D > d_map(num_vertices(g));
+        eastl::vector< D > d_map(num_vertices(g));
 
         successive_shortest_path_nonnegative_weights_dispatch3(g, s, t,
             capacity, residual_capacity, weight, rev, index, pred,
@@ -214,7 +214,7 @@ namespace detail
         const bgl_named_params< P, T, R >& params)
     {
         typedef typename graph_traits< Graph >::edge_descriptor edge_descriptor;
-        std::vector< edge_descriptor > pred_vec(num_vertices(g));
+        eastl::vector< edge_descriptor > pred_vec(num_vertices(g));
 
         successive_shortest_path_nonnegative_weights_dispatch2(g, s, t,
             capacity, residual_capacity, weight, rev, index,

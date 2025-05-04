@@ -9,8 +9,8 @@
 #ifndef BOOST_GRAPH_MESH_GENERATOR_HPP
 #define BOOST_GRAPH_MESH_GENERATOR_HPP
 
-#include <iterator>
-#include <utility>
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h>
 #include <boost/assert.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
@@ -31,8 +31,8 @@ template < typename Graph > class mesh_iterator
             || is_same< undirected_tag, directed_category >::value));
 
 public:
-    typedef std::input_iterator_tag iterator_category;
-    typedef std::pair< vertices_size_type, vertices_size_type > value_type;
+    typedef eastl::input_iterator_tag iterator_category;
+    typedef eastl::pair< vertices_size_type, vertices_size_type > value_type;
     typedef const value_type& reference;
     typedef const value_type* pointer;
     typedef void difference_type;

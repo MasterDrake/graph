@@ -20,9 +20,9 @@
 #include <boost/graph/undirected_dfs.hpp>
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/filtered_graph.hpp>
-#include <vector>
-#include <stack>
-#include <map>
+#include <EASTL/vector.h>
+#include <EASTL/stack.h>
+#include <EASTL/map.h>
 
 namespace boost
 {
@@ -66,7 +66,7 @@ namespace detail
         void back_edge(const Edge& e, const Graph& g)
         {
             put(mLow, source(e, g),
-                (std::min)(get(mLow, source(e, g)), get(mDist, target(e, g))));
+                (eastl::min)(get(mLow, source(e, g)), get(mDist, target(e, g))));
         }
 
         template < typename Vertex, typename Graph >
@@ -75,7 +75,7 @@ namespace detail
             Vertex parent = get(mPred, u);
             if (get(mLow, u) > get(mDist, parent))
                 mBuffer.push(get(mTree, u));
-            put(mLow, parent, (std::min)(get(mLow, parent), get(mLow, u)));
+            put(mLow, parent, (eastl::min)(get(mLow, parent), get(mLow, u)));
         }
 
         TreeMap mTree;
@@ -170,10 +170,10 @@ namespace detail
         }
         else
         {
-            std::map< vertex_descriptor, default_color_type > vertex_color;
-            std::map< edge_descriptor, default_color_type > edge_color;
+            eastl::map< vertex_descriptor, default_color_type > vertex_color;
+            eastl::map< edge_descriptor, default_color_type > edge_color;
 
-            std::stack< edge_descriptor > iG_buf, vG_buf;
+            eastl::stack< edge_descriptor > iG_buf, vG_buf;
             bool found = false;
 
             seq_size_type m;
@@ -188,26 +188,26 @@ namespace detail
                     undirected_dfs(
                         make_filtered_graph(iG,
                             detail::inL_edge_status< associative_property_map<
-                                std::map< edge_descriptor, bool > > >(aiG_inL)),
+                                eastl::map< edge_descriptor, bool > > >(aiG_inL)),
                         make_dfs_visitor(detail::cycle_finder<
-                            std::stack< edge_descriptor > >(&iG_buf)),
+                            eastl::stack< edge_descriptor > >(&iG_buf)),
                         associative_property_map<
-                            std::map< vertex_descriptor, default_color_type > >(
+                            eastl::map< vertex_descriptor, default_color_type > >(
                             vertex_color),
                         associative_property_map<
-                            std::map< edge_descriptor, default_color_type > >(
+                            eastl::map< edge_descriptor, default_color_type > >(
                             edge_color));
                     undirected_dfs(
                         make_filtered_graph(vG,
                             detail::inL_edge_status< associative_property_map<
-                                std::map< edge_descriptor, bool > > >(avG_inL)),
+                                eastl::map< edge_descriptor, bool > > >(avG_inL)),
                         make_dfs_visitor(detail::cycle_finder<
-                            std::stack< edge_descriptor > >(&vG_buf)),
+                            eastl::stack< edge_descriptor > >(&vG_buf)),
                         associative_property_map<
-                            std::map< vertex_descriptor, default_color_type > >(
+                            eastl::map< vertex_descriptor, default_color_type > >(
                             vertex_color),
                         associative_property_map<
-                            std::map< edge_descriptor, default_color_type > >(
+                            eastl::map< edge_descriptor, default_color_type > >(
                             edge_color));
 
                     if (iG_buf.empty() && vG_buf.empty())
@@ -231,7 +231,7 @@ namespace detail
             if (found)
             {
 
-                std::stack< edge_descriptor > iG_buf_copy, vG_buf_copy;
+                eastl::stack< edge_descriptor > iG_buf_copy, vG_buf_copy;
                 for (seq_size_type j = 0; j < inL.size(); ++j)
                 {
                     if (!inL[j] && !get(diG, iG_bimap.left.at(j))
@@ -245,27 +245,27 @@ namespace detail
                             make_filtered_graph(iG,
                                 detail::inL_edge_status<
                                     associative_property_map<
-                                        std::map< edge_descriptor, bool > > >(
+                                        eastl::map< edge_descriptor, bool > > >(
                                     aiG_inL)),
                             make_dfs_visitor(detail::cycle_finder<
-                                std::stack< edge_descriptor > >(&iG_buf)),
-                            associative_property_map< std::map<
+                                eastl::stack< edge_descriptor > >(&iG_buf)),
+                            associative_property_map< eastl::map<
                                 vertex_descriptor, default_color_type > >(
                                 vertex_color),
-                            associative_property_map< std::map< edge_descriptor,
+                            associative_property_map< eastl::map< edge_descriptor,
                                 default_color_type > >(edge_color));
                         undirected_dfs(
                             make_filtered_graph(vG,
                                 detail::inL_edge_status<
                                     associative_property_map<
-                                        std::map< edge_descriptor, bool > > >(
+                                        eastl::map< edge_descriptor, bool > > >(
                                     avG_inL)),
                             make_dfs_visitor(detail::cycle_finder<
-                                std::stack< edge_descriptor > >(&vG_buf)),
-                            associative_property_map< std::map<
+                                eastl::stack< edge_descriptor > >(&vG_buf)),
+                            associative_property_map< eastl::map<
                                 vertex_descriptor, default_color_type > >(
                                 vertex_color),
-                            associative_property_map< std::map< edge_descriptor,
+                            associative_property_map< eastl::map< edge_descriptor,
                                 default_color_type > >(edge_color));
 
                         if (!iG_buf.empty() || !vG_buf.empty())
@@ -314,68 +314,68 @@ namespace detail
                 put(diG, iG_bimap.left.at(m), true);
                 put(dvG, vG_bimap.left.at(m), true);
 
-                std::map< vertex_descriptor, edge_descriptor > tree_map;
-                std::map< vertex_descriptor, vertex_descriptor > pred_map;
-                std::map< vertex_descriptor, int > dist_map, low_map;
+                eastl::map< vertex_descriptor, edge_descriptor > tree_map;
+                eastl::map< vertex_descriptor, vertex_descriptor > pred_map;
+                eastl::map< vertex_descriptor, int > dist_map, low_map;
 
                 detail::bridges_visitor<
                     associative_property_map<
-                        std::map< vertex_descriptor, edge_descriptor > >,
+                        eastl::map< vertex_descriptor, edge_descriptor > >,
                     associative_property_map<
-                        std::map< vertex_descriptor, vertex_descriptor > >,
+                        eastl::map< vertex_descriptor, vertex_descriptor > >,
                     associative_property_map<
-                        std::map< vertex_descriptor, int > >,
+                        eastl::map< vertex_descriptor, int > >,
                     associative_property_map<
-                        std::map< vertex_descriptor, int > >,
-                    std::stack< edge_descriptor > >
+                        eastl::map< vertex_descriptor, int > >,
+                    eastl::stack< edge_descriptor > >
                 iG_vis(associative_property_map<
-                           std::map< vertex_descriptor, edge_descriptor > >(
+                           eastl::map< vertex_descriptor, edge_descriptor > >(
                            tree_map),
                     associative_property_map<
-                        std::map< vertex_descriptor, vertex_descriptor > >(
+                        eastl::map< vertex_descriptor, vertex_descriptor > >(
                         pred_map),
                     associative_property_map<
-                        std::map< vertex_descriptor, int > >(dist_map),
+                        eastl::map< vertex_descriptor, int > >(dist_map),
                     associative_property_map<
-                        std::map< vertex_descriptor, int > >(low_map),
+                        eastl::map< vertex_descriptor, int > >(low_map),
                     iG_buf),
                     vG_vis(associative_property_map<
-                               std::map< vertex_descriptor, edge_descriptor > >(
+                               eastl::map< vertex_descriptor, edge_descriptor > >(
                                tree_map),
                         associative_property_map<
-                            std::map< vertex_descriptor, vertex_descriptor > >(
+                            eastl::map< vertex_descriptor, vertex_descriptor > >(
                             pred_map),
                         associative_property_map<
-                            std::map< vertex_descriptor, int > >(dist_map),
+                            eastl::map< vertex_descriptor, int > >(dist_map),
                         associative_property_map<
-                            std::map< vertex_descriptor, int > >(low_map),
+                            eastl::map< vertex_descriptor, int > >(low_map),
                         vG_buf);
 
                 undirected_dfs(
                     make_filtered_graph(iG,
                         detail::deleted_edge_status< associative_property_map<
-                            std::map< edge_descriptor, bool > > >(diG)),
+                            eastl::map< edge_descriptor, bool > > >(diG)),
                     iG_vis,
                     associative_property_map<
-                        std::map< vertex_descriptor, default_color_type > >(
+                        eastl::map< vertex_descriptor, default_color_type > >(
                         vertex_color),
                     associative_property_map<
-                        std::map< edge_descriptor, default_color_type > >(
+                        eastl::map< edge_descriptor, default_color_type > >(
                         edge_color));
                 undirected_dfs(
                     make_filtered_graph(vG,
                         detail::deleted_edge_status< associative_property_map<
-                            std::map< edge_descriptor, bool > > >(dvG)),
+                            eastl::map< edge_descriptor, bool > > >(dvG)),
                     vG_vis,
                     associative_property_map<
-                        std::map< vertex_descriptor, default_color_type > >(
+                        eastl::map< vertex_descriptor, default_color_type > >(
                         vertex_color),
                     associative_property_map<
-                        std::map< edge_descriptor, default_color_type > >(
+                        eastl::map< edge_descriptor, default_color_type > >(
                         edge_color));
 
                 found = false;
-                std::stack< edge_descriptor > iG_buf_tmp, vG_buf_tmp;
+                eastl::stack< edge_descriptor > iG_buf_tmp, vG_buf_tmp;
                 while (!iG_buf.empty() && !found)
                 {
                     if (!inL[iG_bimap.right.at(iG_buf.top())])
@@ -389,27 +389,27 @@ namespace detail
                             make_filtered_graph(iG,
                                 detail::inL_edge_status<
                                     associative_property_map<
-                                        std::map< edge_descriptor, bool > > >(
+                                        eastl::map< edge_descriptor, bool > > >(
                                     aiG_inL)),
                             make_dfs_visitor(detail::cycle_finder<
-                                std::stack< edge_descriptor > >(&iG_buf_tmp)),
-                            associative_property_map< std::map<
+                                eastl::stack< edge_descriptor > >(&iG_buf_tmp)),
+                            associative_property_map< eastl::map<
                                 vertex_descriptor, default_color_type > >(
                                 vertex_color),
-                            associative_property_map< std::map< edge_descriptor,
+                            associative_property_map< eastl::map< edge_descriptor,
                                 default_color_type > >(edge_color));
                         undirected_dfs(
                             make_filtered_graph(vG,
                                 detail::inL_edge_status<
                                     associative_property_map<
-                                        std::map< edge_descriptor, bool > > >(
+                                        eastl::map< edge_descriptor, bool > > >(
                                     avG_inL)),
                             make_dfs_visitor(detail::cycle_finder<
-                                std::stack< edge_descriptor > >(&vG_buf_tmp)),
-                            associative_property_map< std::map<
+                                eastl::stack< edge_descriptor > >(&vG_buf_tmp)),
+                            associative_property_map< eastl::map<
                                 vertex_descriptor, default_color_type > >(
                                 vertex_color),
-                            associative_property_map< std::map< edge_descriptor,
+                            associative_property_map< eastl::map< edge_descriptor,
                                 default_color_type > >(edge_color));
 
                         if (!iG_buf_tmp.empty() || !vG_buf_tmp.empty())
@@ -445,27 +445,27 @@ namespace detail
                             make_filtered_graph(iG,
                                 detail::inL_edge_status<
                                     associative_property_map<
-                                        std::map< edge_descriptor, bool > > >(
+                                        eastl::map< edge_descriptor, bool > > >(
                                     aiG_inL)),
                             make_dfs_visitor(detail::cycle_finder<
-                                std::stack< edge_descriptor > >(&iG_buf_tmp)),
-                            associative_property_map< std::map<
+                                eastl::stack< edge_descriptor > >(&iG_buf_tmp)),
+                            associative_property_map< eastl::map<
                                 vertex_descriptor, default_color_type > >(
                                 vertex_color),
-                            associative_property_map< std::map< edge_descriptor,
+                            associative_property_map< eastl::map< edge_descriptor,
                                 default_color_type > >(edge_color));
                         undirected_dfs(
                             make_filtered_graph(vG,
                                 detail::inL_edge_status<
                                     associative_property_map<
-                                        std::map< edge_descriptor, bool > > >(
+                                        eastl::map< edge_descriptor, bool > > >(
                                     avG_inL)),
                             make_dfs_visitor(detail::cycle_finder<
-                                std::stack< edge_descriptor > >(&vG_buf_tmp)),
-                            associative_property_map< std::map<
+                                eastl::stack< edge_descriptor > >(&vG_buf_tmp)),
+                            associative_property_map< eastl::map<
                                 vertex_descriptor, default_color_type > >(
                                 vertex_color),
-                            associative_property_map< std::map< edge_descriptor,
+                            associative_property_map< eastl::map< edge_descriptor,
                                 default_color_type > >(edge_color));
 
                         if (!iG_buf_tmp.empty() || !vG_buf_tmp.empty())
@@ -633,50 +633,50 @@ two_graphs_common_spanning_trees(const Graph& iG, Order iG_map, const Graph& vG,
         if (vG_bimap.right.find(*current) == vG_bimap.right.end())
             return;
 
-    std::stack< edge_descriptor > iG_buf, vG_buf;
+    eastl::stack< edge_descriptor > iG_buf, vG_buf;
 
-    std::map< vertex_descriptor, edge_descriptor > tree_map;
-    std::map< vertex_descriptor, vertex_descriptor > pred_map;
-    std::map< vertex_descriptor, int > dist_map, low_map;
+    eastl::map< vertex_descriptor, edge_descriptor > tree_map;
+    eastl::map< vertex_descriptor, vertex_descriptor > pred_map;
+    eastl::map< vertex_descriptor, int > dist_map, low_map;
 
-    detail::bridges_visitor< associative_property_map< std::map<
+    detail::bridges_visitor< associative_property_map< eastl::map<
                                  vertex_descriptor, edge_descriptor > >,
         associative_property_map<
-            std::map< vertex_descriptor, vertex_descriptor > >,
-        associative_property_map< std::map< vertex_descriptor, int > >,
-        associative_property_map< std::map< vertex_descriptor, int > >,
-        std::stack< edge_descriptor > >
+            eastl::map< vertex_descriptor, vertex_descriptor > >,
+        associative_property_map< eastl::map< vertex_descriptor, int > >,
+        associative_property_map< eastl::map< vertex_descriptor, int > >,
+        eastl::stack< edge_descriptor > >
     iG_vis(associative_property_map<
-               std::map< vertex_descriptor, edge_descriptor > >(tree_map),
+               eastl::map< vertex_descriptor, edge_descriptor > >(tree_map),
         associative_property_map<
-            std::map< vertex_descriptor, vertex_descriptor > >(pred_map),
-        associative_property_map< std::map< vertex_descriptor, int > >(
+            eastl::map< vertex_descriptor, vertex_descriptor > >(pred_map),
+        associative_property_map< eastl::map< vertex_descriptor, int > >(
             dist_map),
-        associative_property_map< std::map< vertex_descriptor, int > >(low_map),
+        associative_property_map< eastl::map< vertex_descriptor, int > >(low_map),
         iG_buf),
         vG_vis(associative_property_map<
-                   std::map< vertex_descriptor, edge_descriptor > >(tree_map),
+                   eastl::map< vertex_descriptor, edge_descriptor > >(tree_map),
             associative_property_map<
-                std::map< vertex_descriptor, vertex_descriptor > >(pred_map),
-            associative_property_map< std::map< vertex_descriptor, int > >(
+                eastl::map< vertex_descriptor, vertex_descriptor > >(pred_map),
+            associative_property_map< eastl::map< vertex_descriptor, int > >(
                 dist_map),
-            associative_property_map< std::map< vertex_descriptor, int > >(
+            associative_property_map< eastl::map< vertex_descriptor, int > >(
                 low_map),
             vG_buf);
 
-    std::map< vertex_descriptor, default_color_type > vertex_color;
-    std::map< edge_descriptor, default_color_type > edge_color;
+    eastl::map< vertex_descriptor, default_color_type > vertex_color;
+    eastl::map< edge_descriptor, default_color_type > edge_color;
 
     undirected_dfs(iG, iG_vis,
         associative_property_map<
-            std::map< vertex_descriptor, default_color_type > >(vertex_color),
+            eastl::map< vertex_descriptor, default_color_type > >(vertex_color),
         associative_property_map<
-            std::map< edge_descriptor, default_color_type > >(edge_color));
+            eastl::map< edge_descriptor, default_color_type > >(edge_color));
     undirected_dfs(vG, vG_vis,
         associative_property_map<
-            std::map< vertex_descriptor, default_color_type > >(vertex_color),
+            eastl::map< vertex_descriptor, default_color_type > >(vertex_color),
         associative_property_map<
-            std::map< edge_descriptor, default_color_type > >(edge_color));
+            eastl::map< edge_descriptor, default_color_type > >(edge_color));
 
     while (!iG_buf.empty())
     {
@@ -689,8 +689,8 @@ two_graphs_common_spanning_trees(const Graph& iG, Order iG_map, const Graph& vG,
         vG_buf.pop();
     }
 
-    std::map< edge_descriptor, bool > iG_inL, vG_inL;
-    associative_property_map< std::map< edge_descriptor, bool > > aiG_inL(
+    eastl::map< edge_descriptor, bool > iG_inL, vG_inL;
+    associative_property_map< eastl::map< edge_descriptor, bool > > aiG_inL(
         iG_inL),
         avG_inL(vG_inL);
 
@@ -711,33 +711,33 @@ two_graphs_common_spanning_trees(const Graph& iG, Order iG_map, const Graph& vG,
     undirected_dfs(
         make_filtered_graph(iG,
             detail::inL_edge_status<
-                associative_property_map< std::map< edge_descriptor, bool > > >(
+                associative_property_map< eastl::map< edge_descriptor, bool > > >(
                 aiG_inL)),
         make_dfs_visitor(
-            detail::cycle_finder< std::stack< edge_descriptor > >(&iG_buf)),
+            detail::cycle_finder< eastl::stack< edge_descriptor > >(&iG_buf)),
         associative_property_map<
-            std::map< vertex_descriptor, default_color_type > >(vertex_color),
+            eastl::map< vertex_descriptor, default_color_type > >(vertex_color),
         associative_property_map<
-            std::map< edge_descriptor, default_color_type > >(edge_color));
+            eastl::map< edge_descriptor, default_color_type > >(edge_color));
     undirected_dfs(
         make_filtered_graph(vG,
             detail::inL_edge_status<
-                associative_property_map< std::map< edge_descriptor, bool > > >(
+                associative_property_map< eastl::map< edge_descriptor, bool > > >(
                 avG_inL)),
         make_dfs_visitor(
-            detail::cycle_finder< std::stack< edge_descriptor > >(&vG_buf)),
+            detail::cycle_finder< eastl::stack< edge_descriptor > >(&vG_buf)),
         associative_property_map<
-            std::map< vertex_descriptor, default_color_type > >(vertex_color),
+            eastl::map< vertex_descriptor, default_color_type > >(vertex_color),
         associative_property_map<
-            std::map< edge_descriptor, default_color_type > >(edge_color));
+            eastl::map< edge_descriptor, default_color_type > >(edge_color));
 
     if (iG_buf.empty() && vG_buf.empty())
     {
 
-        std::map< edge_descriptor, bool > iG_deleted, vG_deleted;
-        associative_property_map< std::map< edge_descriptor, bool > > diG(
+        eastl::map< edge_descriptor, bool > iG_deleted, vG_deleted;
+        associative_property_map< eastl::map< edge_descriptor, bool > > diG(
             iG_deleted);
-        associative_property_map< std::map< edge_descriptor, bool > > dvG(
+        associative_property_map< eastl::map< edge_descriptor, bool > > dvG(
             vG_deleted);
 
         boost::tuples::tie(current, last) = edges(iG);
@@ -757,28 +757,28 @@ two_graphs_common_spanning_trees(const Graph& iG, Order iG_map, const Graph& vG,
                 undirected_dfs(
                     make_filtered_graph(iG,
                         detail::inL_edge_status< associative_property_map<
-                            std::map< edge_descriptor, bool > > >(aiG_inL)),
+                            eastl::map< edge_descriptor, bool > > >(aiG_inL)),
                     make_dfs_visitor(
-                        detail::cycle_finder< std::stack< edge_descriptor > >(
+                        detail::cycle_finder< eastl::stack< edge_descriptor > >(
                             &iG_buf)),
                     associative_property_map<
-                        std::map< vertex_descriptor, default_color_type > >(
+                        eastl::map< vertex_descriptor, default_color_type > >(
                         vertex_color),
                     associative_property_map<
-                        std::map< edge_descriptor, default_color_type > >(
+                        eastl::map< edge_descriptor, default_color_type > >(
                         edge_color));
                 undirected_dfs(
                     make_filtered_graph(vG,
                         detail::inL_edge_status< associative_property_map<
-                            std::map< edge_descriptor, bool > > >(avG_inL)),
+                            eastl::map< edge_descriptor, bool > > >(avG_inL)),
                     make_dfs_visitor(
-                        detail::cycle_finder< std::stack< edge_descriptor > >(
+                        detail::cycle_finder< eastl::stack< edge_descriptor > >(
                             &vG_buf)),
                     associative_property_map<
-                        std::map< vertex_descriptor, default_color_type > >(
+                        eastl::map< vertex_descriptor, default_color_type > >(
                         vertex_color),
                     associative_property_map<
-                        std::map< edge_descriptor, default_color_type > >(
+                        eastl::map< edge_descriptor, default_color_type > >(
                         edge_color));
 
                 if (!iG_buf.empty() || !vG_buf.empty())
@@ -798,18 +798,18 @@ two_graphs_common_spanning_trees(const Graph& iG, Order iG_map, const Graph& vG,
 
         int cc = 0;
 
-        std::map< vertex_descriptor, int > com_map;
+        eastl::map< vertex_descriptor, int > com_map;
         cc += connected_components(
             make_filtered_graph(iG,
                 detail::deleted_edge_status< associative_property_map<
-                    std::map< edge_descriptor, bool > > >(diG)),
-            associative_property_map< std::map< vertex_descriptor, int > >(
+                    eastl::map< edge_descriptor, bool > > >(diG)),
+            associative_property_map< eastl::map< vertex_descriptor, int > >(
                 com_map));
         cc += connected_components(
             make_filtered_graph(vG,
                 detail::deleted_edge_status< associative_property_map<
-                    std::map< edge_descriptor, bool > > >(dvG)),
-            associative_property_map< std::map< vertex_descriptor, int > >(
+                    eastl::map< edge_descriptor, bool > > >(dvG)),
+            associative_property_map< eastl::map< vertex_descriptor, int > >(
                 com_map));
 
         if (cc != 2)
@@ -817,7 +817,7 @@ two_graphs_common_spanning_trees(const Graph& iG, Order iG_map, const Graph& vG,
 
         // REC
         detail::rec_two_graphs_common_spanning_trees< Graph, Func, Seq,
-            associative_property_map< std::map< edge_descriptor, bool > > >(
+            associative_property_map< eastl::map< edge_descriptor, bool > > >(
             iG, iG_bimap, aiG_inL, diG, vG, vG_bimap, aiG_inL, dvG, func, inL);
     }
 }
@@ -833,7 +833,7 @@ two_graphs_common_spanning_trees(
     typedef typename GraphTraits::edge_descriptor edge_descriptor;
     typedef typename GraphTraits::edge_iterator edge_iterator;
 
-    std::vector< edge_descriptor > iGO, vGO;
+    eastl::vector< edge_descriptor > iGO, vGO;
     edge_iterator curr, last;
 
     boost::tuples::tie(curr, last) = edges(iG);

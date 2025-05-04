@@ -10,8 +10,8 @@
 #define BOOST_GRAPH_DOMINATOR_HPP
 
 #include <boost/config.hpp>
-#include <set>
-#include <vector>
+#include <EASTL/set.h>
+#include <EASTL/vector.h>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/concept/assert.hpp>
 
@@ -131,7 +131,7 @@ namespace detail
 
             // For each predecessor of n
             typename graph_traits< Graph >::in_edge_iterator inItr, inEnd;
-            for (boost::tie(inItr, inEnd) = in_edges(n, g); inItr != inEnd;
+            for (eastl::tie(inItr, inEnd) = in_edges(n, g); inItr != inEnd;
                  ++inItr)
             {
                 const Vertex v = source(*inItr, g);
@@ -166,7 +166,7 @@ namespace detail
             //
             //  idom(n) = semi(n) if semi(y)=semi(n) or
             //            idom(y) if semi(y) != semi(n)
-            typename std::vector< Vertex >::iterator buckItr;
+            typename eastl::vector< Vertex >::iterator buckItr;
             for (buckItr = get(bucketMap_, p).begin();
                  buckItr != get(bucketMap_, p).end(); ++buckItr)
             {
@@ -208,16 +208,16 @@ namespace detail
             return pred_of_v.best;
         }
 
-        std::vector< vertex_triple< Graph > > pred_;
-        iterator_property_map< typename std::vector< vertex_triple< Graph > >::iterator,
+        eastl::vector< vertex_triple< Graph > > pred_;
+        iterator_property_map< typename eastl::vector< vertex_triple< Graph > >::iterator,
             IndexMap >
             predMap_;
 
-        std::vector< Vertex > samedom_;
-        std::vector< std::vector< Vertex > > buckets_;
+        eastl::vector< Vertex > samedom_;
+        eastl::vector< eastl::vector< Vertex > > buckets_;
 
         iterator_property_map<
-            typename std::vector< std::vector< Vertex > >::iterator, IndexMap >
+            typename eastl::vector< eastl::vector< Vertex > >::iterator, IndexMap >
             bucketMap_;
 
         const Vertex& entry_;
@@ -241,7 +241,7 @@ namespace detail
  * @pre Unreachable nodes must be masked as
  *      graph_traits<Graph>::null_vertex in parentMap.
  * @pre Unreachable nodes must be masked as
- *      (std::numeric_limits<VerticesSizeType>::max)() in dfnumMap.
+ *      (eastl::numeric_limits<VerticesSizeType>::max)() in dfnumMap.
  *
  * @param domTreePredMap [out] : immediate dominator map (parent map
  * in dom. tree)
@@ -322,8 +322,8 @@ void lengauer_tarjan_dominator_tree(const Graph& g,
     if (numOfVertices == 0)
         return;
 
-    VerticesSizeType time = (std::numeric_limits< VerticesSizeType >::max)();
-    std::vector< default_color_type > colors(
+    VerticesSizeType time = (eastl::numeric_limits< VerticesSizeType >::max)();
+    eastl::vector< default_color_type > colors(
         numOfVertices, color_traits< default_color_type >::white());
     depth_first_visit(g, entry,
         make_dfs_visitor(
@@ -353,9 +353,9 @@ void lengauer_tarjan_dominator_tree(const Graph& g,
     typedef typename graph_traits< Graph >::vertices_size_type VerticesSizeType;
     typedef typename property_map< Graph, vertex_index_t >::const_type IndexMap;
     typedef iterator_property_map<
-        typename std::vector< VerticesSizeType >::iterator, IndexMap >
+        typename eastl::vector< VerticesSizeType >::iterator, IndexMap >
         TimeMap;
-    typedef iterator_property_map< typename std::vector< Vertex >::iterator,
+    typedef iterator_property_map< typename eastl::vector< Vertex >::iterator,
         IndexMap >
         PredMap;
 
@@ -366,14 +366,14 @@ void lengauer_tarjan_dominator_tree(const Graph& g,
 
     const IndexMap indexMap = get(vertex_index, g);
 
-    std::vector< VerticesSizeType > dfnum(numOfVertices, 0);
+    eastl::vector< VerticesSizeType > dfnum(numOfVertices, 0);
     TimeMap dfnumMap(make_iterator_property_map(dfnum.begin(), indexMap));
 
-    std::vector< Vertex > parent(
+    eastl::vector< Vertex > parent(
         numOfVertices, graph_traits< Graph >::null_vertex());
     PredMap parentMap(make_iterator_property_map(parent.begin(), indexMap));
 
-    std::vector< Vertex > verticesByDFNum(parent);
+    eastl::vector< Vertex > verticesByDFNum(parent);
 
     // Run main algorithm
     lengauer_tarjan_dominator_tree(g, entry, indexMap, dfnumMap, parentMap,
@@ -394,7 +394,7 @@ void iterative_bit_vector_dominator_tree(const Graph& g,
     typedef typename graph_traits< Graph >::vertex_iterator vertexItr;
     typedef typename graph_traits< Graph >::vertices_size_type VerticesSizeType;
     typedef iterator_property_map<
-        typename std::vector< std::set< Vertex > >::iterator, IndexMap >
+        typename eastl::vector< eastl::set< Vertex > >::iterator, IndexMap >
         vertexSetMap;
 
     BOOST_CONCEPT_ASSERT((BidirectionalGraphConcept< Graph >));
@@ -406,12 +406,12 @@ void iterative_bit_vector_dominator_tree(const Graph& g,
         return;
 
     vertexItr vi, viend;
-    boost::tie(vi, viend) = vertices(g);
-    const std::set< Vertex > N(vi, viend);
+    eastl::tie(vi, viend) = vertices(g);
+    const eastl::set< Vertex > N(vi, viend);
 
     bool change = true;
 
-    std::vector< std::set< Vertex > > dom(numOfVertices, N);
+    eastl::vector< eastl::set< Vertex > > dom(numOfVertices, N);
     vertexSetMap domMap(make_iterator_property_map(dom.begin(), indexMap));
     get(domMap, entry).clear();
     get(domMap, entry).insert(entry);
@@ -419,23 +419,23 @@ void iterative_bit_vector_dominator_tree(const Graph& g,
     while (change)
     {
         change = false;
-        for (boost::tie(vi, viend) = vertices(g); vi != viend; ++vi)
+        for (eastl::tie(vi, viend) = vertices(g); vi != viend; ++vi)
         {
             if (*vi == entry)
                 continue;
 
-            std::set< Vertex > T(N);
+            eastl::set< Vertex > T(N);
 
             typename graph_traits< Graph >::in_edge_iterator inItr, inEnd;
-            for (boost::tie(inItr, inEnd) = in_edges(*vi, g); inItr != inEnd;
+            for (eastl::tie(inItr, inEnd) = in_edges(*vi, g); inItr != inEnd;
                  ++inItr)
             {
                 const Vertex p = source(*inItr, g);
 
-                std::set< Vertex > tempSet;
-                std::set_intersection(T.begin(), T.end(),
+                eastl::set< Vertex > tempSet;
+                eastl::set_intersection(T.begin(), T.end(),
                     get(domMap, p).begin(), get(domMap, p).end(),
-                    std::inserter(tempSet, tempSet.begin()));
+                    eastl::inserter(tempSet, tempSet.begin()));
                 T.swap(tempSet);
             }
 
@@ -445,29 +445,29 @@ void iterative_bit_vector_dominator_tree(const Graph& g,
                 change = true;
                 get(domMap, *vi).swap(T);
             }
-        } // end of for (boost::tie(vi, viend) = vertices(g)
+        } // end of for (eastl::tie(vi, viend) = vertices(g)
     } // end of while(change)
 
     // 2. Build dominator tree
-    for (boost::tie(vi, viend) = vertices(g); vi != viend; ++vi)
+    for (eastl::tie(vi, viend) = vertices(g); vi != viend; ++vi)
         get(domMap, *vi).erase(*vi);
 
     Graph domTree(numOfVertices);
 
-    for (boost::tie(vi, viend) = vertices(g); vi != viend; ++vi)
+    for (eastl::tie(vi, viend) = vertices(g); vi != viend; ++vi)
     {
         if (*vi == entry)
             continue;
 
         // We have to iterate through copied dominator set
-        const std::set< Vertex > tempSet(get(domMap, *vi));
-        typename std::set< Vertex >::const_iterator s;
+        const eastl::set< Vertex > tempSet(get(domMap, *vi));
+        typename eastl::set< Vertex >::const_iterator s;
         for (s = tempSet.begin(); s != tempSet.end(); ++s)
         {
-            typename std::set< Vertex >::iterator t;
+            typename eastl::set< Vertex >::iterator t;
             for (t = get(domMap, *vi).begin(); t != get(domMap, *vi).end();)
             {
-                typename std::set< Vertex >::iterator old_t = t;
+                typename eastl::set< Vertex >::iterator old_t = t;
                 ++t; // Done early because t may become invalid
                 if (*old_t == *s)
                     continue;
@@ -477,7 +477,7 @@ void iterative_bit_vector_dominator_tree(const Graph& g,
         }
     }
 
-    for (boost::tie(vi, viend) = vertices(g); vi != viend; ++vi)
+    for (eastl::tie(vi, viend) = vertices(g); vi != viend; ++vi)
     {
         if (*vi != entry && get(domMap, *vi).size() == 1)
         {

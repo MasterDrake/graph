@@ -13,7 +13,7 @@
 
 #include <utility>
 #include <cstddef>
-#include <iterator>
+#include <EASTL/iterator.h>
 #include <boost/config.hpp>
 #include <boost/operators.hpp>
 #include <boost/pending/detail/int_iterator.hpp>
@@ -44,25 +44,25 @@ template < class Iter, class Vertex > class matrix_incidence_iterator;
             typedef Matrix::size_type size_type;                              \
             typedef boost::int_iterator< size_type > vertex_iterator;         \
                                                                               \
-            friend std::pair< vertex_iterator, vertex_iterator > vertices(    \
+            friend eastl::pair< vertex_iterator, vertex_iterator > vertices(    \
                 const Matrix& g)                                              \
             {                                                                 \
                 typedef vertex_iterator VIter;                                \
-                return std::make_pair(VIter(0), VIter(g.nrows()));            \
+                return eastl::make_pair(VIter(0), VIter(g.nrows()));            \
             }                                                                 \
                                                                               \
-            friend std::pair< out_edge_iterator, out_edge_iterator >          \
+            friend eastl::pair< out_edge_iterator, out_edge_iterator >          \
             out_edges(V v, const Matrix& g)                                   \
             {                                                                 \
                 typedef out_edge_iterator IncIter;                            \
-                return std::make_pair(                                        \
+                return eastl::make_pair(                                        \
                     IncIter(g[v].begin()), IncIter(g[v].end()));              \
             }                                                                 \
-            friend std::pair< adjacency_iterator, adjacency_iterator >        \
+            friend eastl::pair< adjacency_iterator, adjacency_iterator >        \
             adjacent_vertices(V v, const Matrix& g)                           \
             {                                                                 \
                 typedef adjacency_iterator AdjIter;                           \
-                return std::make_pair(                                        \
+                return eastl::make_pair(                                        \
                     AdjIter(g[v].begin()), AdjIter(g[v].end()));              \
             }                                                                 \
             friend vertex_descriptor source(E e, const Matrix& g)             \
@@ -93,7 +93,7 @@ template < class Iter, class Vertex > class matrix_adj_iterator
     typedef matrix_adj_iterator self;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
+    typedef eastl::input_iterator_tag iterator_category;
     typedef Vertex value_type;
     typedef std::ptrdiff_t difference_type;
     typedef Vertex* pointer;
@@ -130,7 +130,7 @@ template < class Iter, class Vertex > class matrix_incidence_iterator
     typedef matrix_incidence_iterator self;
 
 public:
-    typedef std::input_iterator_tag iterator_category;
+    typedef eastl::input_iterator_tag iterator_category;
     typedef Iter value_type;
     typedef std::ptrdiff_t difference_type;
     typedef Iter* pointer;

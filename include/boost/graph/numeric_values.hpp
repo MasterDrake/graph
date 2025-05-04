@@ -7,7 +7,7 @@
 #ifndef BOOST_GRAPH_NUMERIC_VALUES_HPP
 #define BOOST_GRAPH_NUMERIC_VALUES_HPP
 
-#include <limits>
+#include <EASTL/numeric_limits.h>
 
 namespace boost
 {
@@ -19,7 +19,7 @@ namespace boost
         static type zero() { return 0.0; }                  \
         static type infinity()                              \
         {                                                   \
-            return std::numeric_limits< type >::infinity(); \
+            return eastl::numeric_limits< type >::infinity(); \
         }                                                   \
     };
 
@@ -38,7 +38,7 @@ template < typename T > struct numeric_values
 
     static T zero() { return T(); }
 
-    static T infinity() { return (std::numeric_limits< T >::max)(); }
+    static T infinity() { return (eastl::numeric_limits< T >::max)(); }
 };
 
 // Specializations for floating point types refer to 0.0 and their infinity

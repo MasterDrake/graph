@@ -11,8 +11,8 @@
 #define BOOST_GRAPH_GRID_GRAPH_HPP
 
 #include <cmath>
-#include <functional>
-#include <numeric>
+#include <EASTL/functional.h>
+#include <EASTL/numeric.h>
 
 #include <boost/array.hpp>
 #include <boost/limits.hpp>
@@ -289,7 +289,7 @@ public:
 
     // descriptors
     typedef boost::array< VertexIndex, Dimensions > vertex_descriptor;
-    typedef std::pair< vertex_descriptor, vertex_descriptor > edge_descriptor;
+    typedef eastl::pair< vertex_descriptor, vertex_descriptor > edge_descriptor;
 
     // vertex_iterator
     typedef counting_iterator< vertices_size_type > vertex_index_iterator;
@@ -335,8 +335,8 @@ public:
     static inline vertex_descriptor null_vertex()
     {
         vertex_descriptor maxed_out_vertex;
-        std::fill(maxed_out_vertex.begin(), maxed_out_vertex.end(),
-            (std::numeric_limits< vertices_size_type >::max)());
+        eastl::fill(maxed_out_vertex.begin(), maxed_out_vertex.end(),
+            (eastl::numeric_limits< vertices_size_type >::max)());
 
         return (maxed_out_vertex);
     }
@@ -346,7 +346,7 @@ public:
     : m_dimension_lengths(dimension_lengths)
     {
 
-        std::fill(m_wrap_dimension.begin(), m_wrap_dimension.end(), false);
+        eastl::fill(m_wrap_dimension.begin(), m_wrap_dimension.end(), false);
 
         precalculate();
     }
@@ -357,7 +357,7 @@ public:
     : m_dimension_lengths(dimension_lengths)
     {
 
-        std::fill(m_wrap_dimension.begin(), m_wrap_dimension.end(),
+        eastl::fill(m_wrap_dimension.begin(), m_wrap_dimension.end(),
             wrap_all_dimensions);
 
         precalculate();
@@ -403,7 +403,7 @@ public:
         else
         {
             // Stop at the end of this dimension if necessary.
-            new_position = (std::min)(
+            new_position = (eastl::min)(
                 new_position, vertices_size_type(length(dimension_index) - 1));
         }
 
@@ -556,7 +556,7 @@ protected:
 
         } // if (wrapped(dimension_index))
 
-        return (std::make_pair(vertex_source, vertex_target));
+        return (eastl::make_pair(vertex_source, vertex_target));
     }
 
     // Returns the index for [edge] (See also edge_at)
@@ -728,7 +728,7 @@ protected:
             }
         }
 
-        return (std::make_pair(vertex,
+        return (eastl::make_pair(vertex,
             is_forward ? next(vertex, dimension_index)
                        : previous(vertex, dimension_index)));
     }
@@ -747,15 +747,15 @@ protected:
 
         edge_descriptor out_edge = out_edge_at(vertex, in_edge_index);
         return (
-            std::make_pair(target(out_edge, *this), source(out_edge, *this)));
+            eastl::make_pair(target(out_edge, *this), source(out_edge, *this)));
     }
 
     // Pre-computes the number of vertices and edges
     void precalculate()
     {
-        m_num_vertices = std::accumulate(m_dimension_lengths.begin(),
+        m_num_vertices = eastl::accumulate(m_dimension_lengths.begin(),
             m_dimension_lengths.end(), vertices_size_type(1),
-            std::multiplies< vertices_size_type >());
+            eastl::multiplies< vertices_size_type >());
 
         // Calculate number of edges in each dimension
         m_num_edges = 0;
@@ -792,7 +792,7 @@ public:
     // VertexListGraph
     //================
 
-    friend inline std::pair< typename type::vertex_iterator,
+    friend inline eastl::pair< typename type::vertex_iterator,
         typename type::vertex_iterator >
     vertices(const type& graph)
     {
@@ -800,7 +800,7 @@ public:
         typedef typename type::vertex_function vertex_function;
         typedef typename type::vertex_index_iterator vertex_index_iterator;
 
-        return (std::make_pair(
+        return (eastl::make_pair(
             vertex_iterator(vertex_index_iterator(0), vertex_function(&graph)),
             vertex_iterator(vertex_index_iterator(graph.num_vertices()),
                 vertex_function(&graph))));
@@ -823,7 +823,7 @@ public:
     // IncidenceGraph
     //===============
 
-    friend inline std::pair< typename type::out_edge_iterator,
+    friend inline eastl::pair< typename type::out_edge_iterator,
         typename type::out_edge_iterator >
     out_edges(typename type::vertex_descriptor vertex, const type& graph)
     {
@@ -831,7 +831,7 @@ public:
         typedef typename type::out_edge_function out_edge_function;
         typedef typename type::out_edge_iterator out_edge_iterator;
 
-        return (std::make_pair(out_edge_iterator(degree_iterator(0),
+        return (eastl::make_pair(out_edge_iterator(degree_iterator(0),
                                    out_edge_function(vertex, &graph)),
             out_edge_iterator(degree_iterator(graph.out_degree(vertex)),
                 out_edge_function(vertex, &graph))));
@@ -854,7 +854,7 @@ public:
     // AdjacencyGraph
     //===============
 
-    friend typename std::pair< typename type::adjacency_iterator,
+    friend typename eastl::pair< typename type::adjacency_iterator,
         typename type::adjacency_iterator >
     adjacent_vertices(
         typename type::vertex_descriptor vertex, const type& graph)
@@ -864,7 +864,7 @@ public:
             typename type::adjacent_vertex_function adjacent_vertex_function;
         typedef typename type::adjacency_iterator adjacency_iterator;
 
-        return (std::make_pair(adjacency_iterator(degree_iterator(0),
+        return (eastl::make_pair(adjacency_iterator(degree_iterator(0),
                                    adjacent_vertex_function(vertex, &graph)),
             adjacency_iterator(degree_iterator(graph.out_degree(vertex)),
                 adjacent_vertex_function(vertex, &graph))));
@@ -885,7 +885,7 @@ public:
         return (graph.edge_at(edge_index));
     }
 
-    friend inline std::pair< typename type::edge_iterator,
+    friend inline eastl::pair< typename type::edge_iterator,
         typename type::edge_iterator >
     edges(const type& graph)
     {
@@ -893,7 +893,7 @@ public:
         typedef typename type::edge_function edge_function;
         typedef typename type::edge_iterator edge_iterator;
 
-        return (std::make_pair(
+        return (eastl::make_pair(
             edge_iterator(edge_index_iterator(0), edge_function(&graph)),
             edge_iterator(edge_index_iterator(graph.num_edges()),
                 edge_function(&graph))));
@@ -903,7 +903,7 @@ public:
     // BiDirectionalGraph
     //===================
 
-    friend inline std::pair< typename type::in_edge_iterator,
+    friend inline eastl::pair< typename type::in_edge_iterator,
         typename type::in_edge_iterator >
     in_edges(typename type::vertex_descriptor vertex, const type& graph)
     {
@@ -911,7 +911,7 @@ public:
         typedef typename type::degree_iterator degree_iterator;
         typedef typename type::in_edge_iterator in_edge_iterator;
 
-        return (std::make_pair(in_edge_iterator(degree_iterator(0),
+        return (eastl::make_pair(in_edge_iterator(degree_iterator(0),
                                    in_edge_function(vertex, &graph)),
             in_edge_iterator(degree_iterator(graph.in_degree(vertex)),
                 in_edge_function(vertex, &graph))));
@@ -940,14 +940,14 @@ public:
     // Adjacency Matrix
     //==================
 
-    friend std::pair< typename type::edge_descriptor, bool > edge(
+    friend eastl::pair< typename type::edge_descriptor, bool > edge(
         typename type::vertex_descriptor source_vertex,
         typename type::vertex_descriptor destination_vertex, const type& graph)
     {
 
-        std::pair< typename type::edge_descriptor, bool > edge_exists
-            = std::make_pair(
-                std::make_pair(source_vertex, destination_vertex), false);
+        eastl::pair< typename type::edge_descriptor, bool > edge_exists
+            = eastl::make_pair(
+                eastl::make_pair(source_vertex, destination_vertex), false);
 
         for (std::size_t dimension_index = 0; dimension_index < Dimensions;
              ++dimension_index)

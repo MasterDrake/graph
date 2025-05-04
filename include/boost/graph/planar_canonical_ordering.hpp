@@ -9,8 +9,8 @@
 #ifndef __PLANAR_CANONICAL_ORDERING_HPP__
 #define __PLANAR_CANONICAL_ORDERING_HPP__
 
-#include <vector>
-#include <list>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
 #include <boost/config.hpp>
 #include <boost/next_prior.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -44,27 +44,27 @@ void planar_canonical_ordering(const Graph& g, PlanarEmbedding embedding,
     typedef typename property_traits< PlanarEmbedding >::value_type
         embedding_value_t;
     typedef typename embedding_value_t::const_iterator embedding_iterator_t;
-    typedef iterator_property_map< typename std::vector< vertex_t >::iterator,
+    typedef iterator_property_map< typename eastl::vector< vertex_t >::iterator,
         VertexIndexMap >
         vertex_to_vertex_map_t;
     typedef iterator_property_map<
-        typename std::vector< std::size_t >::iterator, VertexIndexMap >
+        typename eastl::vector< std::size_t >::iterator, VertexIndexMap >
         vertex_to_size_t_map_t;
 
-    std::vector< vertex_t > processed_neighbor_vector(num_vertices(g));
+    eastl::vector< vertex_t > processed_neighbor_vector(num_vertices(g));
     vertex_to_vertex_map_t processed_neighbor(
         processed_neighbor_vector.begin(), vm);
 
-    std::vector< std::size_t > status_vector(
+    eastl::vector< std::size_t > status_vector(
         num_vertices(g), detail::PCO_UNPROCESSED);
     vertex_to_size_t_map_t status(status_vector.begin(), vm);
 
-    std::list< vertex_t > ready_to_be_processed;
+    eastl::list< vertex_t > ready_to_be_processed;
 
     vertex_t first_vertex = *vertices(g).first;
     vertex_t second_vertex = first_vertex;
     adjacency_iterator_t ai, ai_end;
-    for (boost::tie(ai, ai_end) = adjacent_vertices(first_vertex, g);
+    for (eastl::tie(ai, ai_end) = adjacent_vertices(first_vertex, g);
          ai != ai_end; ++ai)
     {
         if (*ai == first_vertex)

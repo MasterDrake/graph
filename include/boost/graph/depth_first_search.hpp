@@ -27,8 +27,8 @@
 #include <boost/concept/assert.hpp>
 #include <boost/tti/has_member_function.hpp>
 
-#include <vector>
-#include <utility>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
 
 namespace boost
 {
@@ -136,39 +136,39 @@ namespace detail
         BOOST_CONCEPT_ASSERT((ColorValueConcept< ColorValue >));
         typedef color_traits< ColorValue > Color;
         typedef typename graph_traits< IncidenceGraph >::out_edge_iterator Iter;
-        typedef std::pair< Vertex,
-            std::pair< boost::optional< Edge >, std::pair< Iter, Iter > > >
+        typedef eastl::pair< Vertex,
+            eastl::pair< boost::optional< Edge >, eastl::pair< Iter, Iter > > >
             VertexInfo;
 
         boost::optional< Edge > src_e;
         Iter ei, ei_end;
-        std::vector< VertexInfo > stack;
+        eastl::vector< VertexInfo > stack;
 
         // Possible optimization for vector
         // stack.reserve(num_vertices(g));
 
         put(color, u, Color::gray());
         vis.discover_vertex(u, g);
-        boost::tie(ei, ei_end) = out_edges(u, g);
+        eastl::tie(ei, ei_end) = out_edges(u, g);
         if (func(u, g))
         {
             // If this vertex terminates the search, we push empty range
-            stack.push_back(std::make_pair(u,
-                std::make_pair(boost::optional< Edge >(),
-                    std::make_pair(ei_end, ei_end))));
+            stack.push_back(eastl::make_pair(u,
+                eastl::make_pair(boost::optional< Edge >(),
+                    eastl::make_pair(ei_end, ei_end))));
         }
         else
         {
-            stack.push_back(std::make_pair(u,
-                std::make_pair(
-                    boost::optional< Edge >(), std::make_pair(ei, ei_end))));
+            stack.push_back(eastl::make_pair(u,
+                eastl::make_pair(
+                    boost::optional< Edge >(), eastl::make_pair(ei, ei_end))));
         }
         while (!stack.empty())
         {
             VertexInfo& back = stack.back();
             u = back.first;
             src_e = back.second.first;
-            boost::tie(ei, ei_end) = back.second.second;
+            eastl::tie(ei, ei_end) = back.second.second;
             stack.pop_back();
             // finish_edge has to be called here, not after the
             // loop. Think of the pop as the return from a recursive call.
@@ -185,12 +185,12 @@ namespace detail
                 {
                     vis.tree_edge(*ei, g);
                     src_e = *ei;
-                    stack.push_back(std::make_pair(u,
-                        std::make_pair(src_e, std::make_pair(++ei, ei_end))));
+                    stack.push_back(eastl::make_pair(u,
+                        eastl::make_pair(src_e, eastl::make_pair(++ei, ei_end))));
                     u = v;
                     put(color, u, Color::gray());
                     vis.discover_vertex(u, g);
-                    boost::tie(ei, ei_end) = out_edges(u, g);
+                    eastl::tie(ei, ei_end) = out_edges(u, g);
                     if (func(u, g))
                     {
                         ei = ei_end;
@@ -238,7 +238,7 @@ namespace detail
         vis.discover_vertex(u, g);
 
         if (!func(u, g))
-            for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
             {
                 Vertex v = target(*ei, g);
                 vis.examine_edge(*ei, g);
@@ -273,7 +273,7 @@ void depth_first_search(const VertexListGraph& g, DFSVisitor vis,
     typedef color_traits< ColorValue > Color;
 
     typename graph_traits< VertexListGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         Vertex u = implicit_cast< Vertex >(*ui);
         put(color, u, Color::white());
@@ -287,7 +287,7 @@ void depth_first_search(const VertexListGraph& g, DFSVisitor vis,
             g, start_vertex, vis, color, detail::nontruth2());
     }
 
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         Vertex u = implicit_cast< Vertex >(*ui);
         ColorValue u_color = get(color, u);
@@ -305,7 +305,7 @@ void depth_first_search(
     const VertexListGraph& g, DFSVisitor vis, ColorMap color)
 {
     typedef typename boost::graph_traits< VertexListGraph >::vertex_iterator vi;
-    std::pair< vi, vi > verts = vertices(g);
+    eastl::pair< vi, vi > verts = vertices(g);
     if (verts.first == verts.second)
         return;
 

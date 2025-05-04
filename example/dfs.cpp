@@ -10,14 +10,53 @@
 #include <assert.h>
 #include <iostream>
 
-#include <vector>
-#include <algorithm>
-#include <utility>
+#include <EASTL/string.h>
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h>
+#include <EASTL/utility.h>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/visitors.hpp>
 
+#ifdef _WIN32
+#define CDeclFunction __cdecl
+#else
+#define CDeclFunction
+#endif
+
+void* CDeclFunction operator new[](size_t size, const char* name, int flags,
+    unsigned debugFlags, const char* file, int line)
+{
+    (void)name;
+    (void)flags;
+    (void)debugFlags;
+    (void)file;
+    (void)line;
+    return new uint8_t[size];
+}
+
+void* CDeclFunction operator new[](size_t size, size_t alignement,
+    size_t offset, const char* name, int flags, unsigned debugFlags,
+    const char* file, int line)
+{
+    (void)name;
+    (void)flags;
+    (void)debugFlags;
+    (void)file;
+    (void)line;
+    (void)alignement;
+    (void)offset;
+    return new uint8_t[size];
+}
+
+#include <cstdio>
+
+int CDeclFunction EA::StdC::Vsnprintf(char* EA_RESTRICT pDestination, size_t n,
+    const char* EA_RESTRICT pFormat, va_list arguments)
+{
+    return vsnprintf(pDestination, n, pFormat, arguments);
+}
 /*
   This calculates the discover finishing time.
 
@@ -47,7 +86,7 @@
  */
 
 using namespace boost;
-using namespace std;
+using namespace eastl;
 
 template < class VisitorList >
 struct edge_categorizer : public dfs_visitor< VisitorList >
@@ -58,27 +97,27 @@ struct edge_categorizer : public dfs_visitor< VisitorList >
 
     template < class Edge, class Graph > void tree_edge(Edge e, Graph& G)
     {
-        cout << "Tree edge: " << source(e, G) << " --> " << target(e, G)
-             << endl;
+        std::cout << "Tree edge: " << source(e, G) << " --> " << target(e, G)
+                  << std::endl;
         Base::tree_edge(e, G);
     }
     template < class Edge, class Graph > void back_edge(Edge e, Graph& G)
     {
-        cout << "Back edge: " << source(e, G) << " --> " << target(e, G)
-             << endl;
+        std::cout << "Back edge: " << source(e, G) << " --> " << target(e, G)
+             << std::endl;
         Base::back_edge(e, G);
     }
     template < class Edge, class Graph >
     void forward_or_cross_edge(Edge e, Graph& G)
     {
-        cout << "Forward or cross edge: " << source(e, G) << " --> "
-             << target(e, G) << endl;
+        std::cout << "Forward or cross edge: " << source(e, G) << " --> "
+                  << target(e, G) << std::endl;
         Base::forward_or_cross_edge(e, G);
     }
     template < class Edge, class Graph > void finish_edge(Edge e, Graph& G)
     {
-        cout << "Finish edge: " << source(e, G) << " --> " << target(e, G)
-             << endl;
+        std::cout << "Finish edge: " << source(e, G) << " --> " << target(e, G)
+                  << std::endl;
         Base::finish_edge(e, G);
     }
 };
@@ -108,17 +147,17 @@ int main(int, char*[])
 
     typedef graph_traits< Graph >::vertices_size_type size_type;
 
-    std::vector< size_type > d(num_vertices(G));
-    std::vector< size_type > f(num_vertices(G));
+    eastl::vector< size_type > d(num_vertices(G));
+    eastl::vector< size_type > f(num_vertices(G));
     int t = 0;
     depth_first_search(G,
         visitor(categorize_edges(
             make_pair(stamp_times(&d[0], t, on_discover_vertex()),
                 stamp_times(&f[0], t, on_finish_vertex())))));
 
-    std::vector< size_type >::iterator i, j;
+    eastl::vector< size_type >::iterator i, j;
     for (i = d.begin(), j = f.begin(); i != d.end(); ++i, ++j)
-        cout << *i << " " << *j << endl;
+        std::cout << *i << " " << *j << std::endl;
 
     return 0;
 }

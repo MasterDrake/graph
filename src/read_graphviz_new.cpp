@@ -34,14 +34,14 @@
 #include <boost/detail/workaround.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <cstdlib>
-#include <algorithm>
+#include <EASTL/algorithm.h>
 #include <exception> // for std::exception
 #include <iostream>
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
-#include <utility>
+#include <EASTL/map.h>
+#include <EASTL/set.h>
+#include <EASTL/string.h>
+#include <EASTL/vector.h>
+#include <EASTL/utility.h>
 #include <boost/throw_exception.hpp>
 #include <boost/regex.hpp>
 #include <boost/function.hpp>
@@ -84,9 +84,9 @@ namespace read_graphviz_detail
             invalid
         };
         token_type type;
-        std::string normalized_value; // May have double-quotes removed and/or
+        eastl::string normalized_value; // May have double-quotes removed and/or
                                       // some escapes replaced
-        token(token_type type, const std::string& normalized_value)
+        token(token_type type, const eastl::string& normalized_value)
         : type(type), normalized_value(normalized_value)
         {
         }
@@ -168,12 +168,12 @@ namespace read_graphviz_detail
                 o << "<invalid type>";
                 break;
             }
-            o << " '" << t.normalized_value << "'";
+            o << " '" << t.normalized_value.c_str() << "'";
             return o;
         }
     };
 
-    bad_graphviz_syntax lex_error(const std::string& errmsg, char bad_char)
+    bad_graphviz_syntax lex_error(const eastl::string& errmsg, char bad_char)
     {
         if (bad_char == '\0')
         {
@@ -187,16 +187,16 @@ namespace read_graphviz_detail
     }
 
     bad_graphviz_syntax parse_error(
-        const std::string& errmsg, const token& bad_token)
+        const eastl::string& errmsg, const token& bad_token)
     {
         return bad_graphviz_syntax(errmsg + " (token is \""
-            + boost::lexical_cast< std::string >(bad_token) + "\")");
+            + boost::lexical_cast< eastl::string >(bad_token) + "\")");
     }
 
     struct tokenizer
     {
-        std::string::const_iterator begin, end;
-        std::vector< token > lookahead;
+        eastl::string::const_iterator begin, end;
+        eastl::vector< token > lookahead;
         // Precomputed regexes
         boost::regex stuff_to_skip;
         boost::regex basic_id_token;
@@ -206,17 +206,17 @@ namespace read_graphviz_detail
         boost::regex xml_tag_token;
         boost::regex cdata;
 
-        tokenizer(const std::string& str) : begin(str.begin()), end(str.end())
+        tokenizer(const eastl::string& str) : begin(str.begin()), end(str.end())
         {
-            // std::string end_of_token = "(?=(?:\\W))"; // SEHE: unused?
-            std::string whitespace = "(?:\\s+)";
-            std::string slash_slash_comment = "(?://.*?$)";
-            std::string slash_star_comment = "(?:/\\*.*?\\*/)";
-            std::string hash_comment = "(?:^#.*?$)";
-            std::string backslash_newline = "(?:[\\\\][\\n])";
-            stuff_to_skip = "\\A(?:" + whitespace + "|" + slash_slash_comment
+            // eastl::string end_of_token = "(?=(?:\\W))"; // SEHE: unused?
+            eastl::string whitespace = "(?:\\s+)";
+            eastl::string slash_slash_comment = "(?://.*?$)";
+            eastl::string slash_star_comment = "(?:/\\*.*?\\*/)";
+            eastl::string hash_comment = "(?:^#.*?$)";
+            eastl::string backslash_newline = "(?:[\\\\][\\n])";
+            stuff_to_skip = eastl::string("\\A(?:" + whitespace + "|" + slash_slash_comment
                 + "|" + slash_star_comment + "|" + hash_comment + "|"
-                + backslash_newline + ")*";
+                + backslash_newline + ")*").c_str();
             basic_id_token = "\\A([[:alpha:]_](?:\\w*))";
             punctuation_token = "\\A([][{};=,:+()@]|[-][>-])";
             number_token = "\\A([-]?(?:(?:\\.\\d+)|(?:\\d+(?:\\.\\d*)?)))";
@@ -228,7 +228,7 @@ namespace read_graphviz_detail
 
         void skip()
         {
-            boost::match_results< std::string::const_iterator > results;
+            boost::match_results< eastl::string::const_iterator > results;
 #ifndef NDEBUG
             bool found =
 #endif
@@ -236,7 +236,7 @@ namespace read_graphviz_detail
 #ifndef NDEBUG
             BOOST_ASSERT(found);
 #endif
-            boost::sub_match< std::string::const_iterator > sm1
+            boost::sub_match< eastl::string::const_iterator > sm1
                 = results.suffix();
             BOOST_ASSERT(sm1.second == end);
             begin = sm1.first;
@@ -255,12 +255,12 @@ namespace read_graphviz_detail
                 return token(token::eof, "");
             // Look for keywords first
             bool found;
-            boost::match_results< std::string::const_iterator > results;
+            boost::match_results< eastl::string::const_iterator > results;
             found = boost::regex_search(begin, end, results, basic_id_token);
             if (found)
             {
-                std::string str = results[1].str();
-                std::string str_lower = boost::algorithm::to_lower_copy(str);
+                eastl::string str = results[1].str().c_str();
+                eastl::string str_lower = boost::algorithm::to_lower_copy(str);
                 begin = results.suffix().first;
                 if (str_lower == "strict")
                 {
@@ -294,7 +294,7 @@ namespace read_graphviz_detail
             found = boost::regex_search(begin, end, results, punctuation_token);
             if (found)
             {
-                std::string str = results[1].str();
+                eastl::string str = results[1].str().c_str();
                 begin = results.suffix().first;
                 switch (str[0])
                 {
@@ -345,7 +345,7 @@ namespace read_graphviz_detail
             found = boost::regex_search(begin, end, results, number_token);
             if (found)
             {
-                std::string str = results[1].str();
+                eastl::string str = results[1].str().c_str();
                 begin = results.suffix().first;
                 return token(token::identifier, str);
             }
@@ -353,7 +353,7 @@ namespace read_graphviz_detail
                 = boost::regex_search(begin, end, results, quoted_string_token);
             if (found)
             {
-                std::string str = results[1].str();
+                eastl::string str = results[1].str().c_str();
                 begin = results.suffix().first;
                 // Remove the beginning and ending quotes
                 BOOST_ASSERT(str.size() >= 2);
@@ -379,7 +379,7 @@ namespace read_graphviz_detail
             }
             if (*begin == '<')
             {
-                std::string::const_iterator saved_begin = begin;
+                eastl::string::const_iterator saved_begin = begin;
                 int counter = 0;
                 do
                 {
@@ -417,7 +417,7 @@ namespace read_graphviz_detail
                     throw_lex_error("Invalid contents in HTML string");
                 } while (counter > 0);
                 return token(
-                    token::identifier, std::string(saved_begin, begin));
+                    token::identifier, eastl::string(saved_begin, begin));
             }
             else
             {
@@ -441,7 +441,7 @@ namespace read_graphviz_detail
             token t = get_token_raw();
             if (t.type != token::quoted_string)
                 return t;
-            std::string str = t.normalized_value;
+            eastl::string str = t.normalized_value;
             while (peek_token_raw().type == token::plus)
             {
                 get_token_raw();
@@ -458,10 +458,9 @@ namespace read_graphviz_detail
                                          // passed to the parser
         }
 
-        void throw_lex_error(const std::string& errmsg)
+        void throw_lex_error(const eastl::string& errmsg)
         {
-            boost::throw_exception(
-                lex_error(errmsg, (begin == end ? '\0' : *begin)));
+            boost::throw_exception(lex_error(errmsg, (begin == end ? '\0' : *begin)));
         }
     };
 
@@ -491,7 +490,7 @@ namespace read_graphviz_detail
     struct node_or_subgraph_ref
     {
         bool is_subgraph;
-        std::string
+        eastl::string
             name; // Name for subgraphs or nodes, "___root___" for root graph
     };
 
@@ -511,7 +510,7 @@ namespace read_graphviz_detail
         return r;
     }
 
-    typedef std::vector< node_or_subgraph_ref > subgraph_member_list;
+    typedef eastl::vector< node_or_subgraph_ref > subgraph_member_list;
 
     struct subgraph_info
     {
@@ -523,13 +522,13 @@ namespace read_graphviz_detail
     struct parser
     {
         tokenizer the_tokenizer;
-        std::vector< token > lookahead;
+        eastl::vector< token > lookahead;
         parser_result& r;
-        std::map< subgraph_name, subgraph_info > subgraphs;
-        std::string current_subgraph_name;
+        eastl::map< subgraph_name, subgraph_info > subgraphs;
+        eastl::string current_subgraph_name;
         int sgcounter; // Counter for anonymous subgraphs
         long sgnesting_level;
-        std::set< std::pair< node_name, node_name > >
+        eastl::set< eastl::pair< node_name, node_name > >
             existing_edges; // Used for checking in strict graphs
 
         subgraph_info& current() { return subgraphs[current_subgraph_name]; }
@@ -539,7 +538,7 @@ namespace read_graphviz_detail
         }
         subgraph_member_list& current_members() { return current().members; }
 
-        parser(const std::string& gr, parser_result& result)
+        parser(const eastl::string& gr, parser_result& result)
         : the_tokenizer(gr), lookahead(), r(result), sgcounter(0), sgnesting_level(0)
         {
             current_subgraph_name = "___root___";
@@ -572,7 +571,7 @@ namespace read_graphviz_detail
             return lookahead.front();
         }
 
-        void error(const std::string& str)
+        void error(const eastl::string& str)
         {
             boost::throw_exception(parse_error(str, peek()));
         }
@@ -581,7 +580,7 @@ namespace read_graphviz_detail
         {
             bool is_strict = false;
             bool is_directed = false;
-            std::string name;
+            eastl::string name;
             if (peek().type == token::kw_strict)
             {
                 get();
@@ -771,7 +770,7 @@ namespace read_graphviz_detail
 
         subgraph_name parse_subgraph(const token& first_token)
         {
-            std::string name;
+            eastl::string name;
             bool is_anonymous = true;
             if (first_token.type == token::kw_subgraph)
             {
@@ -792,7 +791,7 @@ namespace read_graphviz_detail
             if (is_anonymous)
             {
                 name = "___subgraph_"
-                    + boost::lexical_cast< std::string >(++sgcounter);
+                    + boost::lexical_cast< eastl::string >(++sgcounter);
             }
             if (subgraphs.find(name) == subgraphs.end())
             {
@@ -910,7 +909,7 @@ namespace read_graphviz_detail
 
         void parse_edge_stmt(const edge_endpoint& lhs)
         {
-            std::vector< edge_endpoint > nodes_in_chain(1, lhs);
+            eastl::vector< edge_endpoint > nodes_in_chain(1, lhs);
             while (true)
             {
                 bool leave_loop = true;
@@ -958,12 +957,12 @@ namespace read_graphviz_detail
         void do_orig_edge(const edge_endpoint& src, const edge_endpoint& tgt,
             const properties& props)
         {
-            std::set< node_and_port > sources = get_recursive_members(src);
-            std::set< node_and_port > targets = get_recursive_members(tgt);
-            for (std::set< node_and_port >::const_iterator i = sources.begin();
+            eastl::set< node_and_port > sources = get_recursive_members(src);
+            eastl::set< node_and_port > targets = get_recursive_members(tgt);
+            for (eastl::set< node_and_port >::const_iterator i = sources.begin();
                  i != sources.end(); ++i)
             {
-                for (std::set< node_and_port >::const_iterator j
+                for (eastl::set< node_and_port >::const_iterator j
                      = targets.begin();
                      j != targets.end(); ++j)
                 {
@@ -973,12 +972,12 @@ namespace read_graphviz_detail
         }
 
         // Get nodes in an edge_endpoint, recursively
-        std::set< node_and_port > get_recursive_members(
+        eastl::set< node_and_port > get_recursive_members(
             const edge_endpoint& orig_ep)
         {
-            std::set< node_and_port > result;
-            std::vector< edge_endpoint > worklist(1, orig_ep);
-            std::set< subgraph_name > done;
+            eastl::set< node_and_port > result;
+            eastl::vector< edge_endpoint > worklist(1, orig_ep);
+            eastl::set< subgraph_name > done;
             while (!worklist.empty())
             {
                 edge_endpoint ep = worklist.back();
@@ -988,7 +987,7 @@ namespace read_graphviz_detail
                     if (done.find(ep.subgraph_ep) == done.end())
                     {
                         done.insert(ep.subgraph_ep);
-                        std::map< subgraph_name, subgraph_info >::const_iterator
+                        eastl::map< subgraph_name, subgraph_info >::const_iterator
                             info_i
                             = subgraphs.find(ep.subgraph_ep);
                         if (info_i != subgraphs.end())
@@ -1031,7 +1030,7 @@ namespace read_graphviz_detail
             {
                 if (src.name == tgt.name)
                     return;
-                std::pair< node_name, node_name > tag(src.name, tgt.name);
+                eastl::pair< node_name, node_name > tag(src.name, tgt.name);
                 if (existing_edges.find(tag) != existing_edges.end())
                 {
                     return; // Parallel edge
@@ -1061,8 +1060,8 @@ namespace read_graphviz_detail
                         break;
                     case token::identifier:
                     {
-                        std::string lhs = get().normalized_value;
-                        std::string rhs = "true";
+                        eastl::string lhs = get().normalized_value;
+                        eastl::string rhs = "true";
                         if (peek().type == token::equal)
                         {
                             get();
@@ -1094,7 +1093,7 @@ namespace read_graphviz_detail
     };
 
     void parse_graphviz_from_string(
-        const std::string& str, parser_result& result, bool want_directed)
+        const eastl::string& str, parser_result& result, bool want_directed)
     {
         parser p(str, result);
         p.parse_graph(want_directed);
@@ -1103,20 +1102,20 @@ namespace read_graphviz_detail
     // Some debugging stuff
     std::ostream& operator<<(std::ostream& o, const node_and_port& n)
     {
-        o << n.name;
+        o << n.name.c_str();
         for (size_t i = 0; i < n.location.size(); ++i)
         {
-            o << ":" << n.location[i];
+            o << ":" << n.location[i].c_str();
         }
         if (!n.angle.empty())
-            o << "@" << n.angle;
+            o << "@" << n.angle.c_str();
         return o;
     }
 
-    // Can't be operator<< because properties is just an std::map
-    std::string props_to_string(const properties& props)
+    // Can't be operator<< because properties is just an eastl::map
+    eastl::string props_to_string(const properties& props)
     {
-        std::string result = "[";
+        eastl::string result = "[";
         for (properties::const_iterator i = props.begin(); i != props.end();
              ++i)
         {
@@ -1132,7 +1131,7 @@ namespace read_graphviz_detail
         const parser_result& r, ::boost::detail::graph::mutate_graph* mg)
     {
         typedef boost::detail::graph::edge_t edge;
-        for (std::map< node_name, properties >::const_iterator i
+        for (eastl::map< node_name, properties >::const_iterator i
              = r.nodes.begin();
              i != r.nodes.end(); ++i)
         {
@@ -1145,7 +1144,7 @@ namespace read_graphviz_detail
                 mg->set_node_property(j->first, i->first, j->second);
             }
         }
-        for (std::vector< edge_info >::const_iterator i = r.edges.begin();
+        for (eastl::vector< edge_info >::const_iterator i = r.edges.begin();
              i != r.edges.end(); ++i)
         {
             const edge_info& ei = *i;
@@ -1159,7 +1158,7 @@ namespace read_graphviz_detail
                 mg->set_edge_property(j->first, e, j->second);
             }
         }
-        std::map< subgraph_name, properties >::const_iterator root_graph_props_i
+        eastl::map< subgraph_name, properties >::const_iterator root_graph_props_i
             = r.graph_props.find("___root___");
         BOOST_ASSERT(
             root_graph_props_i != r.graph_props.end()); // Should not happen
@@ -1182,7 +1181,7 @@ namespace detail
     {
 
         BOOST_GRAPH_DECL bool read_graphviz_new(
-            const std::string& str, boost::detail::graph::mutate_graph* mg)
+            const eastl::string& str, boost::detail::graph::mutate_graph* mg)
         {
             read_graphviz_detail::parser_result parsed_file;
             read_graphviz_detail::parse_graphviz_from_string(

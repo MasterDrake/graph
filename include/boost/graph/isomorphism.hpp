@@ -6,10 +6,10 @@
 #ifndef BOOST_GRAPH_ISOMORPHISM_HPP
 #define BOOST_GRAPH_ISOMORPHISM_HPP
 
-#include <utility>
-#include <vector>
-#include <iterator>
-#include <algorithm>
+#include <EASTL/utility.h>
+#include <EASTL/vector.h>
+#include <EASTL/iterator.h>
+#include <EASTL/algorithm.h>
 #include <boost/config.hpp>
 #include <boost/assert.hpp>
 #include <boost/smart_ptr.hpp>
@@ -50,11 +50,11 @@ namespace detail
         IndexMap1 index_map1;
         IndexMap2 index_map2;
 
-        std::vector< vertex1_t > dfs_vertices;
-        typedef typename std::vector< vertex1_t >::iterator vertex_iter;
-        std::vector< int > dfs_num_vec;
+        eastl::vector< vertex1_t > dfs_vertices;
+        typedef typename eastl::vector< vertex1_t >::iterator vertex_iter;
+        eastl::vector< int > dfs_num_vec;
         typedef safe_iterator_property_map<
-            typename std::vector< int >::iterator, IndexMap1
+            typename eastl::vector< int >::iterator, IndexMap1
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
             ,
             int, int&
@@ -62,12 +62,12 @@ namespace detail
             >
             DFSNumMap;
         DFSNumMap dfs_num;
-        std::vector< edge1_t > ordered_edges;
-        typedef typename std::vector< edge1_t >::iterator edge_iter;
+        eastl::vector< edge1_t > ordered_edges;
+        typedef typename eastl::vector< edge1_t >::iterator edge_iter;
 
-        std::vector< char > in_S_vec;
+        eastl::vector< char > in_S_vec;
         typedef safe_iterator_property_map<
-            typename std::vector< char >::iterator, IndexMap2
+            typename eastl::vector< char >::iterator, IndexMap2
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
             ,
             char, char&
@@ -100,7 +100,7 @@ namespace detail
         struct record_dfs_order : default_dfs_visitor
         {
             record_dfs_order(
-                std::vector< vertex1_t >& v, std::vector< edge1_t >& e)
+                eastl::vector< vertex1_t >& v, eastl::vector< edge1_t >& e)
             : vertices(v), edges(e)
             {
             }
@@ -113,8 +113,8 @@ namespace detail
             {
                 edges.push_back(e);
             }
-            std::vector< vertex1_t >& vertices;
-            std::vector< edge1_t >& edges;
+            eastl::vector< vertex1_t >& vertices;
+            eastl::vector< edge1_t >& edges;
         };
 
         struct edge_cmp
@@ -131,8 +131,8 @@ namespace detail
                 int m1 = (max)(u1, v1);
                 int m2 = (max)(u2, v2);
                 // lexicographical comparison
-                return std::make_pair(m1, std::make_pair(u1, v1))
-                    < std::make_pair(m2, std::make_pair(u2, v2));
+                return eastl::make_pair(m1, eastl::make_pair(u1, v1))
+                    < eastl::make_pair(m2, eastl::make_pair(u2, v2));
             }
             const Graph1& G1;
             DFSNumMap dfs_num;
@@ -167,7 +167,7 @@ namespace detail
         {
             typedef typename InvariantCountMap::iterator invar_map_iter;
 
-            assert(std::is_sorted(first, last));
+            assert(eastl::is_sorted(first, last));
             InvariantCountMap invar_multiplicity;
 
             if(first == last) 
@@ -199,13 +199,13 @@ namespace detail
             f[v] = graph_traits< Graph2 >::null_vertex();
 
             // Calculate all invariants of G1 and G2, sort and compare
-            std::vector< invariant_t > invar1_array;
+            eastl::vector< invariant_t > invar1_array;
             invar1_array.reserve(num_vertices(G1));
             BGL_FORALL_VERTICES_T(v, G1, Graph1)
             invar1_array.push_back(invariant1(v));
             sort(invar1_array);
 
-            std::vector< invariant_t > invar2_array;
+            eastl::vector< invariant_t > invar2_array;
             invar2_array.reserve(num_vertices(G2));
             BGL_FORALL_VERTICES_T(v, G2, Graph2)
             invar2_array.push_back(invariant2(v));
@@ -214,14 +214,14 @@ namespace detail
                 return false;
 
             // Sort vertices by the multiplicity of their invariants
-            std::vector< vertex1_t > V_mult;
+            eastl::vector< vertex1_t > V_mult;
             BGL_FORALL_VERTICES_T(v, G1, Graph1)
             V_mult.push_back(v);
             sort(V_mult, compare_multiplicity(invariant1, multiplicities(invar1_array.begin(), invar1_array.end())));
 
-            std::vector< default_color_type > color_vec(num_vertices(G1));
+            eastl::vector< default_color_type > color_vec(num_vertices(G1));
             safe_iterator_property_map<
-                std::vector< default_color_type >::iterator, IndexMap1
+                eastl::vector< default_color_type >::iterator, IndexMap1
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
                 ,
                 default_color_type, default_color_type&
@@ -269,24 +269,24 @@ namespace detail
             } position;
             typedef typename graph_traits< Graph2 >::vertex_iterator
                 vertex_iterator;
-            std::pair< vertex_iterator, vertex_iterator > G2_verts;
+            eastl::pair< vertex_iterator, vertex_iterator > G2_verts;
             typedef typename graph_traits< Graph2 >::adjacency_iterator
                 adjacency_iterator;
-            std::pair< adjacency_iterator, adjacency_iterator > fi_adj;
+            eastl::pair< adjacency_iterator, adjacency_iterator > fi_adj;
             edge_iter iter;
             int dfs_num_k;
         };
 
         bool match(edge_iter iter, int dfs_num_k)
         {
-            std::vector< match_continuation > k;
+            eastl::vector< match_continuation > k;
             typedef typename graph_traits< Graph2 >::vertex_iterator
                 vertex_iterator;
-            std::pair< vertex_iterator, vertex_iterator > G2_verts(
+            eastl::pair< vertex_iterator, vertex_iterator > G2_verts(
                 vertices(G2));
             typedef typename graph_traits< Graph2 >::adjacency_iterator
                 adjacency_iterator;
-            std::pair< adjacency_iterator, adjacency_iterator > fi_adj;
+            eastl::pair< adjacency_iterator, adjacency_iterator > fi_adj;
             vertex1_t i, j;
 
         recur:
@@ -448,7 +448,7 @@ namespace detail
 
         void map_disconnected_vertices()
         {
-            std::vector< vertex1_t > unmatched_g1_vertices;
+            eastl::vector< vertex1_t > unmatched_g1_vertices;
             BGL_FORALL_VERTICES_T(v, G1, Graph1)
             {
                 if(f[v] == graph_traits< Graph2 >::null_vertex()) {
@@ -469,7 +469,7 @@ namespace detail
                     }
                 }
 
-                typedef typename std::vector< vertex1_t >::iterator v1_iter;
+                typedef typename eastl::vector< vertex1_t >::iterator v1_iter;
                 const v1_iter end = unmatched_g1_vertices.end();
                 for(v1_iter iter = unmatched_g1_vertices.begin(); iter != end; ++iter)
                 {
@@ -514,9 +514,9 @@ public:
         BGL_FORALL_VERTICES_T(v, g, Graph)
         {
             m_max_vertex_in_degree
-                = (std::max)(m_max_vertex_in_degree, get(m_in_degree_map, v));
+                = (eastl::max)(m_max_vertex_in_degree, get(m_in_degree_map, v));
             m_max_vertex_out_degree
-                = (std::max)(m_max_vertex_out_degree, out_degree(v, g));
+                = (eastl::max)(m_max_vertex_out_degree, out_degree(v, g));
         }
     }
 
@@ -615,9 +615,9 @@ namespace detail
         IndexMap1 index_map1, IndexMap2 index_map2,
         const bgl_named_params< P, T, R >& params)
     {
-        std::vector< std::size_t > in_degree1_vec(num_vertices(G1));
+        eastl::vector< std::size_t > in_degree1_vec(num_vertices(G1));
         typedef safe_iterator_property_map<
-            std::vector< std::size_t >::iterator, IndexMap1
+            eastl::vector< std::size_t >::iterator, IndexMap1
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
             ,
             std::size_t, std::size_t&
@@ -628,9 +628,9 @@ namespace detail
             in_degree1_vec.begin(), in_degree1_vec.size(), index_map1);
         compute_in_degree(G1, in_degree1);
 
-        std::vector< std::size_t > in_degree2_vec(num_vertices(G2));
+        eastl::vector< std::size_t > in_degree2_vec(num_vertices(G2));
         typedef safe_iterator_property_map<
-            std::vector< std::size_t >::iterator, IndexMap2
+            eastl::vector< std::size_t >::iterator, IndexMap2
 #ifdef BOOST_NO_STD_ITERATOR_TRAITS
             ,
             std::size_t, std::size_t&
@@ -702,10 +702,10 @@ namespace graph
                         arg_pack, _vertex_index2_map, g2, boost::vertex_index);
                 typedef typename graph_traits< Graph2 >::vertex_descriptor
                     vertex2_t;
-                typename std::vector< vertex2_t >::size_type n
-                    = (typename std::vector< vertex2_t >::size_type)
+                typename eastl::vector< vertex2_t >::size_type n
+                    = (typename eastl::vector< vertex2_t >::size_type)
                         num_vertices(g1);
-                std::vector< vertex2_t > f(n);
+                eastl::vector< vertex2_t > f(n);
                 typename boost::parameter::lazy_binding< ArgPack,
                     tag::vertex_invariant1,
                     boost::detail::make_degree_invariant< Graph1,

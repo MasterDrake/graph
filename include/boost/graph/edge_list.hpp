@@ -11,7 +11,7 @@
 #ifndef BOOST_GRAPH_EDGE_LIST_HPP
 #define BOOST_GRAPH_EDGE_LIST_HPP
 
-#include <iterator>
+#include <EASTL/iterator.h>
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/bool.hpp>
@@ -29,7 +29,7 @@ namespace boost
 //
 // For example:
 //
-//  typedef std::pair<int,int> E;
+//  typedef eastl::pair<int,int> E;
 //  list<E> elist;
 //  ...
 //  typedef edge_list<list<E>::iterator> Graph;
@@ -72,7 +72,7 @@ public:
         typedef E& reference;
         typedef E* pointer;
         typedef std::ptrdiff_t difference_type;
-        typedef std::input_iterator_tag iterator_category;
+        typedef eastl::input_iterator_tag iterator_category;
         edge_iterator() {}
         edge_iterator(EdgeIter iter) : _iter(iter), _i(0) {}
         E operator*() { return E(_iter, _i); }
@@ -100,13 +100,13 @@ public:
 };
 
 template < class G, class EI, class T, class D >
-std::pair< typename edge_list_impl< G, EI, T, D >::edge_iterator,
+eastl::pair< typename edge_list_impl< G, EI, T, D >::edge_iterator,
     typename edge_list_impl< G, EI, T, D >::edge_iterator >
 edges(const edge_list_impl< G, EI, T, D >& g_)
 {
     const G& g = static_cast< const G& >(g_);
     typedef typename edge_list_impl< G, EI, T, D >::edge_iterator edge_iterator;
-    return std::make_pair(edge_iterator(g._first), edge_iterator(g._last));
+    return eastl::make_pair(edge_iterator(g._first), edge_iterator(g._last));
 }
 template < class G, class EI, class T, class D >
 typename edge_list_impl< G, EI, T, D >::vertex_descriptor source(
@@ -191,14 +191,14 @@ public:
 };
 
 template < class G, class EI, class T, class D >
-std::pair< typename edge_list_impl_ra< G, EI, T, D >::edge_iterator,
+eastl::pair< typename edge_list_impl_ra< G, EI, T, D >::edge_iterator,
     typename edge_list_impl_ra< G, EI, T, D >::edge_iterator >
 edges(const edge_list_impl_ra< G, EI, T, D >& g_)
 {
     const G& g = static_cast< const G& >(g_);
     typedef
         typename edge_list_impl_ra< G, EI, T, D >::edge_iterator edge_iterator;
-    return std::make_pair(edge_iterator(0), edge_iterator(g._last - g._first));
+    return eastl::make_pair(edge_iterator(0), edge_iterator(g._last - g._first));
 }
 template < class G, class EI, class T, class D >
 typename edge_list_impl_ra< G, EI, T, D >::vertex_descriptor source(
@@ -266,7 +266,7 @@ template < class Cat > struct is_random
     };
     typedef mpl::false_ type;
 };
-template <> struct is_random< std::random_access_iterator_tag >
+template <> struct is_random< eastl::random_access_iterator_tag >
 {
     enum
     {
@@ -280,9 +280,9 @@ template <> struct is_random< std::random_access_iterator_tag >
 
 template < class EdgeIter,
 #if !defined BOOST_NO_STD_ITERATOR_TRAITS
-    class T = typename std::iterator_traits< EdgeIter >::value_type,
-    class D = typename std::iterator_traits< EdgeIter >::difference_type,
-    class Cat = typename std::iterator_traits< EdgeIter >::iterator_category >
+    class T = typename eastl::iterator_traits< EdgeIter >::value_type,
+    class D = typename eastl::iterator_traits< EdgeIter >::difference_type,
+    class Cat = typename eastl::iterator_traits< EdgeIter >::iterator_category >
 #else
     class T, class D, class Cat >
 #endif
@@ -300,7 +300,7 @@ public:
     typedef std::size_t degree_size_type;
     edge_list(EdgeIter first, EdgeIter last) : _first(first), _last(last)
     {
-        m_num_edges = std::distance(first, last);
+        m_num_edges = eastl::distance(first, last);
     }
     edge_list(EdgeIter first, EdgeIter last, edges_size_type E)
     : _first(first), _last(last), m_num_edges(E)

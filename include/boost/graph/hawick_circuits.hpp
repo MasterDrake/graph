@@ -7,7 +7,6 @@
 #ifndef BOOST_GRAPH_HAWICK_CIRCUITS_HPP
 #define BOOST_GRAPH_HAWICK_CIRCUITS_HPP
 
-#include <algorithm>
 #include <boost/assert.hpp>
 #include <boost/foreach.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -18,12 +17,13 @@
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/iterator.hpp>
-#include <boost/tuple/tuple.hpp> // for boost::tie
+#include <boost/tuple/tuple.hpp> // for eastl::tie
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/utility/result_of.hpp>
-#include <set>
-#include <utility> // for std::pair
-#include <vector>
+#include <EASTL/algorithm.h>
+#include <EASTL/set.h>
+#include <EASTL/utility.h> // for eastl::pair
+#include <EASTL/vector.h>
 
 namespace boost
 {
@@ -43,7 +43,7 @@ namespace hawick_circuits_detail
             typedef typename Traits::adjacency_iterator AdjacencyIterator;
 
         public:
-            typedef std::pair< AdjacencyIterator, AdjacencyIterator > type;
+            typedef eastl::pair< AdjacencyIterator, AdjacencyIterator > type;
         };
 
         template < typename Vertex, typename Graph >
@@ -64,7 +64,7 @@ namespace hawick_circuits_detail
         template < typename This, typename Vertex, typename Graph >
         struct result< This(Vertex, Graph) >
         {
-            typedef std::set< typename remove_reference< Vertex >::type > type;
+            typedef eastl::set< typename remove_reference< Vertex >::type > type;
         };
 
         template < typename Vertex, typename Graph >
@@ -86,7 +86,7 @@ namespace hawick_circuits_detail
     template < typename Container, typename Value >
     bool contains(Container const& c, Value const& v)
     {
-        return std::find(boost::begin(c), boost::end(c), v) != boost::end(c);
+        return eastl::find(boost::begin(c), boost::end(c), v) != boost::end(c);
     }
 
     /*!
@@ -312,8 +312,8 @@ namespace hawick_circuits_detail
         typedef typename Traits::vertices_size_type VerticesSize;
         typedef typename Traits::vertex_iterator VertexIterator;
 
-        typedef std::vector< Vertex > Stack;
-        typedef std::vector< std::vector< Vertex > > ClosedMatrix;
+        typedef eastl::vector< Vertex > Stack;
+        typedef eastl::vector< eastl::vector< Vertex > > ClosedMatrix;
 
         typedef hawick_circuits_from< Graph, Visitor, VertexIndexMap, Stack,
             ClosedMatrix, GetAdjacentVertices >
@@ -325,7 +325,7 @@ namespace hawick_circuits_detail
         ClosedMatrix closed(n_vertices);
 
         VertexIterator start, last;
-        for (boost::tie(start, last) = vertices(graph); start != last; ++start)
+        for (eastl::tie(start, last) = vertices(graph); start != last; ++start)
         {
             // Note1: The sub algorithm may NOT be reused once it has been
             // called.

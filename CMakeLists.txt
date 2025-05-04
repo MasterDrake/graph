@@ -19,8 +19,8 @@ endif()
 project(boost_graph VERSION "${BOOST_SUPERPROJECT_VERSION}" LANGUAGES CXX)
 
 add_library(boost_graph
-  src/graphml.cpp
-  src/read_graphviz_new.cpp
+  #src/graphml.cpp
+  #src/read_graphviz_new.cpp
 )
 
 add_library(Boost::graph ALIAS boost_graph)
@@ -149,7 +149,7 @@ target_link_libraries(boost_graph
 )
 
 target_compile_definitions(boost_graph
-  PUBLIC BOOST_GRAPH_NO_LIB
+  PUBLIC BOOST_GRAPH_NO_LIB BOOST_NO_STD_ALLOCATOR
   # Source files already define BOOST_GRAPH_SOURCE
   # PRIVATE BOOST_GRAPH_SOURCE
 )

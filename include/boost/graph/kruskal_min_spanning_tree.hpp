@@ -19,9 +19,9 @@
  *      undirected graph
  */
 
-#include <vector>
-#include <queue>
-#include <functional>
+#include <EASTL/vector.h>
+#include <EASTL/queue.h>
+#include <EASTL/functional.h>
 
 #include <boost/property_map/property_map.hpp>
 #include <boost/graph/graph_concepts.hpp>
@@ -68,15 +68,15 @@ namespace detail
         disjoint_sets< Rank, Parent > dset(rank, parent);
 
         typename graph_traits< Graph >::vertex_iterator ui, uiend;
-        for (boost::tie(ui, uiend) = vertices(G); ui != uiend; ++ui)
+        for (eastl::tie(ui, uiend) = vertices(G); ui != uiend; ++ui)
             dset.make_set(*ui);
 
-        typedef indirect_cmp< Weight, std::greater< W_value > > weight_greater;
+        typedef indirect_cmp< Weight, eastl::greater< W_value > > weight_greater;
         weight_greater wl(weight);
-        std::priority_queue< Edge, std::vector< Edge >, weight_greater > Q(wl);
+        eastl::priority_queue< Edge, eastl::vector< Edge >, weight_greater > Q(wl);
         /*push all edge into Q*/
         typename graph_traits< Graph >::edge_iterator ei, eiend;
-        for (boost::tie(ei, eiend) = edges(G); ei != eiend; ++ei)
+        for (eastl::tie(ei, eiend) = edges(G); ei != eiend; ++ei)
             Q.push(*ei);
 
         while (!Q.empty())
@@ -106,8 +106,8 @@ inline void kruskal_minimum_spanning_tree(
     if (num_vertices(g) == 0)
         return; // Nothing to do in this case
     typename graph_traits< Graph >::vertices_size_type n = num_vertices(g);
-    std::vector< size_type > rank_map(n);
-    std::vector< vertex_t > pred_map(n);
+    eastl::vector< size_type > rank_map(n);
+    eastl::vector< vertex_t > pred_map(n);
 
     detail::kruskal_mst_impl(g, spanning_tree_edges,
         make_iterator_property_map(
@@ -128,11 +128,11 @@ inline void kruskal_minimum_spanning_tree(const Graph& g,
         return; // Nothing to do in this case
     typename graph_traits< Graph >::vertices_size_type n;
     n = is_default_param(get_param(params, vertex_rank)) ? num_vertices(g) : 1;
-    std::vector< size_type > rank_map(n);
+    eastl::vector< size_type > rank_map(n);
     n = is_default_param(get_param(params, vertex_predecessor))
         ? num_vertices(g)
         : 1;
-    std::vector< vertex_t > pred_map(n);
+    eastl::vector< vertex_t > pred_map(n);
 
     detail::kruskal_mst_impl(g, spanning_tree_edges,
         choose_param(get_param(params, vertex_rank),

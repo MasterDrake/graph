@@ -88,7 +88,7 @@ int main(int argc, const char* argv[])
     std::cout << std::endl;
 
     std::cout << "The matching is:" << std::endl;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         if (mate1[*vi] != graph_traits< my_graph >::null_vertex()
             && *vi < mate1[*vi])
             std::cout << "{" << *vi << ", " << mate1[*vi] << "}" << std::endl;
@@ -108,7 +108,7 @@ int main(int argc, const char* argv[])
     std::cout << std::endl;
 
     std::cout << "The brute-force matching is:" << std::endl;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         if (mate2[*vi] != graph_traits< my_graph >::null_vertex()
             && *vi < mate2[*vi])
             std::cout << "{" << *vi << ", " << mate2[*vi] << "}" << std::endl;

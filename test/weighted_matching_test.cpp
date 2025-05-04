@@ -48,7 +48,7 @@ template <> struct vertex_index_installer< undirected_list_graph >
 
         vertex_iterator_t vi, vi_end;
         v_size_t i = 0;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi, ++i)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi, ++i)
             put(vertex_index, g, *vi, i);
     }
 };
@@ -58,7 +58,7 @@ template < typename Graph > void print_graph(const Graph& g)
     typedef typename graph_traits< Graph >::edge_iterator edge_iterator_t;
     edge_iterator_t ei, ei_end;
     std::cout << std::endl << "The graph is: " << std::endl;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         std::cout << "add_edge(" << source(*ei, g) << ", " << target(*ei, g)
                   << ", EdgeProperty(" << get(edge_weight, g, *ei) << "), );"
                   << std::endl;
@@ -97,14 +97,14 @@ void weighted_matching_test(const Graph& g,
         print_graph(g);
 
         std::cout << std::endl << "The algorithmic matching is:" << std::endl;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             if (mate[*vi] != graph_traits< Graph >::null_vertex()
                 && *vi < mate[*vi])
                 std::cout << "{" << *vi << ", " << mate[*vi] << "}"
                           << std::endl;
 
         std::cout << std::endl << "The brute-force matching is:" << std::endl;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
             if (max_mate[*vi] != graph_traits< Graph >::null_vertex()
                 && *vi < max_mate[*vi])
                 std::cout << "{" << *vi << ", " << max_mate[*vi] << "}"

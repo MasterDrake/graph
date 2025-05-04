@@ -23,7 +23,7 @@ void check_two_coloring(const Graph& g, const ColorMap color_map)
     typedef boost::graph_traits< Graph > traits;
     typename traits::edge_iterator edge_iter, edge_end;
 
-    for (boost::tie(edge_iter, edge_end) = boost::edges(g);
+    for (eastl::tie(edge_iter, edge_end) = boost::edges(g);
          edge_iter != edge_end; ++edge_iter)
     {
         typename traits::vertex_descriptor source, target;
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
     boost::graph_traits< list_graph_t >::vertex_iterator vertex_iter,
         vertex_end;
     size_t i = 0;
-    for (boost::tie(vertex_iter, vertex_end)
+    for (eastl::tie(vertex_iter, vertex_end)
          = boost::vertices(bipartite_list_graph);
          vertex_iter != vertex_end; ++vertex_iter)
     {
@@ -184,7 +184,7 @@ int main(int argc, char** argv)
         = index_property_map_t(bipartite_index_map);
 
     i = 0;
-    for (boost::tie(vertex_iter, vertex_end)
+    for (eastl::tie(vertex_iter, vertex_end)
          = boost::vertices(non_bipartite_list_graph);
          vertex_iter != vertex_end; ++vertex_iter)
     {

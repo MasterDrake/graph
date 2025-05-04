@@ -13,9 +13,9 @@
 // WARNING: not-yet fully tested!
 
 #include <boost/config.hpp>
-#include <vector>
-#include <set>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/set.h>
+#include <EASTL/algorithm.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/edmonds_karp_max_flow.hpp>
 
@@ -26,23 +26,23 @@ namespace detail
 {
 
     template < class Graph >
-    inline std::pair< typename graph_traits< Graph >::vertex_descriptor,
+    inline eastl::pair< typename graph_traits< Graph >::vertex_descriptor,
         typename graph_traits< Graph >::degree_size_type >
     min_degree_vertex(Graph& g)
     {
         typedef graph_traits< Graph > Traits;
         typename Traits::vertex_descriptor p;
         typedef typename Traits::degree_size_type size_type;
-        size_type delta = (std::numeric_limits< size_type >::max)();
+        size_type delta = (eastl::numeric_limits< size_type >::max)();
 
         typename Traits::vertex_iterator i, iend;
-        for (boost::tie(i, iend) = vertices(g); i != iend; ++i)
+        for (eastl::tie(i, iend) = vertices(g); i != iend; ++i)
             if (degree(*i, g) < delta)
             {
                 delta = degree(*i, g);
                 p = *i;
             }
-        return std::make_pair(p, delta);
+        return eastl::make_pair(p, delta);
     }
 
     template < class Graph, class OutputIterator >
@@ -51,7 +51,7 @@ namespace detail
         OutputIterator result)
     {
         typename graph_traits< Graph >::adjacency_iterator ai, aend;
-        for (boost::tie(ai, aend) = adjacent_vertices(u, g); ai != aend; ++ai)
+        for (eastl::tie(ai, aend) = adjacent_vertices(u, g); ai != aend; ++ai)
             *result++ = *ai;
     }
 
@@ -97,10 +97,10 @@ typename graph_traits< VertexListGraph >::degree_size_type edge_connectivity(
     vertex_iterator vi, vi_end;
     edge_iterator ei, ei_end;
     degree_size_type delta, alpha_star, alpha_S_k;
-    std::set< vertex_descriptor > S, neighbor_S;
-    std::vector< vertex_descriptor > S_star, non_neighbor_S;
-    std::vector< default_color_type > color(num_vertices(g));
-    std::vector< edge_descriptor > pred(num_vertices(g));
+    eastl::set< vertex_descriptor > S, neighbor_S;
+    eastl::vector< vertex_descriptor > S_star, non_neighbor_S;
+    eastl::vector< default_color_type > color(num_vertices(g));
+    eastl::vector< edge_descriptor > pred(num_vertices(g));
 
     //-------------------------------------------------------------------------
     // Create a network flow graph out of the undirected graph
@@ -113,12 +113,12 @@ typename graph_traits< VertexListGraph >::degree_size_type edge_connectivity(
     typename property_map< FlowGraph, edge_reverse_t >::type rev_edge
         = get(edge_reverse, flow_g);
 
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
     {
         u = source(*ei, g), v = target(*ei, g);
-        boost::tie(e1, inserted) = add_edge(u, v, flow_g);
+        eastl::tie(e1, inserted) = add_edge(u, v, flow_g);
         cap[e1] = 1;
-        boost::tie(e2, inserted) = add_edge(v, u, flow_g);
+        eastl::tie(e2, inserted) = add_edge(v, u, flow_g);
         cap[e2] = 1; // not sure about this
         rev_edge[e1] = e2;
         rev_edge[e2] = e1;
@@ -127,17 +127,17 @@ typename graph_traits< VertexListGraph >::degree_size_type edge_connectivity(
     //-------------------------------------------------------------------------
     // The Algorithm
 
-    boost::tie(p, delta) = detail::min_degree_vertex(g);
+    eastl::tie(p, delta) = detail::min_degree_vertex(g);
     S_star.push_back(p);
     alpha_star = delta;
     S.insert(p);
     neighbor_S.insert(p);
     detail::neighbors(
-        g, S.begin(), S.end(), std::inserter(neighbor_S, neighbor_S.begin()));
+        g, S.begin(), S.end(), eastl::inserter(neighbor_S, neighbor_S.begin()));
 
-    boost::tie(vi, vi_end) = vertices(g);
-    std::set_difference(vi, vi_end, neighbor_S.begin(), neighbor_S.end(),
-        std::back_inserter(non_neighbor_S));
+    eastl::tie(vi, vi_end) = vertices(g);
+    eastl::set_difference(vi, vi_end, neighbor_S.begin(), neighbor_S.end(),
+        eastl::back_inserter(non_neighbor_S));
 
     while (!non_neighbor_S.empty())
     { // at most n - 1 times
@@ -150,22 +150,22 @@ typename graph_traits< VertexListGraph >::degree_size_type edge_connectivity(
         {
             alpha_star = alpha_S_k;
             S_star.clear();
-            for (boost::tie(vi, vi_end) = vertices(flow_g); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(flow_g); vi != vi_end; ++vi)
                 if (color[*vi] != Color::white())
                     S_star.push_back(*vi);
         }
         S.insert(k);
         neighbor_S.insert(k);
-        detail::neighbors(g, k, std::inserter(neighbor_S, neighbor_S.begin()));
+        detail::neighbors(g, k, eastl::inserter(neighbor_S, neighbor_S.begin()));
         non_neighbor_S.clear();
-        boost::tie(vi, vi_end) = vertices(g);
-        std::set_difference(vi, vi_end, neighbor_S.begin(), neighbor_S.end(),
-            std::back_inserter(non_neighbor_S));
+        eastl::tie(vi, vi_end) = vertices(g);
+        eastl::set_difference(vi, vi_end, neighbor_S.begin(), neighbor_S.end(),
+            eastl::back_inserter(non_neighbor_S));
     }
     //-------------------------------------------------------------------------
     // Compute edges of the cut [S*, ~S*]
-    std::vector< bool > in_S_star(num_vertices(g), false);
-    typename std::vector< vertex_descriptor >::iterator si;
+    eastl::vector< bool > in_S_star(num_vertices(g), false);
+    typename eastl::vector< vertex_descriptor >::iterator si;
     for (si = S_star.begin(); si != S_star.end(); ++si)
         in_S_star[*si] = true;
 
@@ -173,7 +173,7 @@ typename graph_traits< VertexListGraph >::degree_size_type edge_connectivity(
     for (si = S_star.begin(); si != S_star.end(); ++si)
     {
         out_edge_iterator ei, ei_end;
-        for (boost::tie(ei, ei_end) = out_edges(*si, g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = out_edges(*si, g); ei != ei_end; ++ei)
             if (!in_S_star[target(*ei, g)])
             {
                 *disconnecting_set++ = *ei;

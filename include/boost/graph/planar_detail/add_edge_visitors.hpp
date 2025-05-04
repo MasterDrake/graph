@@ -39,7 +39,7 @@ template < typename EdgeIndexMap > struct edge_index_update_visitor
     void visit_vertex_pair(Vertex u, Vertex v, Graph& g)
     {
         typedef typename graph_traits< Graph >::edge_descriptor edge_t;
-        std::pair< edge_t, bool > return_value = add_edge(u, v, g);
+        eastl::pair< edge_t, bool > return_value = add_edge(u, v, g);
         if (return_value.second)
             put(m_em, return_value.first, m_next_index++);
     }

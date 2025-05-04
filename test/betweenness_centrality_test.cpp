@@ -44,7 +44,7 @@ void run_weighted_test(Graph*, int V, weighted_edge edge_init[], int E,
     {
         vertex_iterator v, v_end;
         int index = 0;
-        for (boost::tie(v, v_end) = boost::vertices(g); v != v_end;
+        for (eastl::tie(v, v_end) = boost::vertices(g); v != v_end;
              ++v, ++index)
         {
             put(vertex_index, g, *v, index);
@@ -92,7 +92,7 @@ void run_unweighted_test(Graph*, int V, unweighted_edge edge_init[], int E,
     {
         vertex_iterator v, v_end;
         int index = 0;
-        for (boost::tie(v, v_end) = boost::vertices(g); v != v_end;
+        for (eastl::tie(v, v_end) = boost::vertices(g); v != v_end;
              ++v, ++index)
         {
             put(vertex_index, g, *v, index);
@@ -185,7 +185,7 @@ template < typename Graph > void run_wheel_test(Graph*, int V)
     {
         vertex_iterator v, v_end;
         int index = 0;
-        for (boost::tie(v, v_end) = boost::vertices(g); v != v_end;
+        for (eastl::tie(v, v_end) = boost::vertices(g); v != v_end;
              ++v, ++index)
         {
             put(vertex_index, g, *v, index);
@@ -242,7 +242,7 @@ void randomly_add_edges(MutableGraph& g, double edge_probability)
 
     typedef typename graph_traits< MutableGraph >::vertex_descriptor vertex;
     typename graph_traits< MutableGraph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         vertex v = *vi;
         typename graph_traits< MutableGraph >::vertex_iterator wi
@@ -276,11 +276,11 @@ void simple_unweighted_betweenness_centrality(
         centrality_type;
 
     vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         put(centrality, *vi, 0);
 
     vertex_iterator si, si_end;
-    for (boost::tie(si, si_end) = vertices(g); si != si_end; ++si)
+    for (eastl::tie(si, si_end) = vertices(g); si != si_end; ++si)
     {
         vertex s = *si;
 
@@ -319,7 +319,7 @@ void simple_unweighted_betweenness_centrality(
             S.push(v);
 
             adjacency_iterator wi, wi_end;
-            for (boost::tie(wi, wi_end) = adjacent_vertices(v, g); wi != wi_end;
+            for (eastl::tie(wi, wi_end) = adjacent_vertices(v, g); wi != wi_end;
                  ++wi)
             {
                 vertex w = *wi;
@@ -381,7 +381,7 @@ void simple_unweighted_betweenness_centrality(
     if (is_undirected)
     {
         vertex_iterator v, v_end;
-        for (boost::tie(v, v_end) = vertices(g); v != v_end; ++v)
+        for (eastl::tie(v, v_end) = vertices(g); v != v_end; ++v)
         {
             put(centrality, *v, get(centrality, *v) / centrality_type(2));
         }
@@ -395,7 +395,7 @@ template < typename Graph > void random_unweighted_test(Graph*, int n)
     {
         typename graph_traits< Graph >::vertex_iterator v, v_end;
         int index = 0;
-        for (boost::tie(v, v_end) = boost::vertices(g); v != v_end;
+        for (eastl::tie(v, v_end) = boost::vertices(g); v != v_end;
              ++v, ++index)
         {
             put(vertex_index, g, *v, index);

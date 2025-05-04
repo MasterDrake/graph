@@ -13,7 +13,7 @@
 #include <boost/tuple/tuple.hpp> //for tie
 #include <boost/graph/connected_components.hpp>
 #include <boost/property_map/property_map.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 
 #include <boost/graph/planar_detail/add_edge_visitors.hpp>
 #include <boost/graph/planar_detail/bucket_sort.hpp>
@@ -27,13 +27,13 @@ void make_connected(Graph& g, VertexIndexMap vm, AddEdgeVisitor& vis)
     typedef typename graph_traits< Graph >::vertex_iterator vertex_iterator_t;
     typedef typename graph_traits< Graph >::vertex_descriptor vertex_t;
     typedef typename graph_traits< Graph >::vertices_size_type v_size_t;
-    typedef iterator_property_map< typename std::vector< v_size_t >::iterator,
+    typedef iterator_property_map< typename eastl::vector< v_size_t >::iterator,
         VertexIndexMap >
         vertex_to_v_size_map_t;
 
-    std::vector< v_size_t > component_vector(num_vertices(g));
+    eastl::vector< v_size_t > component_vector(num_vertices(g));
     vertex_to_v_size_map_t component(component_vector.begin(), vm);
-    std::vector< vertex_t > vertices_by_component(num_vertices(g));
+    eastl::vector< vertex_t > vertices_by_component(num_vertices(g));
 
     v_size_t num_components = connected_components(g, component);
 
@@ -41,13 +41,13 @@ void make_connected(Graph& g, VertexIndexMap vm, AddEdgeVisitor& vis)
         return;
 
     vertex_iterator_t vi, vi_end;
-    boost::tie(vi, vi_end) = vertices(g);
-    std::copy(vi, vi_end, vertices_by_component.begin());
+    eastl::tie(vi, vi_end) = vertices(g);
+    eastl::copy(vi, vi_end, vertices_by_component.begin());
 
     bucket_sort(vertices_by_component.begin(), vertices_by_component.end(),
         component, num_components);
 
-    typedef typename std::vector< vertex_t >::iterator vec_of_vertices_itr_t;
+    typedef typename eastl::vector< vertex_t >::iterator vec_of_vertices_itr_t;
 
     vec_of_vertices_itr_t ci_end = vertices_by_component.end();
     vec_of_vertices_itr_t ci_prev = vertices_by_component.begin();

@@ -94,7 +94,7 @@ int main(int, char*[])
 
     Graph::children_iterator ci, ci_end;
     int num = 1;
-    for (boost::tie(ci, ci_end) = G0.children(); ci != ci_end; ++ci)
+    for (eastl::tie(ci, ci_end) = G0.children(); ci != ci_end; ++ci)
     {
         std::cout << "G" << num++ << ":" << std::endl;
         print_graph(*ci, get(vertex_index, *ci));

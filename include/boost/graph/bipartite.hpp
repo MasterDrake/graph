@@ -13,8 +13,8 @@
 #ifndef BOOST_GRAPH_BIPARTITE_HPP
 #define BOOST_GRAPH_BIPARTITE_HPP
 
-#include <utility>
-#include <vector>
+#include <EASTL/utility.h>
+#include <EASTL/vector.h>
 #include <exception>
 #include <boost/graph/properties.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -35,7 +35,7 @@ namespace detail
     template < typename Vertex >
     struct BOOST_SYMBOL_VISIBLE bipartite_visitor_error : std::exception
     {
-        std::pair< Vertex, Vertex > witnesses;
+        eastl::pair< Vertex, Vertex > witnesses;
 
         bipartite_visitor_error(Vertex a, Vertex b) : witnesses(a, b) {}
 
@@ -149,14 +149,14 @@ namespace detail
 
     template < typename BiDirectionalIterator1,
         typename BiDirectionalIterator2 >
-    inline std::pair< BiDirectionalIterator1, BiDirectionalIterator2 >
+    inline eastl::pair< BiDirectionalIterator1, BiDirectionalIterator2 >
     reverse_mismatch(
-        std::pair< BiDirectionalIterator1, BiDirectionalIterator1 > sequence1,
-        std::pair< BiDirectionalIterator2, BiDirectionalIterator2 > sequence2)
+        eastl::pair< BiDirectionalIterator1, BiDirectionalIterator1 > sequence1,
+        eastl::pair< BiDirectionalIterator2, BiDirectionalIterator2 > sequence2)
     {
         if (sequence1.first == sequence1.second
             || sequence2.first == sequence2.second)
-            return std::make_pair(sequence1.first, sequence2.first);
+            return eastl::make_pair(sequence1.first, sequence2.first);
 
         BiDirectionalIterator1 iter1 = sequence1.second;
         BiDirectionalIterator2 iter2 = sequence2.second;
@@ -177,7 +177,7 @@ namespace detail
                 break;
         }
 
-        return std::make_pair(iter1, iter2);
+        return eastl::make_pair(iter1, iter2);
     }
 
 }
@@ -216,8 +216,8 @@ bool is_bipartite(
     {
         depth_first_search(graph,
             vertex_index_map(index_map).visitor(make_dfs_visitor(
-                std::make_pair(detail::colorize_bipartition(partition_map),
-                    std::make_pair(detail::check_bipartition(partition_map),
+                eastl::make_pair(detail::colorize_bipartition(partition_map),
+                    eastl::make_pair(detail::check_bipartition(partition_map),
                         put_property(partition_map,
                             color_traits< partition_color_t >::white(),
                             on_start_vertex()))))));
@@ -290,7 +290,7 @@ OutputIterator find_odd_cycle(const Graph& graph, const IndexMap index_map,
     vertex_iterator_t vertex_iter, vertex_end;
 
     /// Declare predecessor map
-    typedef std::vector< vertex_descriptor_t > predecessors_t;
+    typedef eastl::vector< vertex_descriptor_t > predecessors_t;
     typedef iterator_property_map< typename predecessors_t::iterator, IndexMap,
         vertex_descriptor_t, vertex_descriptor_t& >
         predecessor_map_t;
@@ -300,7 +300,7 @@ OutputIterator find_odd_cycle(const Graph& graph, const IndexMap index_map,
     predecessor_map_t predecessor_map(predecessors.begin(), index_map);
 
     /// Initialize predecessor map
-    for (boost::tie(vertex_iter, vertex_end) = vertices(graph);
+    for (eastl::tie(vertex_iter, vertex_end) = vertices(graph);
          vertex_iter != vertex_end; ++vertex_iter)
     {
         put(predecessor_map, *vertex_iter, *vertex_iter);
@@ -311,9 +311,9 @@ OutputIterator find_odd_cycle(const Graph& graph, const IndexMap index_map,
     {
         depth_first_search(graph,
             vertex_index_map(index_map).visitor(make_dfs_visitor(
-                std::make_pair(detail::colorize_bipartition(partition_map),
-                    std::make_pair(detail::check_bipartition(partition_map),
-                        std::make_pair(
+                eastl::make_pair(detail::colorize_bipartition(partition_map),
+                    eastl::make_pair(detail::check_bipartition(partition_map),
+                        eastl::make_pair(
                             put_property(partition_map,
                                 color_traits< partition_color_t >::white(),
                                 on_start_vertex()),
@@ -322,7 +322,7 @@ OutputIterator find_odd_cycle(const Graph& graph, const IndexMap index_map,
     }
     catch (const detail::bipartite_visitor_error< vertex_descriptor_t >& error)
     {
-        typedef std::vector< vertex_descriptor_t > path_t;
+        typedef eastl::vector< vertex_descriptor_t > path_t;
 
         path_t path1, path2;
         vertex_descriptor_t next, current;
@@ -346,14 +346,14 @@ OutputIterator find_odd_cycle(const Graph& graph, const IndexMap index_map,
         } while (current != next);
 
         /// Find beginning of common suffix
-        std::pair< typename path_t::iterator, typename path_t::iterator >
+        eastl::pair< typename path_t::iterator, typename path_t::iterator >
             mismatch = detail::reverse_mismatch(
-                std::make_pair(path1.begin(), path1.end()),
-                std::make_pair(path2.begin(), path2.end()));
+                eastl::make_pair(path1.begin(), path1.end()),
+                eastl::make_pair(path2.begin(), path2.end()));
 
         /// Copy the odd-length cycle
-        result = std::copy(path1.begin(), mismatch.first + 1, result);
-        return std::reverse_copy(path2.begin(), mismatch.second, result);
+        result = eastl::copy(path1.begin(), mismatch.first + 1, result);
+        return eastl::reverse_copy(path2.begin(), mismatch.second, result);
     }
 
     return result;

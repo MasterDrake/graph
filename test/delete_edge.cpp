@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     EdgeDesc ed1;
     bool inserted1;
 
-    boost::tie(ed1, inserted1) = boost::add_edge(v3, v1, m_graph);
+    eastl::tie(ed1, inserted1) = boost::add_edge(v3, v1, m_graph);
 
     BOOST_TEST(inserted1);
 

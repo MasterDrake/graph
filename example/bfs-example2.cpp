@@ -93,7 +93,7 @@ int main()
         dtime_pm_type;
     graph_traits< graph_t >::vertex_iterator vi, vi_end;
     std::size_t c = 0;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi, ++c)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi, ++c)
     {
         dtime[c] = dtime_map[*vi];
         put(&VertexProps::index, g, *vi, c);

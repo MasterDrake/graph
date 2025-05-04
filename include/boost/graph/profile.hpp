@@ -25,7 +25,7 @@ typename graph_traits< Graph >::vertices_size_type profile(
 {
     typename graph_traits< Graph >::vertices_size_type b = 0;
     typename graph_traits< Graph >::vertex_iterator i, end;
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         b += ith_bandwidth(*i, g, index) + 1;
     }

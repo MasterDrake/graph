@@ -24,7 +24,7 @@ typename boost::graph_traits< Graph >::vertex_descriptor add_named_vertex(
     Vertex v;
     Iterator iter;
     bool inserted;
-    boost::tie(iter, inserted) = vm.insert(make_pair(name, Vertex()));
+    eastl::tie(iter, inserted) = vm.insert(make_pair(name, Vertex()));
     if (inserted)
     {
         // The name was unique so we need to add a vertex to the graph

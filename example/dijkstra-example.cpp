@@ -52,7 +52,7 @@ int main(int, char*[])
 
     std::cout << "distances and parents:" << std::endl;
     graph_traits< graph_t >::vertex_iterator vi, vend;
-    for (boost::tie(vi, vend) = vertices(g); vi != vend; ++vi)
+    for (eastl::tie(vi, vend) = vertices(g); vi != vend; ++vi)
     {
         std::cout << "distance(" << name[*vi] << ") = " << d[*vi] << ", ";
         std::cout << "parent(" << name[*vi] << ") = " << name[p[*vi]]
@@ -70,7 +70,7 @@ int main(int, char*[])
              << "  node[shape=\"circle\"]\n";
 
     graph_traits< graph_t >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
     {
         auto e = *ei;
         auto u = source(e, g), v = target(e, g);

@@ -43,7 +43,7 @@ template < typename Graph > void print_bipartite(const Graph& g)
 
         is_bipartite(g, get(vertex_index, g), partition_map);
 
-        for (boost::tie(vertex_iter, vertex_end) = vertices(g);
+        for (eastl::tie(vertex_iter, vertex_end) = vertices(g);
              vertex_iter != vertex_end; ++vertex_iter)
         {
             std::cout

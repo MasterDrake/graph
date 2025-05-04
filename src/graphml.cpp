@@ -18,9 +18,9 @@
 #include <boost/graph/dll_import_export.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <map>
-#include <string>
-#include <vector>
+#include <EASTL/map.h>
+#include <EASTL/string.h>
+#include <EASTL/vector.h>
 
 using namespace boost;
 
@@ -32,14 +32,14 @@ class graphml_reader
 public:
     graphml_reader(mutate_graph& g) : m_g(g) {}
 
-    static boost::property_tree::ptree::path_type path(const std::string& str)
+    static boost::property_tree::ptree::path_type path(const eastl::string& str)
     {
-        return boost::property_tree::ptree::path_type(str, '/');
+        return boost::property_tree::ptree::path_type(str.c_str(), '/');
     }
 
     void get_graphs(const boost::property_tree::ptree& top,
         size_t desired_idx /* or -1 for all */, bool is_root,
-        std::vector< const boost::property_tree::ptree* >& result)
+        eastl::vector< const boost::property_tree::ptree* >& result)
     {
         using boost::property_tree::ptree;
         size_t current_idx = 0;
@@ -58,10 +58,9 @@ public:
                         {
                             if (attr.first != "data")
                                 continue;
-                            std::string key = attr.second.get< std::string >(
-                                path("<xmlattr>/key"));
-                            std::string value = attr.second.get_value("");
-                            handle_graph_property(key, value);
+                            eastl::string key = attr.second.get<eastl::string>(path("<xmlattr>/key"));
+                            auto value = attr.second.get_value("");
+                            handle_graph_property(key, eastl::string{value.c_str(), value.length()});
                         }
                     }
 
@@ -87,12 +86,12 @@ public:
         {
             if (child.first != "key")
                 continue;
-            std::string id = child.second.get(path("<xmlattr>/id"), "");
-            std::string for_ = child.second.get(path("<xmlattr>/for"), "");
-            std::string name
-                = child.second.get(path("<xmlattr>/attr.name"), "");
-            std::string type
-                = child.second.get(path("<xmlattr>/attr.type"), "");
+            eastl::string id = child.second.get(path("<xmlattr>/id"), "").c_str();
+            eastl::string for_ = child.second.get(path("<xmlattr>/for"), "").c_str();
+            eastl::string name
+                = child.second.get(path("<xmlattr>/attr.name"), "").c_str();
+            eastl::string type
+                = child.second.get(path("<xmlattr>/attr.type"), "").c_str();
             key_kind kind = all_key;
             if (for_ == "graph")
                 kind = graph_key;
@@ -118,13 +117,13 @@ public:
             m_keys[id] = kind;
             m_key_name[id] = name;
             m_key_type[id] = type;
-            boost::optional< std::string > default_
-                = child.second.get_optional< std::string >(path("default"));
+            boost::optional< eastl::string > default_
+                = child.second.get_optional< eastl::string >(path("default"));
             if (default_)
                 m_key_default[id] = default_.get();
         }
         // Search for graphs
-        std::vector< const ptree* > graphs;
+        eastl::vector< const ptree* > graphs;
         handle_graph();
         get_graphs(gml, desired_idx, true, graphs);
         BOOST_FOREACH (const ptree* gr, graphs)
@@ -134,36 +133,36 @@ public:
             {
                 if (node.first != "node")
                     continue;
-                std::string id
-                    = node.second.get< std::string >(path("<xmlattr>/id"));
+                eastl::string id
+                    = node.second.get< eastl::string >(path("<xmlattr>/id"));
                 handle_vertex(id);
                 BOOST_FOREACH (const ptree::value_type& attr, node.second)
                 {
                     if (attr.first != "data")
                         continue;
-                    std::string key
-                        = attr.second.get< std::string >(path("<xmlattr>/key"));
-                    std::string value = attr.second.get_value("");
-                    handle_node_property(key, id, value);
+                    eastl::string key
+                        = attr.second.get< eastl::string >(path("<xmlattr>/key"));
+                    auto value = attr.second.get_value("");
+                    handle_node_property(key, id, {value.c_str(), value.length()});
                 }
             }
         }
         BOOST_FOREACH (const ptree* gr, graphs)
         {
             bool default_directed
-                = gr->get< std::string >(path("<xmlattr>/edgedefault"))
+                = gr->get< eastl::string >(path("<xmlattr>/edgedefault"))
                 == "directed";
             // Search for edges
             BOOST_FOREACH (const ptree::value_type& edge, *gr)
             {
                 if (edge.first != "edge")
                     continue;
-                std::string source
-                    = edge.second.get< std::string >(path("<xmlattr>/source"));
-                std::string target
-                    = edge.second.get< std::string >(path("<xmlattr>/target"));
-                std::string local_directed
-                    = edge.second.get(path("<xmlattr>/directed"), "");
+                eastl::string source
+                    = edge.second.get< eastl::string >(path("<xmlattr>/source"));
+                eastl::string target
+                    = edge.second.get< eastl::string >(path("<xmlattr>/target"));
+                eastl::string local_directed
+                    = edge.second.get(path("<xmlattr>/directed"), "").c_str();
                 bool is_directed
                     = (local_directed.empty() ? default_directed
                                               : local_directed == "true");
@@ -184,9 +183,9 @@ public:
                 {
                     if (attr.first != "data")
                         continue;
-                    std::string key
-                        = attr.second.get< std::string >(path("<xmlattr>/key"));
-                    std::string value = attr.second.get_value("");
+                    eastl::string key
+                        = attr.second.get< eastl::string >(path("<xmlattr>/key"));
+                    eastl::string value = attr.second.get_value("").c_str();
                     handle_edge_property(key, old_edges_size, value);
                 }
             }
@@ -207,7 +206,7 @@ private:
         graphml_key
     };
 
-    void handle_vertex(const std::string& v)
+    void handle_vertex(const eastl::string& v)
     {
         bool is_new = false;
 
@@ -219,7 +218,7 @@ private:
 
         if (is_new)
         {
-            std::map< std::string, std::string >::iterator iter;
+            eastl::map< eastl::string, eastl::string >::iterator iter;
             for (iter = m_key_default.begin(); iter != m_key_default.end();
                  ++iter)
             {
@@ -229,9 +228,9 @@ private:
         }
     }
 
-    any get_vertex_descriptor(const std::string& v) { return m_vertex[v]; }
+    any get_vertex_descriptor(const eastl::string& v) { return m_vertex[v]; }
 
-    void handle_edge(const std::string& u, const std::string& v)
+    void handle_edge(const eastl::string& u, const eastl::string& v)
     {
         handle_vertex(u);
         handle_vertex(v);
@@ -242,7 +241,7 @@ private:
 
         any edge;
         bool added;
-        boost::tie(edge, added) = m_g.do_add_edge(source, target);
+        eastl::tie(edge, added) = m_g.do_add_edge(source, target);
         if (!added)
         {
             BOOST_THROW_EXCEPTION(bad_parallel_edge(u, v));
@@ -251,7 +250,7 @@ private:
         size_t e = m_edge.size();
         m_edge.push_back(edge);
 
-        std::map< std::string, std::string >::iterator iter;
+        eastl::map< eastl::string, eastl::string >::iterator iter;
         for (iter = m_key_default.begin(); iter != m_key_default.end(); ++iter)
         {
             if (m_keys[iter->first] == edge_key)
@@ -261,7 +260,7 @@ private:
 
     void handle_graph()
     {
-        std::map< std::string, std::string >::iterator iter;
+        eastl::map< eastl::string, eastl::string >::iterator iter;
         for (iter = m_key_default.begin(); iter != m_key_default.end(); ++iter)
         {
             if (m_keys[iter->first] == graph_key)
@@ -270,32 +269,32 @@ private:
     }
 
     void handle_graph_property(
-        const std::string& key_id, const std::string& value)
+        const eastl::string& key_id, const eastl::string& value)
     {
         m_g.set_graph_property(m_key_name[key_id], value, m_key_type[key_id]);
     }
 
-    void handle_node_property(const std::string& key_id,
-        const std::string& descriptor, const std::string& value)
+    void handle_node_property(const eastl::string& key_id,
+        const eastl::string& descriptor, const eastl::string& value)
     {
         m_g.set_vertex_property(m_key_name[key_id], m_vertex[descriptor], value,
             m_key_type[key_id]);
     }
 
     void handle_edge_property(
-        const std::string& key_id, size_t descriptor, const std::string& value)
+        const eastl::string& key_id, size_t descriptor, const eastl::string& value)
     {
         m_g.set_edge_property(
             m_key_name[key_id], m_edge[descriptor], value, m_key_type[key_id]);
     }
 
     mutate_graph& m_g;
-    std::map< std::string, key_kind > m_keys;
-    std::map< std::string, std::string > m_key_name;
-    std::map< std::string, std::string > m_key_type;
-    std::map< std::string, std::string > m_key_default;
-    std::map< std::string, any > m_vertex;
-    std::vector< any > m_edge;
+    eastl::map< eastl::string, key_kind > m_keys;
+    eastl::map< eastl::string, eastl::string > m_key_name;
+    eastl::map< eastl::string, eastl::string > m_key_type;
+    eastl::map< eastl::string, eastl::string > m_key_default;
+    eastl::map< eastl::string, any > m_vertex;
+    eastl::vector< any > m_edge;
 };
 
 }

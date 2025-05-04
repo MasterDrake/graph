@@ -12,9 +12,9 @@
 #define BOOST_ADJACENCY_MATRIX_HPP
 
 #include <boost/config.hpp>
-#include <vector>
-#include <memory>
-#include <iterator>
+#include <EASTL/vector.h>
+#include <EASTL/memory.h>
+#include <EASTL/iterator.h>
 #include <boost/assert.hpp>
 #include <boost/limits.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -71,13 +71,13 @@ namespace detail
     // make these calls unambiguous.
     template < typename EdgeProperty >
     bool get_edge_exists(
-        const std::pair< bool, EdgeProperty >& stored_edge, int)
+        const eastl::pair< bool, EdgeProperty >& stored_edge, int)
     {
         return stored_edge.first;
     }
     template < typename EdgeProperty >
     void set_edge_exists(
-        std::pair< bool, EdgeProperty >& stored_edge, bool flag, int)
+        eastl::pair< bool, EdgeProperty >& stored_edge, bool flag, int)
     {
         stored_edge.first = flag;
     }
@@ -98,20 +98,20 @@ namespace detail
     // accessing bundled graph properties. Be excplicit when using them.
     template < typename EdgeProperty >
     const EdgeProperty& get_edge_property(
-        const std::pair< bool, EdgeProperty >& stored_edge)
+        const eastl::pair< bool, EdgeProperty >& stored_edge)
     {
         return stored_edge.second;
     }
     template < typename EdgeProperty >
     EdgeProperty& get_edge_property(
-        std::pair< bool, EdgeProperty >& stored_edge)
+        eastl::pair< bool, EdgeProperty >& stored_edge)
     {
         return stored_edge.second;
     }
 
     template < typename StoredEdgeProperty, typename EdgeProperty >
     inline void set_edge_property(
-        std::pair< bool, StoredEdgeProperty >& stored_edge,
+        eastl::pair< bool, StoredEdgeProperty >& stored_edge,
         const EdgeProperty& ep, int)
     {
         stored_edge.second = ep;
@@ -471,9 +471,9 @@ public:
 public: // should be private
     typedef
         typename mpl::if_< typename has_property< edge_property_type >::type,
-            std::pair< bool, edge_property_type >, char >::type StoredEdge;
+            eastl::pair< bool, edge_property_type >, char >::type StoredEdge;
 #if defined(BOOST_NO_STD_ALLOCATOR)
-    typedef std::vector< StoredEdge > Matrix;
+    typedef eastl::vector< StoredEdge > Matrix;
 #else
 #if defined(BOOST_NO_CXX11_ALLOCATOR)
     typedef typename Allocator::template rebind< StoredEdge >::other Alloc;
@@ -497,7 +497,7 @@ public:
 
     static vertex_descriptor null_vertex()
     {
-        return (std::numeric_limits< vertex_descriptor >::max)();
+        return (eastl::numeric_limits< vertex_descriptor >::max)();
     }
 
     // private: if friends worked, these would be private
@@ -641,7 +641,7 @@ public:
         else
         {
             if (v > u)
-                std::swap(u, v);
+                eastl::swap(u, v);
             return m_matrix[u * (u + 1) / 2 + v];
         }
     }
@@ -653,14 +653,14 @@ public:
         else
         {
             if (v > u)
-                std::swap(u, v);
+                eastl::swap(u, v);
             return m_matrix[u * (u + 1) / 2 + v];
         }
     }
 
     Matrix m_matrix;
     VertexList m_vertex_set;
-    std::vector< vertex_property_type > m_vertex_properties;
+    eastl::vector< vertex_property_type > m_vertex_properties;
     size_type m_num_edges;
     graph_property_type m_property;
 };
@@ -669,7 +669,7 @@ public:
 // Functions required by the AdjacencyMatrix concept
 
 template < typename D, typename VP, typename EP, typename GP, typename A >
-std::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_descriptor,
+eastl::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_descriptor,
     bool >
 edge(typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor u,
     typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor v,
@@ -678,7 +678,7 @@ edge(typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor u,
     bool exists = detail::get_edge_exists(g.get_edge(u, v), 0);
     typename adjacency_matrix< D, VP, EP, GP, A >::edge_descriptor e(
         exists, u, v, &detail::get_edge_property(g.get_edge(u, v)));
-    return std::make_pair(e, exists);
+    return eastl::make_pair(e, exists);
 }
 
 //=========================================================================
@@ -686,7 +686,7 @@ edge(typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor u,
 
 // O(1)
 template < typename VP, typename EP, typename GP, typename A >
-std::pair<
+eastl::pair<
     typename adjacency_matrix< directedS, VP, EP, GP, A >::out_edge_iterator,
     typename adjacency_matrix< directedS, VP, EP, GP, A >::out_edge_iterator >
 out_edges(
@@ -702,13 +702,13 @@ out_edges(
         last(l, u, g.m_vertex_set.size());
     detail::does_edge_exist pred;
     typedef typename Graph::out_edge_iterator out_edge_iterator;
-    return std::make_pair(out_edge_iterator(pred, first, last),
+    return eastl::make_pair(out_edge_iterator(pred, first, last),
         out_edge_iterator(pred, last, last));
 }
 
 // O(1)
 template < typename VP, typename EP, typename GP, typename A >
-std::pair<
+eastl::pair<
     typename adjacency_matrix< undirectedS, VP, EP, GP, A >::out_edge_iterator,
     typename adjacency_matrix< undirectedS, VP, EP, GP, A >::out_edge_iterator >
 out_edges(
@@ -727,7 +727,7 @@ out_edges(
 
     detail::does_edge_exist pred;
     typedef typename Graph::out_edge_iterator out_edge_iterator;
-    return std::make_pair(out_edge_iterator(pred, first, last),
+    return eastl::make_pair(out_edge_iterator(pred, first, last),
         out_edge_iterator(pred, last, last));
 }
 
@@ -739,7 +739,7 @@ typename adjacency_matrix< D, VP, EP, GP, A >::degree_size_type out_degree(
 {
     typename adjacency_matrix< D, VP, EP, GP, A >::degree_size_type n = 0;
     typename adjacency_matrix< D, VP, EP, GP, A >::out_edge_iterator f, l;
-    for (boost::tie(f, l) = out_edges(u, g); f != l; ++f)
+    for (eastl::tie(f, l) = out_edges(u, g); f != l; ++f)
         ++n;
     return n;
 }
@@ -769,7 +769,7 @@ typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor target(
 
 // O(1)
 template < typename VP, typename EP, typename GP, typename A >
-std::pair<
+eastl::pair<
     typename adjacency_matrix< directedS, VP, EP, GP, A >::in_edge_iterator,
     typename adjacency_matrix< directedS, VP, EP, GP, A >::in_edge_iterator >
 in_edges(
@@ -785,13 +785,13 @@ in_edges(
         last(l, l, u, g.m_vertex_set.size());
     detail::does_edge_exist pred;
     typedef typename Graph::in_edge_iterator in_edge_iterator;
-    return std::make_pair(in_edge_iterator(pred, first, last),
+    return eastl::make_pair(in_edge_iterator(pred, first, last),
         in_edge_iterator(pred, last, last));
 }
 
 // O(1)
 template < typename VP, typename EP, typename GP, typename A >
-std::pair<
+eastl::pair<
     typename adjacency_matrix< undirectedS, VP, EP, GP, A >::in_edge_iterator,
     typename adjacency_matrix< undirectedS, VP, EP, GP, A >::in_edge_iterator >
 in_edges(
@@ -810,7 +810,7 @@ in_edges(
 
     detail::does_edge_exist pred;
     typedef typename Graph::in_edge_iterator in_edge_iterator;
-    return std::make_pair(in_edge_iterator(pred, first, last),
+    return eastl::make_pair(in_edge_iterator(pred, first, last),
         in_edge_iterator(pred, last, last));
 }
 
@@ -822,7 +822,7 @@ typename adjacency_matrix< D, VP, EP, GP, A >::degree_size_type in_degree(
 {
     typename adjacency_matrix< D, VP, EP, GP, A >::degree_size_type n = 0;
     typename adjacency_matrix< D, VP, EP, GP, A >::in_edge_iterator f, l;
-    for (boost::tie(f, l) = in_edges(u, g); f != l; ++f)
+    for (eastl::tie(f, l) = in_edges(u, g); f != l; ++f)
         ++n;
     return n;
 }
@@ -852,7 +852,7 @@ degree(
 // Functions required by the AdjacencyGraph concept
 
 template < typename D, typename VP, typename EP, typename GP, typename A >
-std::pair< typename adjacency_matrix< D, VP, EP, GP, A >::adjacency_iterator,
+eastl::pair< typename adjacency_matrix< D, VP, EP, GP, A >::adjacency_iterator,
     typename adjacency_matrix< D, VP, EP, GP, A >::adjacency_iterator >
 adjacent_vertices(
     typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor u,
@@ -863,8 +863,8 @@ adjacent_vertices(
     Graph& g = const_cast< Graph& >(cg);
     typedef typename Graph::adjacency_iterator adjacency_iterator;
     typename Graph::out_edge_iterator first, last;
-    boost::tie(first, last) = out_edges(u, g);
-    return std::make_pair(
+    eastl::tie(first, last) = out_edges(u, g);
+    return eastl::make_pair(
         adjacency_iterator(first, &g), adjacency_iterator(last, &g));
 }
 
@@ -872,13 +872,13 @@ adjacent_vertices(
 // Functions required by the VertexListGraph concept
 
 template < typename D, typename VP, typename EP, typename GP, typename A >
-std::pair< typename adjacency_matrix< D, VP, EP, GP, A >::vertex_iterator,
+eastl::pair< typename adjacency_matrix< D, VP, EP, GP, A >::vertex_iterator,
     typename adjacency_matrix< D, VP, EP, GP, A >::vertex_iterator >
 vertices(const adjacency_matrix< D, VP, EP, GP, A >& g_)
 {
     typedef adjacency_matrix< D, VP, EP, GP, A > Graph;
     Graph& g = const_cast< Graph& >(g_);
-    return std::make_pair(g.m_vertex_set.begin(), g.m_vertex_set.end());
+    return eastl::make_pair(g.m_vertex_set.begin(), g.m_vertex_set.end());
 }
 
 template < typename D, typename VP, typename EP, typename GP, typename A >
@@ -892,7 +892,7 @@ typename adjacency_matrix< D, VP, EP, GP, A >::vertices_size_type num_vertices(
 // Functions required by the EdgeListGraph concept
 
 template < typename D, typename VP, typename EP, typename GP, typename A >
-std::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_iterator,
+eastl::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_iterator,
     typename adjacency_matrix< D, VP, EP, GP, A >::edge_iterator >
 edges(const adjacency_matrix< D, VP, EP, GP, A >& g_)
 {
@@ -904,7 +904,7 @@ edges(const adjacency_matrix< D, VP, EP, GP, A >& g_)
         last(g.m_matrix.end(), g.m_matrix.begin(), g.m_vertex_set.size());
     detail::does_edge_exist pred;
     typedef typename Graph::edge_iterator edge_iterator;
-    return std::make_pair(
+    return eastl::make_pair(
         edge_iterator(pred, first, last), edge_iterator(pred, last, last));
 }
 
@@ -922,7 +922,7 @@ typename adjacency_matrix< D, VP, EP, GP, A >::edges_size_type num_edges(
 // O(1)
 template < typename D, typename VP, typename EP, typename GP, typename A,
     typename EP2 >
-std::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_descriptor,
+eastl::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_descriptor,
     bool >
 add_edge(typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor u,
     typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor v,
@@ -935,18 +935,18 @@ add_edge(typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor u,
         ++(g.m_num_edges);
         detail::set_edge_property(g.get_edge(u, v), EP(ep), 0);
         detail::set_edge_exists(g.get_edge(u, v), true, 0);
-        return std::make_pair(edge_descriptor(true, u, v,
+        return eastl::make_pair(edge_descriptor(true, u, v,
                                   &detail::get_edge_property(g.get_edge(u, v))),
             true);
     }
     else
-        return std::make_pair(edge_descriptor(true, u, v,
+        return eastl::make_pair(edge_descriptor(true, u, v,
                                   &detail::get_edge_property(g.get_edge(u, v))),
             false);
 }
 // O(1)
 template < typename D, typename VP, typename EP, typename GP, typename A >
-std::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_descriptor,
+eastl::pair< typename adjacency_matrix< D, VP, EP, GP, A >::edge_descriptor,
     bool >
 add_edge(typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor u,
     typename adjacency_matrix< D, VP, EP, GP, A >::vertex_descriptor v,
@@ -1016,9 +1016,9 @@ void clear_vertex(
 {
     typename adjacency_matrix< directedS, VP, EP, GP, A >::vertex_iterator vi,
         vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         remove_edge(u, *vi, g);
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         remove_edge(*vi, u, g);
 }
 
@@ -1031,7 +1031,7 @@ void clear_vertex(
 {
     typename adjacency_matrix< undirectedS, VP, EP, GP, A >::vertex_iterator vi,
         vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         remove_edge(u, *vi, g);
 }
 
@@ -1049,10 +1049,10 @@ struct adj_mat_pm_helper< D, VP, EP, GP, A, Prop, vertex_property_tag >
     typedef typename graph_traits<
         adjacency_matrix< D, VP, EP, GP, A > >::vertex_descriptor arg_type;
     typedef typed_identity_property_map< arg_type > vi_map_type;
-    typedef iterator_property_map< typename std::vector< VP >::iterator,
+    typedef iterator_property_map< typename eastl::vector< VP >::iterator,
         vi_map_type >
         all_map_type;
-    typedef iterator_property_map< typename std::vector< VP >::const_iterator,
+    typedef iterator_property_map< typename eastl::vector< VP >::const_iterator,
         vi_map_type >
         all_map_const_type;
     typedef transform_value_property_map<

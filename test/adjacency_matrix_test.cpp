@@ -153,15 +153,15 @@ template < typename Graph1, typename Graph2 > void run_test()
     typename boost::graph_traits< Graph1 >::adjacency_iterator ai1, aend1;
     typename boost::graph_traits< Graph2 >::adjacency_iterator ai2, aend2;
 
-    for (boost::tie(vi1, vend1) = boost::vertices(g1),
-                         boost::tie(vi2, vend2) = boost::vertices(g2);
+    for (eastl::tie(vi1, vend1) = boost::vertices(g1),
+                         eastl::tie(vi2, vend2) = boost::vertices(g2);
          vi1 != vend1; ++vi1, ++vi2)
     {
         BOOST_TEST(
             boost::get(index_map1, *vi1) == boost::get(index_map2, *vi2));
 
-        for (boost::tie(ai1, aend1) = boost::adjacent_vertices(*vi1, g1),
-                             boost::tie(ai2, aend2)
+        for (eastl::tie(ai1, aend1) = boost::adjacent_vertices(*vi1, g1),
+                             eastl::tie(ai2, aend2)
              = boost::adjacent_vertices(*vi2, g2);
              ai1 != aend1; ++ai1, ++ai2)
         {
@@ -173,15 +173,15 @@ template < typename Graph1, typename Graph2 > void run_test()
     typename boost::graph_traits< Graph1 >::out_edge_iterator ei1, eend1;
     typename boost::graph_traits< Graph2 >::out_edge_iterator ei2, eend2;
 
-    for (boost::tie(vi1, vend1) = boost::vertices(g1),
-                         boost::tie(vi2, vend2) = boost::vertices(g2);
+    for (eastl::tie(vi1, vend1) = boost::vertices(g1),
+                         eastl::tie(vi2, vend2) = boost::vertices(g2);
          vi1 != vend1; ++vi1, ++vi2)
     {
         BOOST_TEST(
             boost::get(index_map1, *vi1) == boost::get(index_map2, *vi2));
 
-        for (boost::tie(ei1, eend1) = boost::out_edges(*vi1, g1),
-                             boost::tie(ei2, eend2)
+        for (eastl::tie(ei1, eend1) = boost::out_edges(*vi1, g1),
+                             eastl::tie(ei2, eend2)
              = boost::out_edges(*vi2, g2);
              ei1 != eend1; ++ei1, ++ei2)
         {
@@ -193,15 +193,15 @@ template < typename Graph1, typename Graph2 > void run_test()
     typename boost::graph_traits< Graph1 >::in_edge_iterator iei1, ieend1;
     typename boost::graph_traits< Graph2 >::in_edge_iterator iei2, ieend2;
 
-    for (boost::tie(vi1, vend1) = boost::vertices(g1),
-                         boost::tie(vi2, vend2) = boost::vertices(g2);
+    for (eastl::tie(vi1, vend1) = boost::vertices(g1),
+                         eastl::tie(vi2, vend2) = boost::vertices(g2);
          vi1 != vend1; ++vi1, ++vi2)
     {
         BOOST_TEST(
             boost::get(index_map1, *vi1) == boost::get(index_map2, *vi2));
 
-        for (boost::tie(iei1, ieend1) = boost::in_edges(*vi1, g1),
-                              boost::tie(iei2, ieend2)
+        for (eastl::tie(iei1, ieend1) = boost::in_edges(*vi1, g1),
+                              eastl::tie(iei2, ieend2)
              = boost::in_edges(*vi2, g2);
              iei1 != ieend1; ++iei1, ++iei2)
         {

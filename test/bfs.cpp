@@ -102,7 +102,7 @@ public:
 
         // All vertices adjacent to a black vertex must already be discovered
         typename boost::graph_traits< Graph >::adjacency_iterator ai, ai_end;
-        for (boost::tie(ai, ai_end) = adjacent_vertices(target(e, g), g);
+        for (eastl::tie(ai, ai_end) = adjacent_vertices(target(e, g), g);
              ai != ai_end; ++ai)
             BOOST_TEST(color[*ai] != Color::white());
     }
@@ -150,7 +150,7 @@ template < class Graph > struct bfs_test
                     i, (std::numeric_limits< int >::max)());
                 distance[start] = 0;
                 std::vector< vertex_descriptor > parent(i);
-                for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+                for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
                     parent[*ui] = *ui;
                 std::vector< boost::default_color_type > color(i);
 
@@ -184,7 +184,7 @@ template < class Graph > struct bfs_test
                     g, start, visitor(vis).color_map(color_pm));
 
                 // All white vertices should be unreachable from the source.
-                for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+                for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
                     if (color[*ui] == Color::white())
                     {
                         std::vector< boost::default_color_type > color2(
@@ -195,7 +195,7 @@ template < class Graph > struct bfs_test
 
                 // The shortest path to a child should be one longer than
                 // shortest path to the parent.
-                for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+                for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
                     if (parent[*ui] != *ui) // *ui not the root of the bfs tree
                         BOOST_TEST(distance[*ui] == distance[parent[*ui]] + 1);
             }

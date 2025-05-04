@@ -14,7 +14,7 @@
 namespace boost
 {
 template < typename Graph, typename DistanceType, typename ResultType,
-    typename Divides = std::divides< ResultType > >
+    typename Divides = eastl::divides< ResultType > >
 struct mean_geodesic_measure
 : public geodesic_measure< Graph, DistanceType, ResultType >
 {
@@ -116,7 +116,7 @@ inline typename Measure::result_type mean_geodesic(
     BOOST_CONCEPT_ASSERT((DistanceMeasureConcept< Measure, Graph >));
     typedef typename Measure::distance_type Distance;
 
-    return mean_geodesic(g, dist, measure, std::plus< Distance >());
+    return mean_geodesic(g, dist, measure, eastl::plus< Distance >());
 }
 
 template < typename Graph, typename DistanceMap >
@@ -155,7 +155,7 @@ inline typename property_traits< GeodesicMap >::value_type all_mean_geodesics(
     Result inf = numeric_values< Result >::infinity();
     Result sum = numeric_values< Result >::zero();
     VertexIterator i, end;
-    for (boost::tie(i, end) = vertices(g); i != end; ++i)
+    for (eastl::tie(i, end) = vertices(g); i != end; ++i)
     {
         DistanceMap dm = get(dist, *i);
         Result r = mean_geodesic(g, dm, measure);
@@ -201,7 +201,7 @@ inline typename Measure::result_type small_world_distance(
     typedef typename Measure::result_type Result;
 
     Result sum
-        = detail::combine_distances(g, geo, std::plus< Result >(), Result(0));
+        = detail::combine_distances(g, geo, eastl::plus< Result >(), Result(0));
     return measure(sum, g);
 }
 

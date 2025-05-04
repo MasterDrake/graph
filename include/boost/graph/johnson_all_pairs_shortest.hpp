@@ -67,31 +67,31 @@ bool johnson_all_pairs_shortest_paths(VertexAndEdgeListGraph& g1,
 
     // Construct g2 where V[g2] = V[g1] U {s}
     //   and  E[g2] = E[g1] U {(s,v)| v in V[g1]}
-    std::vector< typename Traits1::vertex_descriptor > verts1(
+    eastl::vector< typename Traits1::vertex_descriptor > verts1(
         num_vertices(g1) + 1);
     typename Traits2::vertex_descriptor s = *vertices(g2).first;
     {
         typename Traits1::vertex_iterator v, v_end;
         int i = 1;
-        for (boost::tie(v, v_end) = vertices(g1); v != v_end; ++v, ++i)
+        for (eastl::tie(v, v_end) = vertices(g1); v != v_end; ++v, ++i)
         {
             typename Traits2::edge_descriptor e;
             bool z;
-            boost::tie(e, z) = add_edge(s, get(id1, *v) + 1, g2);
+            eastl::tie(e, z) = add_edge(s, get(id1, *v) + 1, g2);
             put(w, e, zero);
             verts1[i] = *v;
         }
         typename Traits1::edge_iterator e, e_end;
-        for (boost::tie(e, e_end) = edges(g1); e != e_end; ++e)
+        for (eastl::tie(e, e_end) = edges(g1); e != e_end; ++e)
         {
             typename Traits2::edge_descriptor e2;
             bool z;
-            boost::tie(e2, z) = add_edge(
+            eastl::tie(e2, z) = add_edge(
                 get(id1, source(*e, g1)) + 1, get(id1, target(*e, g1)) + 1, g2);
             put(w, e2, get(w1, *e));
             if (is_undirected)
             {
-                boost::tie(e2, z) = add_edge(get(id1, target(*e, g1)) + 1,
+                eastl::tie(e2, z) = add_edge(get(id1, target(*e, g1)) + 1,
                     get(id1, source(*e, g1)) + 1, g2);
                 put(w, e2, get(w1, *e));
             }
@@ -101,7 +101,7 @@ bool johnson_all_pairs_shortest_paths(VertexAndEdgeListGraph& g1,
     typename Traits2::edge_iterator e, e_end;
     shared_array_property_map< DT, VertexID2 > h(num_vertices(g2), id2);
 
-    for (boost::tie(v, v_end) = vertices(g2); v != v_end; ++v)
+    for (eastl::tie(v, v_end) = vertices(g2); v != v_end; ++v)
         put(d, *v, inf);
 
     put(d, s, zero);
@@ -112,21 +112,21 @@ bool johnson_all_pairs_shortest_paths(VertexAndEdgeListGraph& g1,
     if (bellman_ford_shortest_paths(
             g2, num_vertices(g2), w, pred, d, combine, compare, bvis))
     {
-        for (boost::tie(v, v_end) = vertices(g2); v != v_end; ++v)
+        for (eastl::tie(v, v_end) = vertices(g2); v != v_end; ++v)
             put(h, *v, get(d, *v));
         // Reweight the edges to remove negatives
-        for (boost::tie(e, e_end) = edges(g2); e != e_end; ++e)
+        for (eastl::tie(e, e_end) = edges(g2); e != e_end; ++e)
         {
             typename Traits2::vertex_descriptor a = source(*e, g2),
                                                 b = target(*e, g2);
             put(w_hat, *e, combine((get(h, a) - get(h, b)), get(w, *e)));
         }
-        for (boost::tie(u, u_end) = vertices(g2); u != u_end; ++u)
+        for (eastl::tie(u, u_end) = vertices(g2); u != u_end; ++u)
         {
             dijkstra_visitor<> dvis;
             dijkstra_shortest_paths(
                 g2, *u, pred, d, w_hat, id2, compare, combine, inf, zero, dvis);
-            for (boost::tie(v, v_end) = vertices(g2); v != v_end; ++v)
+            for (eastl::tie(v, v_end) = vertices(g2); v != v_end; ++v)
             {
                 if (*u != s && *v != s)
                 {
@@ -147,8 +147,8 @@ bool johnson_all_pairs_shortest_paths(VertexAndEdgeListGraph& g1,
     DistanceMatrix& D, VertexID id1, Weight w1, DistanceZero zero)
 {
     typedef typename property_traits< Weight >::value_type WT;
-    return johnson_all_pairs_shortest_paths(g1, D, id1, w1, std::less< WT >(),
-        closed_plus< WT >(), (std::numeric_limits< WT >::max)(), zero);
+    return johnson_all_pairs_shortest_paths(g1, D, id1, w1, eastl::less< WT >(),
+        closed_plus< WT >(), (eastl::numeric_limits< WT >::max)(), zero);
 }
 
 namespace detail
@@ -163,11 +163,11 @@ namespace detail
 
         return johnson_all_pairs_shortest_paths(g, D, id, w,
             choose_param(
-                get_param(params, distance_compare_t()), std::less< WT >()),
+                get_param(params, distance_compare_t()), eastl::less< WT >()),
             choose_param(
                 get_param(params, distance_combine_t()), closed_plus< WT >()),
             choose_param(get_param(params, distance_inf_t()),
-                std::numeric_limits< WT >::max
+                eastl::numeric_limits< WT >::max
                     BOOST_PREVENT_MACRO_SUBSTITUTION()),
             choose_param(get_param(params, distance_zero_t()), WT()));
     }

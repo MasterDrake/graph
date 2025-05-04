@@ -11,7 +11,7 @@
 #define BOOST_GRAPH_EXCEPTION_HPP
 
 #include <stdexcept>
-#include <string>
+#include <EASTL/string.h>
 
 #include <boost/config.hpp>
 
@@ -20,7 +20,7 @@ namespace boost
 
 struct BOOST_SYMBOL_VISIBLE bad_graph : public std::invalid_argument
 {
-    bad_graph(const std::string& what_arg) : std::invalid_argument(what_arg) {}
+    bad_graph(const eastl::string& what_arg) : std::invalid_argument(what_arg.c_str()) {}
 };
 
 struct BOOST_SYMBOL_VISIBLE not_a_dag : public bad_graph
@@ -61,10 +61,10 @@ struct BOOST_SYMBOL_VISIBLE graph_exception : public std::exception
 
 struct BOOST_SYMBOL_VISIBLE bad_parallel_edge : public graph_exception
 {
-    std::string from;
-    std::string to;
-    mutable std::string statement;
-    bad_parallel_edge(const std::string& i, const std::string& j)
+    eastl::string from;
+    eastl::string to;
+    mutable eastl::string statement;
+    bad_parallel_edge(const eastl::string& i, const eastl::string& j)
     : from(i), to(j)
     {
     }
@@ -73,7 +73,7 @@ struct BOOST_SYMBOL_VISIBLE bad_parallel_edge : public graph_exception
     const char* what() const throw() BOOST_OVERRIDE
     {
         if (statement.empty())
-            statement = std::string("Failed to add parallel edge: (") + from
+            statement = eastl::string("Failed to add parallel edge: (") + from
                 + "," + to + ")\n";
 
         return statement.c_str();

@@ -141,11 +141,11 @@ inline graph_copier< NewGraph, Tag > copy_graph(NewGraph& g, Tag)
 template < class Graph, class Name > void print(Graph& G, Name name)
 {
     typename boost::graph_traits< Graph >::vertex_iterator ui, uiend;
-    for (boost::tie(ui, uiend) = vertices(G); ui != uiend; ++ui)
+    for (eastl::tie(ui, uiend) = vertices(G); ui != uiend; ++ui)
     {
         cout << name[*ui] << " --> ";
         typename boost::graph_traits< Graph >::adjacency_iterator vi, viend;
-        for (boost::tie(vi, viend) = adjacent_vertices(*ui, G); vi != viend;
+        for (eastl::tie(vi, viend) = adjacent_vertices(*ui, G); vi != viend;
              ++vi)
             cout << name[*vi] << " ";
         cout << endl;

@@ -130,13 +130,13 @@ namespace detail
     {
         typename graph_traits< Graph >::vertex_iterator vi, vi_end;
         typename graph_traits< Graph >::out_edge_iterator ei, ei_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             put(d, *vi, 0);
         }
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
-            for (boost::tie(ei, ei_end) = out_edges(*vi, g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = out_edges(*vi, g); ei != ei_end; ++ei)
             {
                 put(d, target(*ei, g), get(d, target(*ei, g)) + get(wm, *ei));
             }
@@ -160,7 +160,7 @@ namespace detail
             Q.pop();
             v_cn = get(c, v);
             typename graph_traits< Graph >::out_edge_iterator oi, oi_end;
-            for (boost::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
+            for (eastl::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
             {
                 vis.examine_edge(*oi, g);
                 vertex u = target(*oi, g);
@@ -184,11 +184,11 @@ namespace detail
         Graph& g, CoreMap c, EdgeWeightMap wm, IndexMap im, CoreNumVisitor vis)
     {
         typedef typename property_traits< CoreMap >::value_type D;
-        typedef std::less< D > Cmp;
+        typedef eastl::less< D > Cmp;
         // build the mutable queue
         typedef typename graph_traits< Graph >::vertex_descriptor vertex;
-        std::vector< std::size_t > index_in_heap_data(num_vertices(g));
-        typedef iterator_property_map< std::vector< std::size_t >::iterator,
+        eastl::vector< std::size_t > index_in_heap_data(num_vertices(g));
+        typedef iterator_property_map< eastl::vector< std::size_t >::iterator,
             IndexMap >
             index_in_heap_map_type;
         index_in_heap_map_type index_in_heap_map(
@@ -198,7 +198,7 @@ namespace detail
             MutableQueue;
         MutableQueue Q(c, index_in_heap_map, Cmp());
         typename graph_traits< Graph >::vertex_iterator vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             Q.push(*vi);
         }
@@ -223,17 +223,17 @@ namespace detail
 
         // compute the maximum degree (degrees are in the coremap)
         typename graph_traits< Graph >::degree_size_type max_deg = 0;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
-            max_deg = (std::max<
+            max_deg = (eastl::max<
                 typename graph_traits< Graph >::degree_size_type >)(max_deg,
                 get(c, *vi));
         }
 
         // store the vertices in bins by their degree
         // allocate two extra locations to ease boundary cases
-        std::vector< size_type > bin(max_deg + 2);
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        eastl::vector< size_type > bin(max_deg + 2);
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             ++bin[get(c, *vi)];
         }
@@ -250,8 +250,8 @@ namespace detail
 
         // perform the bucket sort with pos and vert so that
         // pos[0] is the vertex of smallest degree
-        std::vector< vertex > vert(num_vertices(g));
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        eastl::vector< vertex > vert(num_vertices(g));
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             vertex v = *vi;
             size_type p = bin[get(c, v)];
@@ -261,7 +261,7 @@ namespace detail
         }
         // we ``abused'' bin while placing the vertices, now,
         // we need to restore it
-        std::copy(boost::make_reverse_iterator(bin.end() - 2),
+        eastl::copy(boost::make_reverse_iterator(bin.end() - 2),
             boost::make_reverse_iterator(bin.begin()),
             boost::make_reverse_iterator(bin.end() - 1));
         // now simulate removing the vertices
@@ -271,7 +271,7 @@ namespace detail
             vis.examine_vertex(v, g);
             v_cn = get(c, v);
             typename graph_traits< Graph >::out_edge_iterator oi, oi_end;
-            for (boost::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
+            for (eastl::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
             {
                 vis.examine_edge(*oi, g);
                 vertex u = target(*oi, g);
@@ -321,7 +321,7 @@ typename property_traits< CoreMap >::value_type core_numbers(
             typename property_traits< CoreMap >::value_type >(1));
     return detail::core_numbers_impl(g, c,
         make_iterator_property_map(
-            std::vector< size_type >(num_vertices(g)).begin(),
+            eastl::vector< size_type >(num_vertices(g)).begin(),
             get(vertex_index, g)),
         vis);
 }

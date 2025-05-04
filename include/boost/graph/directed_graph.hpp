@@ -194,8 +194,8 @@ public:
 
 private:
     // A helper function for managing edge index attributes.
-    std::pair< edge_descriptor, bool > const& make_index(
-        std::pair< edge_descriptor, bool > const& x)
+    eastl::pair< edge_descriptor, bool > const& make_index(
+        eastl::pair< edge_descriptor, bool > const& x)
     {
         if (x.second)
         {
@@ -207,13 +207,13 @@ private:
     }
 
 public:
-    std::pair< edge_descriptor, bool > add_edge(
+    eastl::pair< edge_descriptor, bool > add_edge(
         vertex_descriptor u, vertex_descriptor v)
     {
         return make_index(boost::add_edge(u, v, m_graph));
     }
 
-    std::pair< edge_descriptor, bool > add_edge(
+    eastl::pair< edge_descriptor, bool > add_edge(
         vertex_descriptor u, vertex_descriptor v, edge_property_type const& p)
     {
         return make_index(
@@ -223,9 +223,9 @@ public:
     void remove_edge(vertex_descriptor u, vertex_descriptor v)
     {
         // find all edges, (u, v)
-        std::vector< edge_descriptor > edges;
+        eastl::vector< edge_descriptor > edges;
         out_edge_iterator i, i_end;
-        for (boost::tie(i, i_end) = boost::out_edges(u, m_graph); i != i_end;
+        for (eastl::tie(i, i_end) = boost::out_edges(u, m_graph); i != i_end;
              ++i)
         {
             if (boost::target(*i, m_graph) == v)
@@ -234,7 +234,7 @@ public:
             }
         }
         // remove all edges, (u, v)
-        typename std::vector< edge_descriptor >::iterator j = edges.begin(),
+        typename eastl::vector< edge_descriptor >::iterator j = edges.begin(),
                                                           j_end = edges.end();
         for (; j != j_end; ++j)
         {
@@ -255,7 +255,7 @@ public:
     void renumber_vertex_indices()
     {
         vertex_iterator i, end;
-        boost::tie(i, end) = vertices(m_graph);
+        eastl::tie(i, end) = vertices(m_graph);
         m_max_vertex_index = renumber_vertex_indices(i, end, 0);
     }
 
@@ -274,7 +274,7 @@ public:
     void renumber_edge_indices()
     {
         edge_iterator i, end;
-        boost::tie(i, end) = edges(m_graph);
+        eastl::tie(i, end) = edges(m_graph);
         m_max_edge_index = renumber_edge_indices(i, end, 0);
     }
 
@@ -331,10 +331,10 @@ public:
     void swap(directed_graph& g)
     {
         m_graph.swap(g.m_graph);
-        std::swap(m_num_vertices, g.m_num_vertices);
-        std::swap(m_max_vertex_index, g.m_max_vertex_index);
-        std::swap(m_num_edges, g.m_num_edges);
-        std::swap(m_max_edge_index, g.m_max_edge_index);
+        eastl::swap(m_num_vertices, g.m_num_vertices);
+        eastl::swap(m_max_vertex_index, g.m_max_vertex_index);
+        eastl::swap(m_num_edges, g.m_num_edges);
+        eastl::swap(m_max_edge_index, g.m_max_edge_index);
     }
 
 private:
@@ -397,7 +397,7 @@ inline typename DIRECTED_GRAPH::degree_size_type out_degree(
 }
 
 template < DIRECTED_GRAPH_PARAMS >
-inline std::pair< typename DIRECTED_GRAPH::out_edge_iterator,
+inline eastl::pair< typename DIRECTED_GRAPH::out_edge_iterator,
     typename DIRECTED_GRAPH::out_edge_iterator >
 out_edges(typename DIRECTED_GRAPH::vertex_descriptor v, DIRECTED_GRAPH const& g)
 {
@@ -413,7 +413,7 @@ inline typename DIRECTED_GRAPH::degree_size_type in_degree(
 }
 
 template < DIRECTED_GRAPH_PARAMS >
-inline std::pair< typename DIRECTED_GRAPH::in_edge_iterator,
+inline eastl::pair< typename DIRECTED_GRAPH::in_edge_iterator,
     typename DIRECTED_GRAPH::in_edge_iterator >
 in_edges(typename DIRECTED_GRAPH::vertex_descriptor v, DIRECTED_GRAPH const& g)
 {
@@ -429,7 +429,7 @@ inline typename DIRECTED_GRAPH::degree_size_type degree(
 
 // AdjacencyGraph concepts
 template < DIRECTED_GRAPH_PARAMS >
-inline std::pair< typename DIRECTED_GRAPH::adjacency_iterator,
+inline eastl::pair< typename DIRECTED_GRAPH::adjacency_iterator,
     typename DIRECTED_GRAPH::adjacency_iterator >
 adjacent_vertices(
     typename DIRECTED_GRAPH::vertex_descriptor v, DIRECTED_GRAPH const& g)
@@ -445,7 +445,7 @@ typename DIRECTED_GRAPH::vertex_descriptor vertex(
 }
 
 template < DIRECTED_GRAPH_PARAMS >
-std::pair< typename DIRECTED_GRAPH::edge_descriptor, bool > edge(
+eastl::pair< typename DIRECTED_GRAPH::edge_descriptor, bool > edge(
     typename DIRECTED_GRAPH::vertex_descriptor u,
     typename DIRECTED_GRAPH::vertex_descriptor v, DIRECTED_GRAPH const& g)
 {
@@ -461,7 +461,7 @@ inline typename DIRECTED_GRAPH::vertices_size_type num_vertices(
 }
 
 template < DIRECTED_GRAPH_PARAMS >
-inline std::pair< typename DIRECTED_GRAPH::vertex_iterator,
+inline eastl::pair< typename DIRECTED_GRAPH::vertex_iterator,
     typename DIRECTED_GRAPH::vertex_iterator >
 vertices(DIRECTED_GRAPH const& g)
 {
@@ -477,7 +477,7 @@ inline typename DIRECTED_GRAPH::edges_size_type num_edges(
 }
 
 template < DIRECTED_GRAPH_PARAMS >
-inline std::pair< typename DIRECTED_GRAPH::edge_iterator,
+inline eastl::pair< typename DIRECTED_GRAPH::edge_iterator,
     typename DIRECTED_GRAPH::edge_iterator >
 edges(DIRECTED_GRAPH const& g)
 {
@@ -513,7 +513,7 @@ inline void remove_vertex(
 }
 
 template < DIRECTED_GRAPH_PARAMS >
-inline std::pair< typename DIRECTED_GRAPH::edge_descriptor, bool > add_edge(
+inline eastl::pair< typename DIRECTED_GRAPH::edge_descriptor, bool > add_edge(
     typename DIRECTED_GRAPH::vertex_descriptor u,
     typename DIRECTED_GRAPH::vertex_descriptor v, DIRECTED_GRAPH& g)
 {
@@ -521,7 +521,7 @@ inline std::pair< typename DIRECTED_GRAPH::edge_descriptor, bool > add_edge(
 }
 
 template < DIRECTED_GRAPH_PARAMS >
-inline std::pair< typename DIRECTED_GRAPH::edge_descriptor, bool > add_edge(
+inline eastl::pair< typename DIRECTED_GRAPH::edge_descriptor, bool > add_edge(
     typename DIRECTED_GRAPH::vertex_descriptor u,
     typename DIRECTED_GRAPH::vertex_descriptor v,
     typename DIRECTED_GRAPH::edge_property_type const& p, DIRECTED_GRAPH& g)

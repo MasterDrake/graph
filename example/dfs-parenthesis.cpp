@@ -43,7 +43,7 @@ int main()
     GraphvizGraph g;
     read_graphviz("figs/dfs-example.dot", g);
     graph_traits< GraphvizGraph >::edge_iterator e, e_end;
-    for (boost::tie(e, e_end) = edges(g); e != e_end; ++e)
+    for (eastl::tie(e, e_end) = edges(g); e != e_end; ++e)
         std::cout << '(' << name[source(*e, g)] << ' ' << name[target(*e, g)]
                   << ')' << std::endl;
     parenthesis_visitor paren_vis;

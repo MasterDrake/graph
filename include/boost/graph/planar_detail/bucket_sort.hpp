@@ -8,8 +8,8 @@
 #ifndef __BUCKET_SORT_HPP__
 #define __BUCKET_SORT_HPP__
 
-#include <vector>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h>
 #include <boost/property_map/property_map.hpp>
 
 namespace boost
@@ -62,17 +62,17 @@ void bucket_sort(ForwardIterator begin, ForwardIterator end, ItemToRankMap rank,
     SizeType range = 0)
 {
 #ifdef BOOST_GRAPH_PREFER_STD_LIB
-    std::stable_sort(begin, end, rank_comparison< ItemToRankMap >(rank));
+    eastl::stable_sort(begin, end, rank_comparison< ItemToRankMap >(rank));
 #else
-    typedef std::vector<
+    typedef eastl::vector<
         typename boost::property_traits< ItemToRankMap >::key_type >
         vector_of_values_t;
-    typedef std::vector< vector_of_values_t > vector_of_vectors_t;
+    typedef eastl::vector< vector_of_values_t > vector_of_vectors_t;
 
     if (!range)
     {
         rank_comparison< ItemToRankMap > cmp(rank);
-        ForwardIterator max_by_rank = std::max_element(begin, end, cmp);
+        ForwardIterator max_by_rank = eastl::max_element(begin, end, cmp);
         if (max_by_rank == end)
             return;
         range = get(rank, *max_by_rank) + 1;

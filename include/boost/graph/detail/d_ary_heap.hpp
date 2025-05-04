@@ -11,10 +11,10 @@
 #ifndef BOOST_D_ARY_HEAP_HPP
 #define BOOST_D_ARY_HEAP_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
+#include <EASTL/algorithm.h>
+#include <EASTL/utility.h>
 #include <cstddef>
-#include <algorithm>
-#include <utility>
 #include <boost/assert.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/shared_array.hpp>
@@ -88,11 +88,11 @@ namespace detail
 // - Compare must be a BinaryPredicate used as a less-than operator on
 //   distance_type.
 // - Container must be a random-access, contiguous container (in practice,
-//   the operations used probably require that it is std::vector<Value>).
+//   the operations used probably require that it is eastl::vector<Value>).
 //
 template < typename Value, std::size_t Arity, typename IndexInHeapPropertyMap,
-    typename DistanceMap, typename Compare = std::less< Value >,
-    typename Container = std::vector< Value > >
+    typename DistanceMap, typename Compare = eastl::less< Value >,
+    typename Container = eastl::vector< Value > >
 class d_ary_heap_indirect
 {
     BOOST_STATIC_ASSERT(Arity >= 2);
@@ -213,7 +213,7 @@ private:
     // Swap two elements in the heap by index, updating index_in_heap
     void swap_heap_elements(size_type index_a, size_type index_b)
     {
-        using std::swap;
+        using eastl::swap;
         Value value_a = data[index_a];
         Value value_b = data[index_b];
         data[index_a] = value_b;

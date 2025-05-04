@@ -7,7 +7,7 @@
 #ifndef BOOST_GRAPH_DETAIL_GEODESIC_HPP
 #define BOOST_GRAPH_DETAIL_GEODESIC_HPP
 
-#include <functional>
+#include <EASTL/functional.h>
 #include <boost/config.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/numeric_values.hpp>
@@ -65,7 +65,7 @@ namespace detail
         // zero, so it shouldn't be too problematic.
         Distance ret = init;
         VertexIterator i, end;
-        for (boost::tie(i, end) = vertices(g); i != end; ++i)
+        for (eastl::tie(i, end) = vertices(g); i != end; ++i)
         {
             Vertex v = *i;
             if (get(dist, v) != DistanceNumbers::infinity())
@@ -81,7 +81,7 @@ namespace detail
         return ret;
     }
 
-    // Similar to std::plus<T>, but maximizes parameters
+    // Similar to eastl::plus<T>, but maximizes parameters
     // rather than adding them.
     template < typename T > struct maximize
     {

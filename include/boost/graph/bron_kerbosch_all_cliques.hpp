@@ -7,8 +7,8 @@
 #ifndef BOOST_GRAPH_CLIQUE_HPP
 #define BOOST_GRAPH_CLIQUE_HPP
 
-#include <vector>
-#include <deque>
+#include <EASTL/vector.h>
+#include <EASTL/deque.h>
 #include <boost/config.hpp>
 
 #include <boost/concept/assert.hpp>
@@ -275,15 +275,15 @@ inline void bron_kerbosch_all_cliques(
         (AdjacencyMatrixConcept< Graph >)); // Structural requirement only
     typedef typename graph_traits< Graph >::vertex_descriptor Vertex;
     typedef typename graph_traits< Graph >::vertex_iterator VertexIterator;
-    typedef std::vector< Vertex > VertexSet;
-    typedef std::deque< Vertex > Clique;
+    typedef eastl::vector< Vertex > VertexSet;
+    typedef eastl::deque< Vertex > Clique;
     BOOST_CONCEPT_ASSERT((CliqueVisitorConcept< Visitor, Clique, Graph >));
 
     // NOTE: We're using a deque to implement the clique, because it provides
     // constant inserts and removals at the end and also a constant size.
 
     VertexIterator i, end;
-    boost::tie(i, end) = vertices(g);
+    eastl::tie(i, end) = vertices(g);
     VertexSet cands(i, end); // start with all vertices as candidates
     VertexSet nots; // start with no vertices visited
 

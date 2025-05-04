@@ -17,9 +17,9 @@
 #ifndef BOOST_GRAPH_READ_DIMACS_HPP
 #define BOOST_GRAPH_READ_DIMACS_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
 #include <iostream>
-#include <string>
+#include <EASTL/string.h>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -38,7 +38,7 @@ namespace detail
         typename graph_traits< Graph >::vertex_descriptor& src,
         typename graph_traits< Graph >::vertex_descriptor& sink,
         std::istream& in, bool require_source_and_sink,
-        const std::string& problem_type)
+        const eastl::string& problem_type)
     {
         //  const int MAXLINE = 100;      /* max line length in the input file
         //  */
@@ -50,7 +50,7 @@ namespace detail
             typename graph_traits< Graph >::vertex_descriptor vertex_descriptor;
         typedef typename graph_traits< Graph >::edge_descriptor edge_descriptor;
 
-        std::vector< vertex_descriptor > verts;
+        eastl::vector< vertex_descriptor > verts;
 
         long m, n, /*  number of edges and nodes */
             i, head, tail, cap;
@@ -277,8 +277,8 @@ namespace detail
                 {
                     edge_descriptor e1, e2;
                     bool in1, in2;
-                    boost::tie(e1, in1) = add_edge(verts[tail], verts[head], g);
-                    boost::tie(e2, in2) = add_edge(verts[head], verts[tail], g);
+                    eastl::tie(e1, in1) = add_edge(verts[tail], verts[head], g);
+                    eastl::tie(e2, in2) = add_edge(verts[head], verts[tail], g);
                     if (!in1 || !in2)
                     {
                         std::cerr << "unable to add edge (" << head << ","

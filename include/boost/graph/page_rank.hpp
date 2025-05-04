@@ -17,7 +17,7 @@
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/graph/overloading.hpp>
 #include <boost/graph/detail/mpi_include.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 
 namespace boost
 {
@@ -124,7 +124,7 @@ namespace graph
     {
         typedef typename property_traits< RankMap >::value_type rank_type;
 
-        std::vector< rank_type > ranks2(num_vertices(g));
+        eastl::vector< rank_type > ranks2(num_vertices(g));
         page_rank(g, rank_map, done, damping, n,
             make_iterator_property_map(ranks2.begin(), get(vertex_index, g)));
     }
@@ -157,7 +157,7 @@ namespace graph
             old_n = num_vertices(g);
 
             typename graph_traits< MutableGraph >::vertex_iterator vi, vi_end;
-            for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end;
+            for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end;
                 /* in loop */)
             {
                 typename graph_traits< MutableGraph >::vertex_descriptor v

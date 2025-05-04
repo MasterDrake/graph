@@ -67,7 +67,7 @@ void connectAllEuclidean(VertexListGraph& g, const PointContainer& points,
                                   points[vmap[*dest]].y - points[vmap[*src]].y),
                             2.0)));
 
-                boost::tie(e, inserted) = add_edge(*src, *dest, g);
+                eastl::tie(e, inserted) = add_edge(*src, *dest, g);
 
                 wmap[e] = weight;
             }
@@ -151,7 +151,7 @@ template < typename PositionVec > void checkAdjList(PositionVec v)
     // create vertex index map
     VItr vi, ve;
     int idx(0);
-    for (boost::tie(vi, ve) = vertices(g); vi != ve; ++vi)
+    for (eastl::tie(vi, ve) = vertices(g); vi != ve; ++vi)
     {
         Vertex v(*vi);
         v_pmap[v] = idx;

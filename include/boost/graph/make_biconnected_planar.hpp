@@ -12,9 +12,9 @@
 #include <boost/tuple/tuple.hpp> //for tie
 #include <boost/graph/biconnected_components.hpp>
 #include <boost/property_map/property_map.hpp>
-#include <vector>
-#include <iterator>
-#include <algorithm>
+#include <EASTL/vector.h>
+#include <EASTL/iterator.h>
+#include <EASTL/algorithm.h>
 
 #include <boost/graph/planar_detail/add_edge_visitors.hpp>
 
@@ -32,19 +32,19 @@ void make_biconnected_planar(
     typedef typename property_traits< PlanarEmbedding >::value_type
         embedding_value_t;
     typedef typename embedding_value_t::const_iterator embedding_iterator_t;
-    typedef iterator_property_map< std::vector< std::size_t >::iterator,
+    typedef iterator_property_map< eastl::vector< std::size_t >::iterator,
         EdgeIndexMap >
         component_map_t;
 
     edge_size_t n_edges(num_edges(g));
-    std::vector< vertex_t > articulation_points;
-    std::vector< edge_size_t > component_vector(n_edges);
+    eastl::vector< vertex_t > articulation_points;
+    eastl::vector< edge_size_t > component_vector(n_edges);
     component_map_t component_map(component_vector.begin(), em);
 
     biconnected_components(
-        g, component_map, std::back_inserter(articulation_points));
+        g, component_map, eastl::back_inserter(articulation_points));
 
-    typename std::vector< vertex_t >::iterator ap, ap_end;
+    typename eastl::vector< vertex_t >::iterator ap, ap_end;
     ap_end = articulation_points.end();
     for (ap = articulation_points.begin(); ap != ap_end; ++ap)
     {

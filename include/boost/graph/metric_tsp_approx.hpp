@@ -26,7 +26,7 @@
 // 3) Determine if the algorithm can be implemented without creating a new
 //    graph.
 
-#include <vector>
+#include <EASTL/vector.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/concept_check.hpp>
@@ -63,12 +63,12 @@ public:
 template < typename Node, typename Tree > class PreorderTraverser
 {
 private:
-    std::vector< Node >& path_;
+    eastl::vector< Node >& path_;
 
 public:
-    typedef typename std::vector< Node >::const_iterator const_iterator;
+    typedef typename eastl::vector< Node >::const_iterator const_iterator;
 
-    PreorderTraverser(std::vector< Node >& p) : path_(p) {}
+    PreorderTraverser(eastl::vector< Node >& p) : path_(p) {}
 
     void preorder(Node n, const Tree&) { path_.push_back(n); }
 
@@ -280,7 +280,7 @@ public:
             // would require revisiting the core algorithm.
             Edge e;
             bool found;
-            boost::tie(e, found) = lookup_edge(previous_, v, g);
+            eastl::tie(e, found) = lookup_edge(previous_, v, g);
             if (!found)
             {
                 BOOST_THROW_EXCEPTION(not_complete());

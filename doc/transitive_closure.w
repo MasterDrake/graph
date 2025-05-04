@@ -546,7 +546,7 @@ for (size_type i = 0; i < components.size(); ++i)
   for (tie(i, i_end) = vertices(g); i != i_end; ++i)
   {
     adjacency_iterator ab, ae;
-    for (boost::tie(ab, ae) = adjacent_vertices(*i, g); ab != ae; ++ab)
+    for (eastl::tie(ab, ae) = adjacent_vertices(*i, g); ab != ae; ++ab)
     {
       if (*ab == *i)
         if (components[component_number[*i]].size() == 1)

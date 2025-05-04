@@ -7,8 +7,8 @@
 #define BOOST_GRAPH_STOER_WAGNER_MIN_CUT_HPP 1
 
 #include <boost/assert.hpp>
-#include <set>
-#include <vector>
+#include <EASTL/set.h>
+#include <EASTL/vector.h>
 #include <boost/concept_check.hpp>
 #include <boost/concept/assert.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -70,7 +70,7 @@ namespace detail
         typename boost::property_traits< WeightMap >::value_type >
     stoer_wagner_phase(const UndirectedGraph& g,
         VertexAssignmentMap assignments,
-        const std::set< typename boost::graph_traits<
+        const eastl::set< typename boost::graph_traits<
             UndirectedGraph >::vertex_descriptor >& assignedVertices,
         WeightMap weights, KeyedUpdatablePriorityQueue& pq)
     {
@@ -123,7 +123,7 @@ namespace detail
                 }
             }
 
-            typename std::set< vertex_descriptor >::const_iterator
+            typename eastl::set< vertex_descriptor >::const_iterator
                 assignedVertexIt,
                 assignedVertexEnd = assignedVertices.end();
             for (assignedVertexIt = assignedVertices.begin();
@@ -200,7 +200,7 @@ namespace detail
 
         vertices_size_type n = num_vertices(g);
 
-        std::set< vertex_descriptor > assignedVertices;
+        eastl::set< vertex_descriptor > assignedVertices;
 
         // initialize `assignments` (all vertices are initially assigned to
         // themselves)
@@ -209,7 +209,7 @@ namespace detail
         vertex_descriptor s, t;
         weight_type bestW;
 
-        boost::tie(s, t, bestW) = boost::detail::stoer_wagner_phase(
+        eastl::tie(s, t, bestW) = boost::detail::stoer_wagner_phase(
             g, assignments, assignedVertices, weights, pq);
         BOOST_ASSERT(s != t);
         BGL_FORALL_VERTICES_T(v, g, UndirectedGraph)
@@ -223,7 +223,7 @@ namespace detail
         for (; n >= 2; --n)
         {
             weight_type w;
-            boost::tie(s, t, w) = boost::detail::stoer_wagner_phase(
+            eastl::tie(s, t, w) = boost::detail::stoer_wagner_phase(
                 g, assignments, assignedVertices, weights, pq);
             BOOST_ASSERT(s != t);
 
@@ -331,7 +331,7 @@ namespace graph
                 typedef boost::detail::make_priority_queue_from_arg_pack_gen<
                     boost::graph::keywords::tag::max_priority_queue,
                     weight_type, vertex_descriptor,
-                    std::greater< weight_type > >
+                    eastl::greater< weight_type > >
                     gen_type;
 
                 gen_type gen(

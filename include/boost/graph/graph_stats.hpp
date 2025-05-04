@@ -9,8 +9,8 @@
 #ifndef BOOST_GRAPH_GRAPH_STATS_HPP
 #define BOOST_GRAPH_GRAPH_STATS_HPP
 
-#include <map>
-#include <list>
+#include <EASTL/map.h>
+#include <EASTL/list.h>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/graph/properties.hpp>
@@ -59,7 +59,7 @@ namespace graph
         typedef typename graph_traits< Graph >::edge_iterator e_iterator_type;
         typedef typename graph_traits< Graph >::edge_descriptor edge_type;
 
-        std::list< edge_type > all_edges;
+        eastl::list< edge_type > all_edges;
 
         BGL_FORALL_EDGES_T(e, g, Graph) { all_edges.push_back(e); }
 
@@ -72,18 +72,18 @@ namespace graph
     }
 
     template < typename Graph >
-    std::map< unsigned long, unsigned long > dup_edge_dist(Graph& g)
+    eastl::map< unsigned long, unsigned long > dup_edge_dist(Graph& g)
     {
-        std::map< unsigned long, unsigned long > dist;
+        eastl::map< unsigned long, unsigned long > dist;
         typedef
             typename graph_traits< Graph >::adjacency_iterator a_iterator_type;
         typedef typename graph_traits< Graph >::vertex_descriptor vertex_type;
 
         BGL_FORALL_VERTICES_T(v, g, Graph)
         {
-            std::list< vertex_type > front_neighbors;
+            eastl::list< vertex_type > front_neighbors;
             a_iterator_type a_iter, a_end;
-            for (boost::tie(a_iter, a_end) = adjacent_vertices(v, g);
+            for (eastl::tie(a_iter, a_end) = adjacent_vertices(v, g);
                  a_iter != a_end; ++a_iter)
             {
                 front_neighbors.push_back(*a_iter);
@@ -97,9 +97,9 @@ namespace graph
     }
 
     template < typename Graph >
-    std::map< unsigned long, unsigned long > degree_dist(Graph& g)
+    eastl::map< unsigned long, unsigned long > degree_dist(Graph& g)
     {
-        std::map< unsigned long, unsigned long > dist;
+        eastl::map< unsigned long, unsigned long > dist;
         typedef
             typename graph_traits< Graph >::adjacency_iterator a_iterator_type;
         typedef typename graph_traits< Graph >::vertex_descriptor vertex_type;
@@ -110,9 +110,9 @@ namespace graph
     }
 
     template < typename Graph >
-    std::map< unsigned long, double > weight_degree_dist(Graph& g)
+    eastl::map< unsigned long, double > weight_degree_dist(Graph& g)
     {
-        std::map< unsigned long, double > dist, n;
+        eastl::map< unsigned long, double > dist, n;
         typedef
             typename graph_traits< Graph >::adjacency_iterator a_iterator_type;
         typedef typename graph_traits< Graph >::vertex_descriptor vertex_type;
@@ -132,7 +132,7 @@ namespace graph
             dist[out_degree(v, g)] += tmp;
         }
 
-        for (std::map< unsigned long, double >::iterator iter = dist.begin();
+        for (eastl::map< unsigned long, double >::iterator iter = dist.begin();
              iter != dist.end(); ++iter)
         {
             BOOST_ASSERT(n[iter->first] != 0);

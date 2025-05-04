@@ -52,7 +52,7 @@ namespace serialization
         ar << BOOST_SERIALIZATION_NVP(E);
 
         // assign indices to vertices
-        std::map< Vertex, int > indices;
+        eastl::map< Vertex, int > indices;
         int num = 0;
         BGL_FORALL_VERTICES_T(v, graph, Graph)
         {
@@ -90,7 +90,7 @@ namespace serialization
         unsigned int E;
         ar >> BOOST_SERIALIZATION_NVP(E);
 
-        std::vector< Vertex > verts(V);
+        eastl::vector< Vertex > verts(V);
         int i = 0;
         while (V-- > 0)
         {
@@ -107,7 +107,7 @@ namespace serialization
             ar >> BOOST_SERIALIZATION_NVP(v);
             Edge e;
             bool inserted;
-            boost::tie(e, inserted) = add_edge(verts[u], verts[v], graph);
+            eastl::tie(e, inserted) = add_edge(verts[u], verts[v], graph);
             ar >> serialization::make_nvp(
                 "edge_property", get(edge_all_t(), graph, e));
         }

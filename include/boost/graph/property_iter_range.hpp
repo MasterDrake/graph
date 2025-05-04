@@ -45,8 +45,8 @@ public:
     typedef
         typename property_map_iterator_generator< const_map_type, iter >::type
             const_iterator;
-    typedef std::pair< iterator, iterator > type;
-    typedef std::pair< const_iterator, const_iterator > const_type;
+    typedef eastl::pair< iterator, iterator > type;
+    typedef eastl::pair< const_iterator, const_iterator > const_type;
 };
 
 namespace detail
@@ -58,7 +58,7 @@ namespace detail
         Graph& graph, const Tag& tag, const vertex_property_tag&)
     {
         typedef typename graph_property_iter_range< Graph, Tag >::iterator iter;
-        return std::make_pair(iter(vertices(graph).first, get(tag, graph)),
+        return eastl::make_pair(iter(vertices(graph).first, get(tag, graph)),
             iter(vertices(graph).second, get(tag, graph)));
     }
 
@@ -69,7 +69,7 @@ namespace detail
     {
         typedef typename graph_property_iter_range< Graph, Tag >::const_iterator
             iter;
-        return std::make_pair(iter(vertices(graph).first, get(tag, graph)),
+        return eastl::make_pair(iter(vertices(graph).first, get(tag, graph)),
             iter(vertices(graph).second, get(tag, graph)));
     }
 
@@ -79,7 +79,7 @@ namespace detail
         Graph& graph, const Tag& tag, const edge_property_tag&)
     {
         typedef typename graph_property_iter_range< Graph, Tag >::iterator iter;
-        return std::make_pair(iter(edges(graph).first, get(tag, graph)),
+        return eastl::make_pair(iter(edges(graph).first, get(tag, graph)),
             iter(edges(graph).second, get(tag, graph)));
     }
 
@@ -90,7 +90,7 @@ namespace detail
     {
         typedef typename graph_property_iter_range< Graph, Tag >::const_iterator
             iter;
-        return std::make_pair(iter(edges(graph).first, get(tag, graph)),
+        return eastl::make_pair(iter(edges(graph).first, get(tag, graph)),
             iter(edges(graph).second, get(tag, graph)));
     }
 

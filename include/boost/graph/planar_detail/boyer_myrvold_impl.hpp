@@ -8,10 +8,10 @@
 #ifndef __BOYER_MYRVOLD_IMPL_HPP__
 #define __BOYER_MYRVOLD_IMPL_HPP__
 
-#include <vector>
-#include <list>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
 #include <boost/next_prior.hpp>
-#include <boost/config.hpp> //for std::min macros
+#include <boost/config.hpp> //for eastl::min macros
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/property_map/property_map.hpp>
@@ -146,18 +146,18 @@ class boyer_myrvold_impl
     typedef graph::detail::face_handle< Graph, StoreOldHandlesPolicy,
         StoreEmbeddingPolicy >
         face_handle_t;
-    typedef std::vector< vertex_t > vertex_vector_t;
-    typedef std::vector< edge_t > edge_vector_t;
-    typedef std::list< vertex_t > vertex_list_t;
-    typedef std::list< face_handle_t > face_handle_list_t;
+    typedef eastl::vector< vertex_t > vertex_vector_t;
+    typedef eastl::vector< edge_t > edge_vector_t;
+    typedef eastl::list< vertex_t > vertex_list_t;
+    typedef eastl::list< face_handle_t > face_handle_list_t;
     typedef boost::shared_ptr< face_handle_list_t > face_handle_list_ptr_t;
     typedef boost::shared_ptr< vertex_list_t > vertex_list_ptr_t;
     typedef boost::tuple< vertex_t, bool, bool > merge_stack_frame_t;
-    typedef std::vector< merge_stack_frame_t > merge_stack_t;
+    typedef eastl::vector< merge_stack_frame_t > merge_stack_t;
 
     template < typename T > struct map_vertex_to_
     {
-        typedef iterator_property_map< typename std::vector< T >::iterator,
+        typedef iterator_property_map< typename eastl::vector< T >::iterator,
             VertexIndexMap >
             type;
     };
@@ -252,14 +252,14 @@ public:
 
         // Sort vertices by their lowpoint - need this later in the constructor
         vertex_vector_t vertices_by_lowpoint(num_vertices(g));
-        std::copy(vertices(g).first, vertices(g).second,
+        eastl::copy(vertices(g).first, vertices(g).second,
             vertices_by_lowpoint.begin());
         bucket_sort(vertices_by_lowpoint.begin(), vertices_by_lowpoint.end(),
             low_point, num_vertices(g));
 
         // Sort vertices by their dfs number - need this to iterate by reverse
         // DFS number in the main loop.
-        std::copy(
+        eastl::copy(
             vertices(g).first, vertices(g).second, vertices_by_dfs_num.begin());
         bucket_sort(vertices_by_dfs_num.begin(), vertices_by_dfs_num.end(),
             dfs_number, num_vertices(g));
@@ -319,7 +319,7 @@ public:
         //   the walkup and consumed by the walkdown.
 
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             vertex_t v(*vi);
             vertex_t parent = dfs_parent[v];
@@ -426,7 +426,7 @@ private:
             typename face_vertex_iterator< both_sides >::type walkup_iterator_t;
 
         out_edge_iterator_t oi, oi_end;
-        for (boost::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
+        for (eastl::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
         {
             edge_t e(*oi);
             vertex_t e_source(source(e, g));
@@ -630,7 +630,7 @@ private:
                                 = face_handles[first_tail].first_vertex();
                             vertex_t second
                                 = face_handles[first_tail].second_vertex();
-                            boost::tie(first_side_vertex, first_tail)
+                            eastl::tie(first_side_vertex, first_tail)
                                 = make_tuple(first_tail,
                                     first == first_side_vertex ? second
                                                                : first);
@@ -641,7 +641,7 @@ private:
                                 = face_handles[second_tail].first_vertex();
                             vertex_t second
                                 = face_handles[second_tail].second_vertex();
-                            boost::tie(second_side_vertex, second_tail)
+                            eastl::tie(second_side_vertex, second_tail)
                                 = make_tuple(second_tail,
                                     first == second_side_vertex ? second
                                                                 : first);
@@ -722,7 +722,7 @@ private:
                 {
 
                     bottom_path_follows_first = next_bottom_follows_first;
-                    boost::tie(merge_point, next_bottom_follows_first,
+                    eastl::tie(merge_point, next_bottom_follows_first,
                         top_path_follows_first)
                         = merge_stack.back();
                     merge_stack.pop_back();
@@ -800,7 +800,7 @@ private:
 
     void store_old_face_handles(graph::detail::store_old_handles)
     {
-        for (typename std::vector< vertex_t >::iterator mp_itr
+        for (typename eastl::vector< vertex_t >::iterator mp_itr
              = current_merge_points.begin();
              mp_itr != current_merge_points.end(); ++mp_itr)
         {
@@ -834,7 +834,7 @@ private:
         // planar embedding no matter what order we embed them in.
 
         vertex_iterator_t xi, xi_end;
-        for (boost::tie(xi, xi_end) = vertices(g); xi != xi_end; ++xi)
+        for (eastl::tie(xi, xi_end) = vertices(g); xi != xi_end; ++xi)
         {
             if (!separated_dfs_child_list[*xi]->empty())
             {
@@ -945,10 +945,10 @@ public:
         bool seen_goal_edge = false;
         out_edge_iterator_t oi, oi_end;
 
-        for (boost::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
+        for (eastl::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
             forbidden_edge[*oi] = true;
 
-        for (boost::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
+        for (eastl::tie(oi, oi_end) = out_edges(v, g); oi != oi_end; ++oi)
         {
             path_edges.clear();
 
@@ -1064,12 +1064,12 @@ public:
         vertex_iterator_t vi, vi_end;
         edge_iterator_t ei, ei_end;
         out_edge_iterator_t oei, oei_end;
-        typename std::vector< edge_t >::iterator xi, xi_end;
+        typename eastl::vector< edge_t >::iterator xi, xi_end;
 
         // Clear the short-circuit edges - these are needed for the planar
         // testing/embedding algorithm to run in linear time, but they'll
         // complicate the kuratowski subgraph isolation
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             face_handles[*vi].reset_vertex_cache();
             dfs_child_handles[*vi].reset_vertex_cache();
@@ -1079,17 +1079,17 @@ public:
         vertex_t x = kuratowski_x;
         vertex_t y = kuratowski_y;
 
-        typedef iterator_property_map< typename std::vector< bool >::iterator,
+        typedef iterator_property_map< typename eastl::vector< bool >::iterator,
             EdgeIndexMap >
             edge_to_bool_map_t;
 
-        std::vector< bool > is_in_subgraph_vector(num_edges(g), false);
+        eastl::vector< bool > is_in_subgraph_vector(num_edges(g), false);
         edge_to_bool_map_t is_in_subgraph(is_in_subgraph_vector.begin(), em);
 
-        std::vector< bool > is_embedded_vector(num_edges(g), false);
+        eastl::vector< bool > is_embedded_vector(num_edges(g), false);
         edge_to_bool_map_t is_embedded(is_embedded_vector.begin(), em);
 
-        typename std::vector< edge_t >::iterator embedded_itr, embedded_end;
+        typename eastl::vector< edge_t >::iterator embedded_itr, embedded_end;
         embedded_end = embedded_edges.end();
         for (embedded_itr = embedded_edges.begin();
              embedded_itr != embedded_end; ++embedded_itr)
@@ -1097,11 +1097,11 @@ public:
 
         // upper_face_vertex is true for x,y, and all vertices above x and y in
         // the bicomp
-        std::vector< bool > upper_face_vertex_vector(num_vertices(g), false);
+        eastl::vector< bool > upper_face_vertex_vector(num_vertices(g), false);
         vertex_to_bool_map_t upper_face_vertex(
             upper_face_vertex_vector.begin(), vm);
 
-        std::vector< bool > lower_face_vertex_vector(num_vertices(g), false);
+        eastl::vector< bool > lower_face_vertex_vector(num_vertices(g), false);
         vertex_to_bool_map_t lower_face_vertex(
             lower_face_vertex_vector.begin(), vm);
 
@@ -1119,12 +1119,12 @@ public:
 
         detail::bm_case_t chosen_case = detail::BM_NO_CASE_CHOSEN;
 
-        std::vector< edge_t > x_external_path;
-        std::vector< edge_t > y_external_path;
-        std::vector< edge_t > case_d_edges;
+        eastl::vector< edge_t > x_external_path;
+        eastl::vector< edge_t > y_external_path;
+        eastl::vector< edge_t > case_d_edges;
 
-        std::vector< edge_t > z_v_path;
-        std::vector< edge_t > w_path;
+        eastl::vector< edge_t > z_v_path;
+        eastl::vector< edge_t > w_path;
 
         // first, use a walkup to find a path from V that starts with a
         // backedge from V, then goes up until it hits either X or Y
@@ -1142,7 +1142,7 @@ public:
         {
             if (*face_itr == y)
             {
-                std::swap(x_upper_itr, x_lower_itr);
+                eastl::swap(x_upper_itr, x_lower_itr);
                 break;
             }
         }
@@ -1196,7 +1196,7 @@ public:
 
         typedef typename face_edge_iterator<>::type walkup_itr_t;
 
-        std::vector< bool > outer_face_edge_vector(num_edges(g), false);
+        eastl::vector< bool > outer_face_edge_vector(num_edges(g), false);
         edge_to_bool_map_t outer_face_edge(outer_face_edge_vector.begin(), em);
 
         walkup_itr_t walkup_end;
@@ -1214,15 +1214,15 @@ public:
             is_in_subgraph[*walkup_itr] = true;
         }
 
-        std::vector< bool > forbidden_edge_vector(num_edges(g), false);
+        eastl::vector< bool > forbidden_edge_vector(num_edges(g), false);
         edge_to_bool_map_t forbidden_edge(forbidden_edge_vector.begin(), em);
 
-        std::vector< bool > goal_edge_vector(num_edges(g), false);
+        eastl::vector< bool > goal_edge_vector(num_edges(g), false);
         edge_to_bool_map_t goal_edge(goal_edge_vector.begin(), em);
 
         // Find external path to x and to y
 
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         {
             edge_t e(*ei);
             goal_edge[e] = !outer_face_edge[e]
@@ -1240,7 +1240,7 @@ public:
                 goal_edge, is_embedded, x_external_path);
         }
 
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         {
             edge_t e(*ei);
             goal_edge[e] = !outer_face_edge[e]
@@ -1265,14 +1265,14 @@ public:
         {
             chosen_case = detail::BM_CASE_A;
 
-            for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
                 if (lower_face_vertex[*vi])
-                    for (boost::tie(oei, oei_end) = out_edges(*vi, g);
+                    for (eastl::tie(oei, oei_end) = out_edges(*vi, g);
                          oei != oei_end; ++oei)
                         if (!outer_face_edge[*oei])
                             goal_edge[*oei] = true;
 
-            for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
                 forbidden_edge[*ei] = outer_face_edge[*ei];
 
             z = kuratowski_walkup(
@@ -1282,7 +1282,7 @@ public:
         {
             chosen_case = detail::BM_CASE_B;
 
-            for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
             {
                 edge_t e(*ei);
                 goal_edge[e] = false;
@@ -1295,12 +1295,12 @@ public:
             z = kuratowski_walkup(
                 v, forbidden_edge, goal_edge, is_embedded, z_v_path);
 
-            for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
             {
                 forbidden_edge[*ei] = outer_face_edge[*ei];
             }
 
-            typename std::vector< edge_t >::iterator pi, pi_end;
+            typename eastl::vector< edge_t >::iterator pi, pi_end;
             pi_end = z_v_path.end();
             for (pi = z_v_path.begin(); pi != pi_end; ++pi)
             {
@@ -1400,15 +1400,15 @@ public:
                 z, face_handles, second_side());
             old_face_iterator_t old_face_itr, old_face_end;
 
-            std::vector< old_face_iterator_t > old_face_iterators;
+            eastl::vector< old_face_iterator_t > old_face_iterators;
             old_face_iterators.push_back(first_old_face_itr);
             old_face_iterators.push_back(second_old_face_itr);
 
-            std::vector< bool > x_y_path_vertex_vector(num_vertices(g), false);
+            eastl::vector< bool > x_y_path_vertex_vector(num_vertices(g), false);
             vertex_to_bool_map_t x_y_path_vertex(
                 x_y_path_vertex_vector.begin(), vm);
 
-            typename std::vector< old_face_iterator_t >::iterator of_itr,
+            typename eastl::vector< old_face_iterator_t >::iterator of_itr,
                 of_itr_end;
             of_itr_end = old_face_iterators.end();
             for (of_itr = old_face_iterators.begin(); of_itr != of_itr_end;
@@ -1481,7 +1481,7 @@ public:
             // First, get a list of all of v's embedded child edges
 
             out_edge_iterator_t v_edge_itr, v_edge_end;
-            for (boost::tie(v_edge_itr, v_edge_end) = out_edges(v, g);
+            for (eastl::tie(v_edge_itr, v_edge_end) = out_edges(v, g);
                  v_edge_itr != v_edge_end; ++v_edge_itr)
             {
                 edge_t embedded_edge(*v_edge_itr);
@@ -1539,7 +1539,7 @@ public:
 
             // Finding z and w.
 
-            for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
             {
                 edge_t e(*ei);
                 goal_edge[e] = !outer_face_edge[e]
@@ -1553,21 +1553,21 @@ public:
             if (chosen_case == detail::BM_CASE_E)
             {
 
-                for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+                for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
                 {
                     forbidden_edge[*ei] = outer_face_edge[*ei];
                     goal_edge[*ei] = !outer_face_edge[*ei]
                         && (source(*ei, g) == w || target(*ei, g) == w);
                 }
 
-                for (boost::tie(oei, oei_end) = out_edges(w, g); oei != oei_end;
+                for (eastl::tie(oei, oei_end) = out_edges(w, g); oei != oei_end;
                      ++oei)
                 {
                     if (!outer_face_edge[*oei])
                         goal_edge[*oei] = true;
                 }
 
-                typename std::vector< edge_t >::iterator pi, pi_end;
+                typename eastl::vector< edge_t >::iterator pi, pi_end;
                 pi_end = z_v_path.end();
                 for (pi = z_v_path.begin(); pi != pi_end; ++pi)
                 {
@@ -1616,8 +1616,8 @@ public:
         while (child != parent)
         {
             is_in_subgraph[dfs_parent_edge[child]] = true;
-            boost::tie(parent, child)
-                = std::make_pair(dfs_parent[parent], parent);
+            eastl::tie(parent, child)
+                = eastl::make_pair(dfs_parent[parent], parent);
         }
 
         // At this point, we've already isolated the Kuratowski subgraph and
@@ -1736,7 +1736,7 @@ public:
             }
         }
 
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
             if (is_in_subgraph[*ei])
                 *o_itr = *ei;
     }
@@ -1745,11 +1745,11 @@ public:
     void make_edge_permutation(EdgePermutation perm)
     {
         vertex_iterator_t vi, vi_end;
-        for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+        for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         {
             vertex_t v(*vi);
             perm[v].clear();
-            face_handles[v].get_list(std::back_inserter(perm[v]));
+            face_handles[v].get_list(eastl::back_inserter(perm[v]));
         }
     }
 
@@ -1765,27 +1765,27 @@ private:
                            // splicing them into garbage
 
     // only need these two for kuratowski subgraph isolation
-    std::vector< vertex_t > current_merge_points;
-    std::vector< edge_t > embedded_edges;
+    eastl::vector< vertex_t > current_merge_points;
+    eastl::vector< edge_t > embedded_edges;
 
     // property map storage
-    std::vector< v_size_t > low_point_vector;
-    std::vector< vertex_t > dfs_parent_vector;
-    std::vector< v_size_t > dfs_number_vector;
-    std::vector< v_size_t > least_ancestor_vector;
-    std::vector< face_handle_list_ptr_t > pertinent_roots_vector;
-    std::vector< v_size_t > backedge_flag_vector;
-    std::vector< v_size_t > visited_vector;
-    std::vector< face_handle_t > face_handles_vector;
-    std::vector< face_handle_t > dfs_child_handles_vector;
-    std::vector< vertex_list_ptr_t > separated_dfs_child_list_vector;
-    std::vector< typename vertex_list_t::iterator >
+    eastl::vector< v_size_t > low_point_vector;
+    eastl::vector< vertex_t > dfs_parent_vector;
+    eastl::vector< v_size_t > dfs_number_vector;
+    eastl::vector< v_size_t > least_ancestor_vector;
+    eastl::vector< face_handle_list_ptr_t > pertinent_roots_vector;
+    eastl::vector< v_size_t > backedge_flag_vector;
+    eastl::vector< v_size_t > visited_vector;
+    eastl::vector< face_handle_t > face_handles_vector;
+    eastl::vector< face_handle_t > dfs_child_handles_vector;
+    eastl::vector< vertex_list_ptr_t > separated_dfs_child_list_vector;
+    eastl::vector< typename vertex_list_t::iterator >
         separated_node_in_parent_list_vector;
-    std::vector< vertex_t > canonical_dfs_child_vector;
-    std::vector< bool > flipped_vector;
-    std::vector< edge_vector_t > backedges_vector;
+    eastl::vector< vertex_t > canonical_dfs_child_vector;
+    eastl::vector< bool > flipped_vector;
+    eastl::vector< edge_vector_t > backedges_vector;
     edge_vector_t self_loops;
-    std::vector< edge_t > dfs_parent_edge_vector;
+    eastl::vector< edge_t > dfs_parent_edge_vector;
     vertex_vector_t vertices_by_dfs_num;
 
     // property maps

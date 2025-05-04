@@ -75,7 +75,7 @@ int main()
     graph_traits< Graph >::edge_iterator ei, ei_end;
     auto weight_pmap = get(&EdgeProperties::weight, g);
     int i = 0;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei, ++i)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei, ++i)
         weight_pmap[*ei] = weight[i];
 
     std::vector< int > distance(N, (std::numeric_limits< short >::max)());
@@ -111,7 +111,7 @@ int main()
              << "  node[shape=\"circle\"]\n";
 
     {
-        for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+        for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
         {
             auto e = *ei;
             auto u = source(e, g), v = target(e, g);

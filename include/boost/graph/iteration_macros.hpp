@@ -10,7 +10,7 @@
 #ifndef BOOST_GRAPH_ITERATION_MACROS_HPP
 #define BOOST_GRAPH_ITERATION_MACROS_HPP
 
-#include <utility>
+#include <EASTL/utility.h>
 
 #define BGL_CAT(x, y) x##y
 #define BGL_RANGE(linenum) BGL_CAT(bgl_range_, linenum)
@@ -46,7 +46,7 @@
   The above contains two calls to the vertices function. I modified these
   macros to expand to
 
-    for (std::pair<typename boost::graph_traits<graph_t>::vertex_iterator,
+    for (eastl::pair<typename boost::graph_traits<graph_t>::vertex_iterator,
                    typename boost::graph_traits<graph_t>::vertex_iterator>
   bgl_range_9 = vertices(g); bgl_range_9.first != bgl_range_9.second;
        bgl_range_9.first = bgl_range_9.second)
@@ -58,7 +58,7 @@
  */
 
 #define BGL_FORALL_VERTICES_T(VNAME, GNAME, GraphType)                    \
-    for (std::pair<                                                       \
+    for (eastl::pair<                                                       \
              typename boost::graph_traits< GraphType >::vertex_iterator,  \
              typename boost::graph_traits< GraphType >::vertex_iterator > \
              BGL_RANGE(__LINE__)                                          \
@@ -73,7 +73,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_VERTICES(VNAME, GNAME, GraphType)                    \
-    for (std::pair< boost::graph_traits< GraphType >::vertex_iterator,  \
+    for (eastl::pair< boost::graph_traits< GraphType >::vertex_iterator,  \
              boost::graph_traits< GraphType >::vertex_iterator >        \
              BGL_RANGE(__LINE__)                                        \
          = vertices(GNAME);                                             \
@@ -86,7 +86,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_EDGES_T(ENAME, GNAME, GraphType)                            \
-    for (std::pair< typename boost::graph_traits< GraphType >::edge_iterator,  \
+    for (eastl::pair< typename boost::graph_traits< GraphType >::edge_iterator,  \
              typename boost::graph_traits< GraphType >::edge_iterator >        \
              BGL_RANGE(__LINE__)                                               \
          = edges(GNAME);                                                       \
@@ -99,7 +99,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_EDGES(ENAME, GNAME, GraphType)                     \
-    for (std::pair< boost::graph_traits< GraphType >::edge_iterator,  \
+    for (eastl::pair< boost::graph_traits< GraphType >::edge_iterator,  \
              boost::graph_traits< GraphType >::edge_iterator >        \
              BGL_RANGE(__LINE__)                                      \
          = edges(GNAME);                                              \
@@ -112,7 +112,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_ADJ_T(UNAME, VNAME, GNAME, GraphType)                     \
-    for (std::pair<                                                          \
+    for (eastl::pair<                                                          \
              typename boost::graph_traits< GraphType >::adjacency_iterator,  \
              typename boost::graph_traits< GraphType >::adjacency_iterator > \
              BGL_RANGE(__LINE__)                                             \
@@ -127,7 +127,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_ADJ(UNAME, VNAME, GNAME, GraphType)                    \
-    for (std::pair< boost::graph_traits< GraphType >::adjacency_iterator, \
+    for (eastl::pair< boost::graph_traits< GraphType >::adjacency_iterator, \
              boost::graph_traits< GraphType >::adjacency_iterator >       \
              BGL_RANGE(__LINE__)                                          \
          = adjacent_vertices(UNAME, GNAME);                               \
@@ -140,7 +140,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_OUTEDGES_T(UNAME, ENAME, GNAME, GraphType)                  \
-    for (std::pair<                                                            \
+    for (eastl::pair<                                                            \
              typename boost::graph_traits< GraphType >::out_edge_iterator,     \
              typename boost::graph_traits< GraphType >::out_edge_iterator >    \
              BGL_RANGE(__LINE__)                                               \
@@ -154,7 +154,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_OUTEDGES(UNAME, ENAME, GNAME, GraphType)              \
-    for (std::pair< boost::graph_traits< GraphType >::out_edge_iterator, \
+    for (eastl::pair< boost::graph_traits< GraphType >::out_edge_iterator, \
              boost::graph_traits< GraphType >::out_edge_iterator >       \
              BGL_RANGE(__LINE__)                                         \
          = out_edges(UNAME, GNAME);                                      \
@@ -167,7 +167,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_INEDGES_T(UNAME, ENAME, GNAME, GraphType)                   \
-    for (std::pair<                                                            \
+    for (eastl::pair<                                                            \
              typename boost::graph_traits< GraphType >::in_edge_iterator,      \
              typename boost::graph_traits< GraphType >::in_edge_iterator >     \
              BGL_RANGE(__LINE__)                                               \
@@ -181,7 +181,7 @@
              ++BGL_FIRST(__LINE__))
 
 #define BGL_FORALL_INEDGES(UNAME, ENAME, GNAME, GraphType)              \
-    for (std::pair< boost::graph_traits< GraphType >::in_edge_iterator, \
+    for (eastl::pair< boost::graph_traits< GraphType >::in_edge_iterator, \
              boost::graph_traits< GraphType >::in_edge_iterator >       \
              BGL_RANGE(__LINE__)                                        \
          = in_edges(UNAME, GNAME);                                      \

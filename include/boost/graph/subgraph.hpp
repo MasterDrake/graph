@@ -13,9 +13,9 @@
 // UNDER CONSTRUCTION
 
 #include <boost/config.hpp>
-#include <list>
-#include <vector>
-#include <map>
+#include <EASTL/list.h>
+#include <EASTL/vector.h>
+#include <EASTL/map.h>
 #include <boost/assert.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_mutability_traits.hpp>
@@ -82,7 +82,7 @@ template < typename T > inline global_property< T > global(T x)
 template < typename Graph > class subgraph
 {
     typedef graph_traits< Graph > Traits;
-    typedef std::list< subgraph< Graph >* > ChildrenList;
+    typedef eastl::list< subgraph< Graph >* > ChildrenList;
 
 public:
     // Graph requirements
@@ -129,7 +129,7 @@ public:
     {
         typename Graph::vertex_iterator v, v_end;
         vertices_size_type i = 0;
-        for (boost::tie(v, v_end) = vertices(m_graph); v != v_end; ++v)
+        for (eastl::tie(v, v_end) = vertices(m_graph); v != v_end; ++v)
             m_global_vertex[i++] = *v;
     }
 
@@ -147,7 +147,7 @@ public:
         {
             get_property(*this) = get_property(x);
             typename subgraph< Graph >::vertex_iterator vi, vi_end;
-            boost::tie(vi, vi_end) = vertices(x);
+            eastl::tie(vi, vi_end) = vertices(x);
             for (; vi != vi_end; ++vi)
             {
                 add_vertex(x.local_to_global(*vi), *this);
@@ -157,7 +157,7 @@ public:
         // Only the root graph is copied, the subgraphs contain
         // only references to the global vertices they own.
         typename subgraph< Graph >::children_iterator i, i_end;
-        boost::tie(i, i_end) = x.children();
+        eastl::tie(i, i_end) = x.children();
         for (; i != i_end; ++i)
         {
             m_children.push_back(new subgraph< Graph >(*i));
@@ -211,7 +211,7 @@ public:
         bool in_subgraph;
         if (is_root())
             return u_global;
-        boost::tie(u_local, in_subgraph) = this->find_vertex(u_global);
+        eastl::tie(u_local, in_subgraph) = this->find_vertex(u_global);
         BOOST_ASSERT(in_subgraph == true);
         return u_local;
     }
@@ -233,27 +233,27 @@ public:
 
     // Is vertex u (of the root graph) contained in this subgraph?
     // If so, return the matching local vertex.
-    std::pair< vertex_descriptor, bool > find_vertex(
+    eastl::pair< vertex_descriptor, bool > find_vertex(
         vertex_descriptor u_global) const
     {
         if (is_root())
-            return std::make_pair(u_global, true);
+            return eastl::make_pair(u_global, true);
         typename LocalVertexMap::const_iterator i
             = m_local_vertex.find(u_global);
         bool valid = i != m_local_vertex.end();
-        return std::make_pair((valid ? (*i).second : null_vertex()), valid);
+        return eastl::make_pair((valid ? (*i).second : null_vertex()), valid);
     }
 
     // Is edge e (of the root graph) contained in this subgraph?
     // If so, return the matching local edge.
-    std::pair< edge_descriptor, bool > find_edge(edge_descriptor e_global) const
+    eastl::pair< edge_descriptor, bool > find_edge(edge_descriptor e_global) const
     {
         if (is_root())
-            return std::make_pair(e_global, true);
+            return eastl::make_pair(e_global, true);
         typename LocalEdgeMap::const_iterator i
             = m_local_edge.find(get(get(edge_index, root().m_graph), e_global));
         bool valid = i != m_local_edge.end();
-        return std::make_pair((valid ? (*i).second : edge_descriptor()), valid);
+        return eastl::make_pair((valid ? (*i).second : edge_descriptor()), valid);
     }
 
     // Return the parent graph.
@@ -272,26 +272,26 @@ public:
     }
 
     // Return the children subgraphs of this graph/subgraph.
-    // Use a list of pointers because the VC++ std::list doesn't like
+    // Use a list of pointers because the VC++ eastl::list doesn't like
     // storing incomplete type.
     typedef indirect_iterator< typename ChildrenList::const_iterator,
-        subgraph< Graph >, std::bidirectional_iterator_tag >
+        subgraph< Graph >, eastl::bidirectional_iterator_tag >
         children_iterator;
 
     typedef indirect_iterator< typename ChildrenList::const_iterator,
-        subgraph< Graph > const, std::bidirectional_iterator_tag >
+        subgraph< Graph > const, eastl::bidirectional_iterator_tag >
         const_children_iterator;
 
-    std::pair< const_children_iterator, const_children_iterator >
+    eastl::pair< const_children_iterator, const_children_iterator >
     children() const
     {
-        return std::make_pair(const_children_iterator(m_children.begin()),
+        return eastl::make_pair(const_children_iterator(m_children.begin()),
             const_children_iterator(m_children.end()));
     }
 
-    std::pair< children_iterator, children_iterator > children()
+    eastl::pair< children_iterator, children_iterator > children()
     {
-        return std::make_pair(children_iterator(m_children.begin()),
+        return eastl::make_pair(children_iterator(m_children.begin()),
             children_iterator(m_children.end()));
     }
 
@@ -355,10 +355,10 @@ public:
                          boost::detail::error_property_not_found >::value));
 
 private:
-    typedef std::vector< vertex_descriptor > GlobalVertexList;
-    typedef std::vector< edge_descriptor > GlobalEdgeList;
-    typedef std::map< vertex_descriptor, vertex_descriptor > LocalVertexMap;
-    typedef std::map< edge_index_type, edge_descriptor > LocalEdgeMap;
+    typedef eastl::vector< vertex_descriptor > GlobalVertexList;
+    typedef eastl::vector< edge_descriptor > GlobalEdgeList;
+    typedef eastl::map< vertex_descriptor, vertex_descriptor > LocalVertexMap;
+    typedef eastl::map< edge_index_type, edge_descriptor > LocalEdgeMap;
     // TODO: Should the LocalVertexMap be: map<index_type, descriptor>?
     // TODO: Can we relax the indexing requirement if both descriptors are
     // LessThanComparable?
@@ -379,7 +379,7 @@ public: // Probably shouldn't be public....
     {
         edge_descriptor e_local;
         bool inserted;
-        boost::tie(e_local, inserted) = add_edge(u_local, v_local, m_graph);
+        eastl::tie(e_local, inserted) = add_edge(u_local, v_local, m_graph);
         put(edge_index, m_graph, e_local, m_edge_counter++);
         m_global_edge.push_back(e_global);
         m_local_edge[get(get(edge_index, this->root()), e_global)] = e_local;
@@ -412,7 +412,7 @@ typename subgraph< G >::vertex_descriptor add_vertex(
     BOOST_ASSERT(!g.is_root());
     typename subgraph< G >::vertex_descriptor u_local;
     bool exists_local;
-    boost::tie(u_local, exists_local) = g.find_vertex(u_global);
+    eastl::tie(u_local, exists_local) = g.find_vertex(u_global);
 
     if (!exists_local)
     {
@@ -431,7 +431,7 @@ typename subgraph< G >::vertex_descriptor add_vertex(
         // remember edge global and local maps
         {
             typename subgraph< G >::out_edge_iterator ei, ei_end;
-            for (boost::tie(ei, ei_end) = out_edges(u_global, r); ei != ei_end;
+            for (eastl::tie(ei, ei_end) = out_edges(u_global, r); ei != ei_end;
                  ++ei)
             {
                 e_global = *ei;
@@ -445,14 +445,14 @@ typename subgraph< G >::vertex_descriptor add_vertex(
         { // not necessary for undirected graph
             typename subgraph< G >::vertex_iterator vi, vi_end;
             typename subgraph< G >::out_edge_iterator ei, ei_end;
-            for (boost::tie(vi, vi_end) = vertices(r); vi != vi_end; ++vi)
+            for (eastl::tie(vi, vi_end) = vertices(r); vi != vi_end; ++vi)
             {
                 v_global = *vi;
                 if (v_global == u_global)
                     continue; // don't insert self loops twice!
                 if (!g.find_vertex(v_global).second)
                     continue; // not a subgraph vertex => try next one
-                for (boost::tie(ei, ei_end) = out_edges(*vi, r); ei != ei_end;
+                for (eastl::tie(ei, ei_end) = out_edges(*vi, r); ei != ei_end;
                      ++ei)
                 {
                     e_global = *ei;
@@ -474,7 +474,7 @@ typename subgraph< G >::vertex_descriptor add_vertex(
 // Functions required by the IncidenceGraph concept
 
 template < typename G >
-std::pair< typename graph_traits< G >::out_edge_iterator,
+eastl::pair< typename graph_traits< G >::out_edge_iterator,
     typename graph_traits< G >::out_edge_iterator >
 out_edges(
     typename graph_traits< G >::vertex_descriptor v, const subgraph< G >& g)
@@ -507,7 +507,7 @@ typename graph_traits< G >::vertex_descriptor target(
 // Functions required by the BidirectionalGraph concept
 
 template < typename G >
-std::pair< typename graph_traits< G >::in_edge_iterator,
+eastl::pair< typename graph_traits< G >::in_edge_iterator,
     typename graph_traits< G >::in_edge_iterator >
 in_edges(
     typename graph_traits< G >::vertex_descriptor v, const subgraph< G >& g)
@@ -533,7 +533,7 @@ typename graph_traits< G >::degree_size_type degree(
 // Functions required by the AdjacencyGraph concept
 
 template < typename G >
-std::pair< typename subgraph< G >::adjacency_iterator,
+eastl::pair< typename subgraph< G >::adjacency_iterator,
     typename subgraph< G >::adjacency_iterator >
 adjacent_vertices(
     typename subgraph< G >::vertex_descriptor v, const subgraph< G >& g)
@@ -545,7 +545,7 @@ adjacent_vertices(
 // Functions required by the VertexListGraph concept
 
 template < typename G >
-std::pair< typename subgraph< G >::vertex_iterator,
+eastl::pair< typename subgraph< G >::vertex_iterator,
     typename subgraph< G >::vertex_iterator >
 vertices(const subgraph< G >& g)
 {
@@ -562,7 +562,7 @@ typename subgraph< G >::vertices_size_type num_vertices(const subgraph< G >& g)
 // Functions required by the EdgeListGraph concept
 
 template < typename G >
-std::pair< typename subgraph< G >::edge_iterator,
+eastl::pair< typename subgraph< G >::edge_iterator,
     typename subgraph< G >::edge_iterator >
 edges(const subgraph< G >& g)
 {
@@ -579,7 +579,7 @@ typename subgraph< G >::edges_size_type num_edges(const subgraph< G >& g)
 // Functions required by the AdjacencyMatrix concept
 
 template < typename G >
-std::pair< typename subgraph< G >::edge_descriptor, bool > edge(
+eastl::pair< typename subgraph< G >::edge_descriptor, bool > edge(
     typename subgraph< G >::vertex_descriptor u,
     typename subgraph< G >::vertex_descriptor v, const subgraph< G >& g)
 {
@@ -619,8 +619,8 @@ namespace detail
             // add local edge only if u_global and v_global are in subgraph g
             Vertex u_local, v_local;
             bool u_in_subgraph, v_in_subgraph;
-            boost::tie(u_local, u_in_subgraph) = g.find_vertex(u_global);
-            boost::tie(v_local, v_in_subgraph) = g.find_vertex(v_global);
+            eastl::tie(u_local, u_in_subgraph) = g.find_vertex(u_global);
+            eastl::tie(v_local, v_in_subgraph) = g.find_vertex(v_global);
             if (u_in_subgraph && v_in_subgraph)
             {
                 g.local_add_edge(u_local, v_local, e_global);
@@ -630,7 +630,7 @@ namespace detail
     }
 
     template < typename Vertex, typename Graph >
-    std::pair< typename subgraph< Graph >::edge_descriptor, bool >
+    eastl::pair< typename subgraph< Graph >::edge_descriptor, bool >
     add_edge_recur_up(Vertex u_global, Vertex v_global,
         const typename Graph::edge_property_type& ep, subgraph< Graph >& g,
         subgraph< Graph >* orig)
@@ -639,12 +639,12 @@ namespace detail
         {
             typename subgraph< Graph >::edge_descriptor e_global;
             bool inserted;
-            boost::tie(e_global, inserted)
+            eastl::tie(e_global, inserted)
                 = add_edge(u_global, v_global, ep, g.m_graph);
             put(edge_index, g.m_graph, e_global, g.m_edge_counter++);
             g.m_global_edge.push_back(e_global);
             children_add_edge(u_global, v_global, e_global, g.m_children, orig);
-            return std::make_pair(e_global, inserted);
+            return eastl::make_pair(e_global, inserted);
         }
         else
         {
@@ -659,7 +659,7 @@ namespace detail
 // contain vertex descriptors u and v.
 
 template < typename G >
-std::pair< typename subgraph< G >::edge_descriptor, bool > add_edge(
+eastl::pair< typename subgraph< G >::edge_descriptor, bool > add_edge(
     typename subgraph< G >::vertex_descriptor u,
     typename subgraph< G >::vertex_descriptor v,
     const typename G::edge_property_type& ep, subgraph< G >& g)
@@ -673,15 +673,15 @@ std::pair< typename subgraph< G >::edge_descriptor, bool > add_edge(
     {
         typename subgraph< G >::edge_descriptor e_local, e_global;
         bool inserted;
-        boost::tie(e_global, inserted) = detail::add_edge_recur_up(
+        eastl::tie(e_global, inserted) = detail::add_edge_recur_up(
             g.local_to_global(u), g.local_to_global(v), ep, g, &g);
         e_local = g.local_add_edge(u, v, e_global);
-        return std::make_pair(e_local, inserted);
+        return eastl::make_pair(e_local, inserted);
     }
 }
 
 template < typename G >
-std::pair< typename subgraph< G >::edge_descriptor, bool > add_edge(
+eastl::pair< typename subgraph< G >::edge_descriptor, bool > add_edge(
     typename subgraph< G >::vertex_descriptor u,
     typename subgraph< G >::vertex_descriptor v, subgraph< G >& g)
 {
@@ -743,7 +743,7 @@ namespace detail
     {
         for (typename Children::iterator i = c.begin(); i != c.end(); ++i)
         {
-            std::pair< typename subgraph< G >::edge_descriptor, bool > found
+            eastl::pair< typename subgraph< G >::edge_descriptor, bool > found
                 = (*i)->find_edge(e_global);
             if (!found.second)
             {
@@ -776,7 +776,7 @@ void remove_edge(typename subgraph< G >::edge_descriptor e, subgraph< G >& g)
 {
     typename subgraph< G >::edge_descriptor e_global = g.local_to_global(e);
 #ifndef NDEBUG
-    std::pair< typename subgraph< G >::edge_descriptor, bool > fe
+    eastl::pair< typename subgraph< G >::edge_descriptor, bool > fe
         = g.find_edge(e_global);
     BOOST_ASSERT(fe.second && fe.first == e);
 #endif // NDEBUG
@@ -793,7 +793,7 @@ void remove_edge_if(Predicate p, subgraph< G >& g)
     {
         bool any_removed = false;
         typedef typename subgraph< G >::edge_iterator ei_type;
-        for (std::pair< ei_type, ei_type > ep = edges(g); ep.first != ep.second;
+        for (eastl::pair< ei_type, ei_type > ep = edges(g); ep.first != ep.second;
              ++ep.first)
         {
             if (p(*ep.first))
@@ -814,7 +814,7 @@ void clear_vertex(typename subgraph< G >::vertex_descriptor v, subgraph< G >& g)
     while (true)
     {
         typedef typename subgraph< G >::out_edge_iterator oei_type;
-        std::pair< oei_type, oei_type > p = out_edges(v, g);
+        eastl::pair< oei_type, oei_type > p = out_edges(v, g);
         if (p.first == p.second)
             break;
         remove_edge(*p.first, g);

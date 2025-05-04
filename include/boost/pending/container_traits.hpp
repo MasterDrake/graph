@@ -14,29 +14,25 @@
 
 #include <boost/next_prior.hpp>
 
-#include <algorithm> // for std::remove
-#include <utility>
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <boost/unordered_set.hpp>
+#include <EASTL/algorithm.h> // for eastl::remove
+#include <EASTL/utility.h>
+#include <EASTL/vector.h>
+#include <EASTL/list.h>
+#include <EASTL/map.h>
+#include <EASTL/set.h>
+ 
+#include <EASTL/unordered_set.h>
+#include <EASTL/unordered_map.h>
+
 #include <boost/unordered_map.hpp>
-
-#ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
-#include <unordered_set>
-#endif
-
-#ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
-#include <unordered_map>
-#endif
+#include <boost/unordered_set.hpp>
 
 #ifdef BOOST_NO_CXX11_RVALUE_REFERENCES
 #define BOOST_PENDING_FWD_TYPE(type) const type&
 #define BOOST_PENDING_FWD_VALUE(type, var) (var)
 #else
 #define BOOST_PENDING_FWD_TYPE(type) type&&
-#define BOOST_PENDING_FWD_VALUE(type, var) (std::forward< type >((var)))
+#define BOOST_PENDING_FWD_VALUE(type, var) (eastl::forward< type >((var)))
 #endif
 
 // The content of this file is in 'graph_detail' because otherwise
@@ -131,32 +127,32 @@ namespace graph_detail
     // Use this as a compile-time assertion that X is stable
     inline void require_stable(stable_tag) {}
 
-    // std::vector
+    // eastl::vector
     struct vector_tag : virtual public random_access_container_tag,
                         virtual public back_insertion_sequence_tag
     {
     };
 
     template < class T, class Alloc >
-    vector_tag container_category(const std::vector< T, Alloc >&)
+    vector_tag container_category(const eastl::vector< T, Alloc >&)
     {
         return vector_tag();
     }
 
     template < class T, class Alloc >
-    unstable_tag iterator_stability(const std::vector< T, Alloc >&)
+    unstable_tag iterator_stability(const eastl::vector< T, Alloc >&)
     {
         return unstable_tag();
     }
 
     template < class T, class Alloc >
-    struct container_traits< std::vector< T, Alloc > >
+    struct container_traits< eastl::vector< T, Alloc > >
     {
         typedef vector_tag category;
         typedef unstable_tag iterator_stability;
     };
 
-    // std::list
+    // eastl::list
     struct list_tag : virtual public reversible_container_tag,
                       virtual public back_insertion_sequence_tag
     // this causes problems for push_dispatch...
@@ -165,25 +161,25 @@ namespace graph_detail
     };
 
     template < class T, class Alloc >
-    list_tag container_category(const std::list< T, Alloc >&)
+    list_tag container_category(const eastl::list< T, Alloc >&)
     {
         return list_tag();
     }
 
     template < class T, class Alloc >
-    stable_tag iterator_stability(const std::list< T, Alloc >&)
+    stable_tag iterator_stability(const eastl::list< T, Alloc >&)
     {
         return stable_tag();
     }
 
     template < class T, class Alloc >
-    struct container_traits< std::list< T, Alloc > >
+    struct container_traits< eastl::list< T, Alloc > >
     {
         typedef list_tag category;
         typedef stable_tag iterator_stability;
     };
 
-    // std::set
+    // eastl::set
     struct set_tag : virtual public sorted_associative_container_tag,
                      virtual public simple_associative_container_tag,
                      virtual public unique_associative_container_tag
@@ -191,25 +187,25 @@ namespace graph_detail
     };
 
     template < class Key, class Cmp, class Alloc >
-    set_tag container_category(const std::set< Key, Cmp, Alloc >&)
+    set_tag container_category(const eastl::set< Key, Cmp, Alloc >&)
     {
         return set_tag();
     }
 
     template < class Key, class Cmp, class Alloc >
-    stable_tag iterator_stability(const std::set< Key, Cmp, Alloc >&)
+    stable_tag iterator_stability(const eastl::set< Key, Cmp, Alloc >&)
     {
         return stable_tag();
     }
 
     template < class Key, class Cmp, class Alloc >
-    struct container_traits< std::set< Key, Cmp, Alloc > >
+    struct container_traits< eastl::set< Key, Cmp, Alloc > >
     {
         typedef set_tag category;
         typedef stable_tag iterator_stability;
     };
 
-    // std::multiset
+    // eastl::multiset
     struct multiset_tag : virtual public sorted_associative_container_tag,
                           virtual public simple_associative_container_tag,
                           virtual public multiple_associative_container_tag
@@ -217,19 +213,19 @@ namespace graph_detail
     };
 
     template < class Key, class Cmp, class Alloc >
-    multiset_tag container_category(const std::multiset< Key, Cmp, Alloc >&)
+    multiset_tag container_category(const eastl::multiset< Key, Cmp, Alloc >&)
     {
         return multiset_tag();
     }
 
     template < class Key, class Cmp, class Alloc >
-    stable_tag iterator_stability(const std::multiset< Key, Cmp, Alloc >&)
+    stable_tag iterator_stability(const eastl::multiset< Key, Cmp, Alloc >&)
     {
         return stable_tag();
     }
 
     template < class Key, class Cmp, class Alloc >
-    struct container_traits< std::multiset< Key, Cmp, Alloc > >
+    struct container_traits< eastl::multiset< Key, Cmp, Alloc > >
     {
         typedef multiset_tag category;
         typedef stable_tag iterator_stability;
@@ -237,7 +233,7 @@ namespace graph_detail
 
     // deque
 
-    // std::map
+    // eastl::map
     struct map_tag : virtual public sorted_associative_container_tag,
                      virtual public pair_associative_container_tag,
                      virtual public unique_associative_container_tag
@@ -245,25 +241,25 @@ namespace graph_detail
     };
 
     template < class Key, class T, class Cmp, class Alloc >
-    struct container_traits< std::map< Key, T, Cmp, Alloc > >
+    struct container_traits< eastl::map< Key, T, Cmp, Alloc > >
     {
         typedef map_tag category;
         typedef stable_tag iterator_stability;
     };
 
     template < class Key, class T, class Cmp, class Alloc >
-    map_tag container_category(const std::map< Key, T, Cmp, Alloc >&)
+    map_tag container_category(const eastl::map< Key, T, Cmp, Alloc >&)
     {
         return map_tag();
     }
 
     template < class Key, class T, class Cmp, class Alloc >
-    stable_tag iterator_stability(const std::map< Key, T, Cmp, Alloc >&)
+    stable_tag iterator_stability(const eastl::map< Key, T, Cmp, Alloc >&)
     {
         return stable_tag();
     }
 
-    // std::multimap
+    // eastl::multimap
     struct multimap_tag : virtual public sorted_associative_container_tag,
                           virtual public pair_associative_container_tag,
                           virtual public multiple_associative_container_tag
@@ -271,20 +267,20 @@ namespace graph_detail
     };
 
     template < class Key, class T, class Cmp, class Alloc >
-    struct container_traits< std::multimap< Key, T, Cmp, Alloc > >
+    struct container_traits< eastl::multimap< Key, T, Cmp, Alloc > >
     {
         typedef multimap_tag category;
         typedef stable_tag iterator_stability;
     };
 
     template < class Key, class T, class Cmp, class Alloc >
-    multimap_tag container_category(const std::multimap< Key, T, Cmp, Alloc >&)
+    multimap_tag container_category(const eastl::multimap< Key, T, Cmp, Alloc >&)
     {
         return multimap_tag();
     }
 
     template < class Key, class T, class Cmp, class Alloc >
-    stable_tag iterator_stability(const std::multimap< Key, T, Cmp, Alloc >&)
+    stable_tag iterator_stability(const eastl::multimap< Key, T, Cmp, Alloc >&)
     {
         return stable_tag();
     }
@@ -396,7 +392,7 @@ namespace graph_detail
 
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template < class Key, class Eq, class Hash, class Alloc >
-    struct container_traits< std::unordered_set< Key, Eq, Hash, Alloc > >
+    struct container_traits< eastl::unordered_set< Key, Eq, Hash, Alloc > >
     {
         typedef unordered_set_tag category;
         typedef unstable_tag iterator_stability;
@@ -404,7 +400,7 @@ namespace graph_detail
 #endif
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template < class Key, class T, class Eq, class Hash, class Alloc >
-    struct container_traits< std::unordered_map< Key, T, Eq, Hash, Alloc > >
+    struct container_traits< eastl::unordered_map< Key, T, Eq, Hash, Alloc > >
     {
         typedef unordered_map_tag category;
         typedef unstable_tag iterator_stability;
@@ -412,7 +408,7 @@ namespace graph_detail
 #endif
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template < class Key, class Eq, class Hash, class Alloc >
-    struct container_traits< std::unordered_multiset< Key, Eq, Hash, Alloc > >
+    struct container_traits< eastl::unordered_multiset< Key, Eq, Hash, Alloc > >
     {
         typedef unordered_multiset_tag category;
         typedef unstable_tag iterator_stability;
@@ -421,7 +417,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template < class Key, class T, class Eq, class Hash, class Alloc >
     struct container_traits<
-        std::unordered_multimap< Key, T, Eq, Hash, Alloc > >
+        eastl::unordered_multimap< Key, T, Eq, Hash, Alloc > >
     {
         typedef unordered_multimap_tag category;
         typedef unstable_tag iterator_stability;
@@ -430,7 +426,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template < class Key, class Eq, class Hash, class Alloc >
     unordered_set_tag container_category(
-        const std::unordered_set< Key, Eq, Hash, Alloc >&)
+        const eastl::unordered_set< Key, Eq, Hash, Alloc >&)
     {
         return unordered_set_tag();
     }
@@ -439,7 +435,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template < class Key, class T, class Eq, class Hash, class Alloc >
     unordered_map_tag container_category(
-        const std::unordered_map< Key, T, Eq, Hash, Alloc >&)
+        const eastl::unordered_map< Key, T, Eq, Hash, Alloc >&)
     {
         return unordered_map_tag();
     }
@@ -448,7 +444,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template < class Key, class Eq, class Hash, class Alloc >
     unstable_tag iterator_stability(
-        const std::unordered_set< Key, Eq, Hash, Alloc >&)
+        const eastl::unordered_set< Key, Eq, Hash, Alloc >&)
     {
         return unstable_tag();
     }
@@ -457,7 +453,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template < class Key, class T, class Eq, class Hash, class Alloc >
     unstable_tag iterator_stability(
-        const std::unordered_map< Key, T, Eq, Hash, Alloc >&)
+        const eastl::unordered_map< Key, T, Eq, Hash, Alloc >&)
     {
         return unstable_tag();
     }
@@ -465,7 +461,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template < class Key, class Eq, class Hash, class Alloc >
     unordered_multiset_tag container_category(
-        const std::unordered_multiset< Key, Eq, Hash, Alloc >&)
+        const eastl::unordered_multiset< Key, Eq, Hash, Alloc >&)
     {
         return unordered_multiset_tag();
     }
@@ -474,7 +470,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template < class Key, class T, class Eq, class Hash, class Alloc >
     unordered_multimap_tag container_category(
-        const std::unordered_multimap< Key, T, Eq, Hash, Alloc >&)
+        const eastl::unordered_multimap< Key, T, Eq, Hash, Alloc >&)
     {
         return unordered_multimap_tag();
     }
@@ -483,7 +479,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template < class Key, class Eq, class Hash, class Alloc >
     unstable_tag iterator_stability(
-        const std::unordered_multiset< Key, Eq, Hash, Alloc >&)
+        const eastl::unordered_multiset< Key, Eq, Hash, Alloc >&)
     {
         return unstable_tag();
     }
@@ -492,7 +488,7 @@ namespace graph_detail
 #ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template < class Key, class T, class Eq, class Hash, class Alloc >
     unstable_tag iterator_stability(
-        const std::unordered_multimap< Key, T, Eq, Hash, Alloc >&)
+        const eastl::unordered_multimap< Key, T, Eq, Hash, Alloc >&)
     {
         return unstable_tag();
     }
@@ -505,7 +501,7 @@ namespace graph_detail
     template < class Sequence, class T >
     void erase_dispatch(Sequence& c, const T& x, sequence_tag)
     {
-        c.erase(std::remove(c.begin(), c.end(), x), c.end());
+        c.erase(eastl::remove(c.begin(), c.end(), x), c.end());
     }
 
     template < class AssociativeContainer, class T >
@@ -525,10 +521,10 @@ namespace graph_detail
         Sequence& c, Predicate p, sequence_tag, IteratorStability)
     {
 #if 0
-    c.erase(std::remove_if(c.begin(), c.end(), p), c.end());
+    c.erase(eastl::remove_if(c.begin(), c.end(), p), c.end());
 #else
         if (!c.empty())
-            c.erase(std::remove_if(c.begin(), c.end(), p), c.end());
+            c.erase(eastl::remove_if(c.begin(), c.end(), p), c.end());
 #endif
     }
     template < class AssociativeContainer, class Predicate >
@@ -568,23 +564,23 @@ namespace graph_detail
 
     // Push
     template < class Container, class T >
-    std::pair< typename Container::iterator, bool > push_dispatch(
+    eastl::pair< typename Container::iterator, bool > push_dispatch(
         Container& c, BOOST_PENDING_FWD_TYPE(T) v, back_insertion_sequence_tag)
     {
         c.push_back(BOOST_PENDING_FWD_VALUE(T, v));
-        return std::make_pair(boost::prior(c.end()), true);
+        return eastl::make_pair(boost::prior(c.end()), true);
     }
 
     template < class Container, class T >
-    std::pair< typename Container::iterator, bool > push_dispatch(
+    eastl::pair< typename Container::iterator, bool > push_dispatch(
         Container& c, BOOST_PENDING_FWD_TYPE(T) v, front_insertion_sequence_tag)
     {
         c.push_front(BOOST_PENDING_FWD_VALUE(T, v));
-        return std::make_pair(c.begin(), true);
+        return eastl::make_pair(c.begin(), true);
     }
 
     template < class AssociativeContainer, class T >
-    std::pair< typename AssociativeContainer::iterator, bool > push_dispatch(
+    eastl::pair< typename AssociativeContainer::iterator, bool > push_dispatch(
         AssociativeContainer& c, BOOST_PENDING_FWD_TYPE(T) v,
         unique_associative_container_tag)
     {
@@ -592,15 +588,15 @@ namespace graph_detail
     }
 
     template < class AssociativeContainer, class T >
-    std::pair< typename AssociativeContainer::iterator, bool > push_dispatch(
+    eastl::pair< typename AssociativeContainer::iterator, bool > push_dispatch(
         AssociativeContainer& c, BOOST_PENDING_FWD_TYPE(T) v,
         multiple_associative_container_tag)
     {
-        return std::make_pair(c.insert(BOOST_PENDING_FWD_VALUE(T, v)), true);
+        return eastl::make_pair(c.insert(BOOST_PENDING_FWD_VALUE(T, v)), true);
     }
 
     template < class Container, class T >
-    std::pair< typename Container::iterator, bool > push(
+    eastl::pair< typename Container::iterator, bool > push(
         Container& c, BOOST_PENDING_FWD_TYPE(T) v)
     {
         return push_dispatch(
@@ -612,7 +608,7 @@ namespace graph_detail
     typename Container::iterator find_dispatch(
         Container& c, const Value& value, container_tag)
     {
-        return std::find(c.begin(), c.end(), value);
+        return eastl::find(c.begin(), c.end(), value);
     }
 
     template < class AssociativeContainer, class Value >
@@ -633,7 +629,7 @@ namespace graph_detail
     typename Container::const_iterator find_dispatch(
         const Container& c, const Value& value, container_tag)
     {
-        return std::find(c.begin(), c.end(), value);
+        return eastl::find(c.begin(), c.end(), value);
     }
 
     template < class AssociativeContainer, class Value >
@@ -658,18 +654,18 @@ namespace graph_detail
   // statically and is not typically true for BGL's uses of this function).
   template <class Container,
             class LessThanComparable>
-  std::pair<typename Container::iterator, typename Container::iterator>
+  eastl::pair<typename Container::iterator, typename Container::iterator>
   equal_range_dispatch(Container& c,
                        const LessThanComparable& value,
                        container_tag)
   {
-    // c must be sorted for std::equal_range to behave properly.
-    return std::equal_range(c.begin(), c.end(), value);
+    // c must be sorted for eastl::equal_range to behave properly.
+    return eastl::equal_range(c.begin(), c.end(), value);
   }
 #endif
 
     template < class AssociativeContainer, class Value >
-    std::pair< typename AssociativeContainer::iterator,
+    eastl::pair< typename AssociativeContainer::iterator,
         typename AssociativeContainer::iterator >
     equal_range_dispatch(
         AssociativeContainer& c, const Value& value, associative_container_tag)
@@ -678,7 +674,7 @@ namespace graph_detail
     }
 
     template < class Container, class Value >
-    std::pair< typename Container::iterator, typename Container::iterator >
+    eastl::pair< typename Container::iterator, typename Container::iterator >
     equal_range(Container& c, const Value& value)
     {
         return equal_range_dispatch(

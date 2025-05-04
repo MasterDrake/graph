@@ -29,7 +29,7 @@ inline void dag_shortest_paths(const VertexListGraph& g,
     DistZero zero)
 {
     typedef typename graph_traits< VertexListGraph >::vertex_descriptor Vertex;
-    std::vector< Vertex > rev_topo_order;
+    eastl::vector< Vertex > rev_topo_order;
     rev_topo_order.reserve(num_vertices(g));
 
     // Call 'depth_first_visit', not 'topological_sort', because we don't
@@ -37,12 +37,12 @@ inline void dag_shortest_paths(const VertexListGraph& g,
     // and 'topological_sort' will traverse everything. The logic below
     // is the same as for 'topological_sort', only we call 'depth_first_visit'
     // and 'topological_sort' calls 'depth_first_search'.
-    topo_sort_visitor< std::back_insert_iterator< std::vector< Vertex > > >
-        topo_visitor(std::back_inserter(rev_topo_order));
+    topo_sort_visitor< eastl::back_insert_iterator< eastl::vector< Vertex > > >
+        topo_visitor(eastl::back_inserter(rev_topo_order));
     depth_first_visit(g, s, topo_visitor, color);
 
     typename graph_traits< VertexListGraph >::vertex_iterator ui, ui_end;
-    for (boost::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
+    for (eastl::tie(ui, ui_end) = vertices(g); ui != ui_end; ++ui)
     {
         put(distance, *ui, inf);
         put(pred, *ui, *ui);
@@ -50,13 +50,13 @@ inline void dag_shortest_paths(const VertexListGraph& g,
 
     put(distance, s, zero);
     vis.discover_vertex(s, g);
-    typename std::vector< Vertex >::reverse_iterator i;
+    typename eastl::vector< Vertex >::reverse_iterator i;
     for (i = rev_topo_order.rbegin(); i != rev_topo_order.rend(); ++i)
     {
         Vertex u = *i;
         vis.examine_vertex(u, g);
         typename graph_traits< VertexListGraph >::out_edge_iterator e, e_end;
-        for (boost::tie(e, e_end) = out_edges(u, g); e != e_end; ++e)
+        for (eastl::tie(e, e_end) = out_edges(u, g); e != e_end; ++e)
         {
             vis.discover_vertex(target(*e, g), g);
             bool decreased
@@ -86,11 +86,11 @@ namespace detail
         typedef typename property_traits< DistanceMap >::value_type D;
         dummy_property_map p_map;
         D inf = choose_param(get_param(params, distance_inf_t()),
-            (std::numeric_limits< D >::max)());
+            (eastl::numeric_limits< D >::max)());
         dag_shortest_paths(g, s, distance, weight, color,
             choose_param(get_param(params, vertex_predecessor), p_map), vis,
             choose_param(
-                get_param(params, distance_compare_t()), std::less< D >()),
+                get_param(params, distance_compare_t()), eastl::less< D >()),
             choose_param(
                 get_param(params, distance_combine_t()), closed_plus< D >(inf)),
             inf, choose_param(get_param(params, distance_zero_t()), D()));
@@ -105,11 +105,11 @@ namespace detail
         DijkstraVisitor vis, const Params& params)
     {
         typedef typename property_traits< WeightMap >::value_type T;
-        typename std::vector< T >::size_type n;
+        typename eastl::vector< T >::size_type n;
         n = is_default_param(distance) ? num_vertices(g) : 1;
-        std::vector< T > distance_map(n);
+        eastl::vector< T > distance_map(n);
         n = is_default_param(color) ? num_vertices(g) : 1;
-        std::vector< default_color_type > color_map(n);
+        eastl::vector< default_color_type > color_map(n);
 
         dag_sp_dispatch2(g, s,
             choose_param(distance,

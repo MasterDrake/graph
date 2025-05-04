@@ -26,7 +26,7 @@
 
  */
 
-#include <utility>
+#include <EASTL/utility.h>
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/property_map/property_map.hpp>
@@ -72,7 +72,7 @@ struct line_tag
     };
 };
 template < class T >
-struct line_property : public property< line_tag, std::pair< T, T > >
+struct line_property : public property< line_tag, eastl::pair< T, T > >
 {
 };
 
@@ -134,7 +134,7 @@ inline void get_sharing(const Triangle& a, const Triangle& b, Line& l)
 template < class TriangleDecorator, class Vertex, class Line >
 struct get_vertex_sharing
 {
-    typedef std::pair< Vertex, Line > Pair;
+    typedef eastl::pair< Vertex, Line > Pair;
     get_vertex_sharing(const TriangleDecorator& _td) : td(_td) {}
     inline Line operator()(const Vertex& u, const Vertex& v) const
     {
@@ -186,7 +186,7 @@ public:
         Line l1;
         l1.first = SAW_SENTINAL;
         l1.second = SAW_SENTINAL;
-        hlist->push_front(std::make_pair(v, l1));
+        hlist->push_front(eastl::make_pair(v, l1));
         iter_d[v] = hlist->begin();
     }
 
@@ -199,7 +199,7 @@ public:
     */
     template < class Edge, class Graph > bool tree_edge(Edge e, Graph& G)
     {
-        using std::make_pair;
+        using eastl::make_pair;
         typedef typename boost::graph_traits< Graph >::vertex_descriptor Vertex;
         Vertex tau = target(e, G);
         Vertex i = source(e, G);

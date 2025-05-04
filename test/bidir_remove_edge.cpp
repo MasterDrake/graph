@@ -26,7 +26,7 @@ int main(int, char*[])
         edge_prop p = { 42 };
         edge e;
         bool b;
-        boost::tie(e, b) = add_edge(0, 1, p, g);
+        eastl::tie(e, b) = add_edge(0, 1, p, g);
         BOOST_TEST(num_edges(g) == 1);
         BOOST_TEST(g[e].weight == 42);
         remove_edge(e, g);
@@ -42,7 +42,7 @@ int main(int, char*[])
 
         edge e;
         bool b;
-        boost::tie(e, b) = add_edge(0, 1, g);
+        eastl::tie(e, b) = add_edge(0, 1, g);
         BOOST_TEST(num_edges(g) == 1);
         remove_edge(e, g);
         BOOST_TEST(num_edges(g) == 0);

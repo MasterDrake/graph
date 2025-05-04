@@ -18,7 +18,7 @@
 */
 #include <boost/config.hpp>
 #include <boost/ref.hpp>
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/pending/queue.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
@@ -162,7 +162,7 @@ namespace detail
             vis.examine_vertex(u, g);
 
             typename GTraits::out_edge_iterator ei, ei_end;
-            for (boost::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
+            for (eastl::tie(ei, ei_end) = out_edges(u, g); ei != ei_end; ++ei)
             {
                 Edge e = *ei;
                 vis.examine_out_edge(e, g);
@@ -186,7 +186,7 @@ namespace detail
             } // for out-edges
 
             typename GTraits::in_edge_iterator in_ei, in_ei_end;
-            for (boost::tie(in_ei, in_ei_end) = in_edges(u, g);
+            for (eastl::tie(in_ei, in_ei_end) = in_edges(u, g);
                  in_ei != in_ei_end; ++in_ei)
             {
                 Edge e = *in_ei;
@@ -232,7 +232,7 @@ namespace detail
         typedef color_traits< ColorValue > Color;
         typename boost::graph_traits< VertexListGraph >::vertex_iterator i,
             i_end;
-        for (boost::tie(i, i_end) = vertices(g); i != i_end; ++i)
+        for (eastl::tie(i, i_end) = vertices(g); i != i_end; ++i)
         {
             put(color, *i, Color::white());
             vis.initialize_vertex(*i, g);
@@ -269,7 +269,7 @@ namespace detail
             typename graph_traits< VertexListGraph >::vertex_descriptor s,
             const bgl_named_params< P, T, R >& params, param_not_found)
         {
-            std::vector< default_color_type > color_vec(num_vertices(g));
+            eastl::vector< default_color_type > color_vec(num_vertices(g));
             null_visitor null_vis;
 
             neighbor_bfs_helper(g, s,

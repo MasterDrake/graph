@@ -44,7 +44,7 @@ void output_adjacent_vertices(std::ostream& out,
 {
     typename graph_traits< Graph >::adjacency_iterator vi, vi_end;
     out << get(name_map, u) << " -> { ";
-    for (boost::tie(vi, vi_end) = adjacent_vertices(u, g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = adjacent_vertices(u, g); vi != vi_end; ++vi)
         out << get(name_map, *vi) << " ";
     out << "}" << std::endl;
 }
@@ -108,7 +108,7 @@ int main(int argc, const char** argv)
     read_graph_file(file_in, name_in, g, name_map);
 
     graph_traits< graph_type >::vertex_iterator i, end;
-    boost::tie(i, end) = vertices(g);
+    eastl::tie(i, end) = vertices(g);
     i = std::find_if(i, end, name_equals("dax.h", get(vertex_name, g)));
     output_adjacent_vertices(std::cout, *i, g, get(vertex_name, g));
 

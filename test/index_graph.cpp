@@ -80,7 +80,7 @@ template < typename Graph > void build()
 
     // Each vertex should be numbered correctly.
     Iterator i, end;
-    boost::tie(i, end) = vertices(g);
+    eastl::tie(i, end) = vertices(g);
     for (size_t x = 0; i != end; ++i, ++x)
     {
         BOOST_ASSERT(get_vertex_index(*i, g) == x);

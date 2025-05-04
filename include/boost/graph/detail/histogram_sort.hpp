@@ -21,7 +21,7 @@ namespace graph
 
         template < typename InputIterator >
         size_t reserve_count_for_single_pass_helper(
-            InputIterator, InputIterator, std::input_iterator_tag)
+            InputIterator, InputIterator, eastl::input_iterator_tag)
         {
             // Do nothing: we have no idea how much storage to reserve.
             return 0;
@@ -29,10 +29,10 @@ namespace graph
 
         template < typename InputIterator >
         size_t reserve_count_for_single_pass_helper(InputIterator first,
-            InputIterator last, std::random_access_iterator_tag)
+            InputIterator last, eastl::random_access_iterator_tag)
         {
-            using std::distance;
-            typename std::iterator_traits< InputIterator >::difference_type n
+            using eastl::distance;
+            typename eastl::iterator_traits< InputIterator >::difference_type n
                 = distance(first, last);
             return (size_t)n;
         }
@@ -41,7 +41,7 @@ namespace graph
         size_t reserve_count_for_single_pass(
             InputIterator first, InputIterator last)
         {
-            typedef typename std::iterator_traits<
+            typedef typename eastl::iterator_traits<
                 InputIterator >::iterator_category category;
             return reserve_count_for_single_pass_helper(
                 first, last, category());
@@ -56,7 +56,7 @@ namespace graph
         {
 
             typedef
-                typename std::iterator_traits< RowstartIterator >::value_type
+                typename eastl::iterator_traits< RowstartIterator >::value_type
                     EdgeIndex;
 
             // Put the degree of each vertex v into m_rowstart[v + 1]
@@ -93,13 +93,13 @@ namespace graph
         {
 
             typedef
-                typename std::iterator_traits< RowstartIterator >::value_type
+                typename eastl::iterator_traits< RowstartIterator >::value_type
                     EdgeIndex;
 
             // Histogram sort the edges by their source vertices, putting the
             // targets into m_column.  The index current_insert_positions[v]
             // contains the next location to insert out edges for vertex v.
-            std::vector< EdgeIndex > current_insert_positions(
+            eastl::vector< EdgeIndex > current_insert_positions(
                 rowstart, rowstart + numkeys);
             Value1InputIter v1i = values1_begin;
             for (KeyIterator i = key_begin; i != key_end; ++i, ++v1i)
@@ -130,13 +130,13 @@ namespace graph
         {
 
             typedef
-                typename std::iterator_traits< RowstartIterator >::value_type
+                typename eastl::iterator_traits< RowstartIterator >::value_type
                     EdgeIndex;
 
             // Histogram sort the edges by their source vertices, putting the
             // targets into m_column.  The index current_insert_positions[v]
             // contains the next location to insert out edges for vertex v.
-            std::vector< EdgeIndex > current_insert_positions(
+            eastl::vector< EdgeIndex > current_insert_positions(
                 rowstart, rowstart + numkeys);
             Value1InputIter v1i = values1_begin;
             Value2InputIter v2i = values2_begin;
@@ -163,11 +163,11 @@ namespace graph
         {
 
             typedef
-                typename std::iterator_traits< RowstartIterator >::value_type
+                typename eastl::iterator_traits< RowstartIterator >::value_type
                     EdgeIndex;
 
             // 1. Copy m_rowstart (except last element) to get insert positions
-            std::vector< EdgeIndex > insert_positions(
+            eastl::vector< EdgeIndex > insert_positions(
                 rowstart, rowstart + numkeys);
             // 2. Swap the sources and targets into place
             for (size_t i = 0; i < rowstart[numkeys]; ++i)
@@ -185,7 +185,7 @@ namespace graph
                     if (target_pos == i)
                         continue;
                     // Swap this edge into place
-                    using std::swap;
+                    using eastl::swap;
                     swap(key_begin[i], key_begin[target_pos]);
                     swap(values1[i], values1[target_pos]);
                 }
@@ -203,11 +203,11 @@ namespace graph
         {
 
             typedef
-                typename std::iterator_traits< RowstartIterator >::value_type
+                typename eastl::iterator_traits< RowstartIterator >::value_type
                     EdgeIndex;
 
             // 1. Copy m_rowstart (except last element) to get insert positions
-            std::vector< EdgeIndex > insert_positions(
+            eastl::vector< EdgeIndex > insert_positions(
                 rowstart, rowstart + numkeys);
             // 2. Swap the sources and targets into place
             for (size_t i = 0; i < rowstart[numkeys]; ++i)
@@ -225,7 +225,7 @@ namespace graph
                     if (target_pos == i)
                         continue;
                     // Swap this edge into place
-                    using std::swap;
+                    using eastl::swap;
                     swap(key_begin[i], key_begin[target_pos]);
                     swap(values1[i], values1[target_pos]);
                     swap(values2[i], values2[target_pos]);
@@ -235,8 +235,8 @@ namespace graph
 
         template < typename InputIterator, typename VerticesSize >
         void split_into_separate_coords(InputIterator begin, InputIterator end,
-            std::vector< VerticesSize >& firsts,
-            std::vector< VerticesSize >& seconds)
+            eastl::vector< VerticesSize >& firsts,
+            eastl::vector< VerticesSize >& seconds)
         {
             firsts.clear();
             seconds.clear();
@@ -246,7 +246,7 @@ namespace graph
             seconds.reserve(reserve_size);
             for (; begin != end; ++begin)
             {
-                std::pair< VerticesSize, VerticesSize > edge = *begin;
+                eastl::pair< VerticesSize, VerticesSize > edge = *begin;
                 firsts.push_back(edge.first);
                 seconds.push_back(edge.second);
             }
@@ -255,14 +255,14 @@ namespace graph
         template < typename InputIterator, typename VerticesSize,
             typename SourceFilter >
         void split_into_separate_coords_filtered(InputIterator begin,
-            InputIterator end, std::vector< VerticesSize >& firsts,
-            std::vector< VerticesSize >& seconds, const SourceFilter& filter)
+            InputIterator end, eastl::vector< VerticesSize >& firsts,
+            eastl::vector< VerticesSize >& seconds, const SourceFilter& filter)
         {
             firsts.clear();
             seconds.clear();
             for (; begin != end; ++begin)
             {
-                std::pair< VerticesSize, VerticesSize > edge = *begin;
+                eastl::pair< VerticesSize, VerticesSize > edge = *begin;
                 if (filter(edge.first))
                 {
                     firsts.push_back(edge.first);
@@ -275,16 +275,16 @@ namespace graph
             typename VerticesSize, typename PropType, typename SourceFilter >
         void split_into_separate_coords_filtered(InputIterator begin,
             InputIterator end, PropInputIterator props,
-            std::vector< VerticesSize >& firsts,
-            std::vector< VerticesSize >& seconds,
-            std::vector< PropType >& props_out, const SourceFilter& filter)
+            eastl::vector< VerticesSize >& firsts,
+            eastl::vector< VerticesSize >& seconds,
+            eastl::vector< PropType >& props_out, const SourceFilter& filter)
         {
             firsts.clear();
             seconds.clear();
             props_out.clear();
             for (; begin != end; ++begin)
             {
-                std::pair< VerticesSize, VerticesSize > edge = *begin;
+                eastl::pair< VerticesSize, VerticesSize > edge = *begin;
                 if (filter(edge.first))
                 {
                     firsts.push_back(edge.first);

@@ -268,7 +268,7 @@ public:
         BOOST_USING_STD_MIN();
         BOOST_USING_STD_MAX();
 #ifndef BOOST_NO_STDC_NAMESPACE
-        using std::abs;
+        using eastl::abs;
 #endif
         BOOST_STATIC_ASSERT(Dims >= 1);
         double dist = abs(scaling - a[0]);
@@ -331,10 +331,10 @@ public:
     rectangle_topology(double left, double top, double right, double bottom)
     : gen_ptr(new RandomNumberGenerator)
     , rand(new rand_t(*gen_ptr))
-    , left(std::min BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
-    , top(std::min BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
-    , right(std::max BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
-    , bottom(std::max BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
+    , left(eastl::min BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
+    , top(eastl::min BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
+    , right(eastl::max BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
+    , bottom(eastl::max BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
     {
     }
 
@@ -342,10 +342,10 @@ public:
         double right, double bottom)
     : gen_ptr()
     , rand(new rand_t(gen))
-    , left(std::min BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
-    , top(std::min BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
-    , right(std::max BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
-    , bottom(std::max BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
+    , left(eastl::min BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
+    , top(eastl::min BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
+    , right(eastl::max BOOST_PREVENT_MACRO_SUBSTITUTION(left, right))
+    , bottom(eastl::max BOOST_PREVENT_MACRO_SUBSTITUTION(top, bottom))
     {
     }
 
@@ -378,7 +378,7 @@ public:
         BOOST_USING_STD_MIN();
         BOOST_USING_STD_MAX();
 #ifndef BOOST_NO_STDC_NAMESPACE
-        using std::abs;
+        using eastl::abs;
 #endif
         double dist = abs(left - a[0]);
         dist = min BOOST_PREVENT_MACRO_SUBSTITUTION(dist, abs(right - a[0]));

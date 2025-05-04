@@ -38,8 +38,8 @@
 // They have been checked into the detail directory because
 // there are some graph algorithms that use these functions.
 
-#include <algorithm>
-#include <vector>
+#include <EASTL/algorithm.h>
+#include <EASTL/vector.h>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/algorithm/copy.hpp>
@@ -58,7 +58,7 @@ namespace boost
 template < typename InputIterator, typename Predicate >
 bool any_if(InputIterator first, InputIterator last, Predicate p)
 {
-    return std::find_if(first, last, p) != last;
+    return eastl::find_if(first, last, p) != last;
 }
 
 template < typename Container, typename Predicate >
@@ -70,7 +70,7 @@ bool any_if(const Container& c, Predicate p)
 template < typename InputIterator, typename T >
 bool container_contains(InputIterator first, InputIterator last, T value)
 {
-    return std::find(first, last, value) != last;
+    return eastl::find(first, last, value) != last;
 }
 template < typename Container, typename T >
 bool container_contains(const Container& c, const T& value)

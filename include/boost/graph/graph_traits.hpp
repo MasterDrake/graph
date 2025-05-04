@@ -11,8 +11,8 @@
 #define BOOST_GRAPH_TRAITS_HPP
 
 #include <boost/config.hpp>
-#include <iterator>
-#include <utility> /* Primarily for std::pair */
+#include <EASTL/iterator.h>
+#include <EASTL/utility.h> /* Primarily for eastl::pair */
 #include <boost/tuple/tuple.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -428,7 +428,7 @@ struct has_bundled_edge_property
 // but the alternative is to put source and target in the global
 // namespace which causes name conflicts with other libraries (like
 // SUIF).
-namespace std
+namespace eastl
 {
 
 /* Some helper functions for dealing with pairs as edges */
@@ -450,8 +450,8 @@ template < class T, class G > T target(pair< T, T > p, const G&)
 // namespace.
 namespace boost
 {
-using std::source;
-using std::target;
+using eastl::source;
+using eastl::target;
 }
 #endif
 

@@ -299,8 +299,8 @@ inline degree_property_map< Graph > make_degree_map(const Graph& g)
 template < class PropertyGraph, class RandomAccessIterator >
 inline iterator_property_map< RandomAccessIterator,
     typename property_map< PropertyGraph, vertex_index_t >::type,
-    typename std::iterator_traits< RandomAccessIterator >::value_type,
-    typename std::iterator_traits< RandomAccessIterator >::reference >
+    typename eastl::iterator_traits< RandomAccessIterator >::value_type,
+    typename eastl::iterator_traits< RandomAccessIterator >::reference >
 make_iterator_vertex_map(RandomAccessIterator iter, const PropertyGraph& g)
 {
     return make_iterator_property_map(iter, get(vertex_index, g));
@@ -311,8 +311,8 @@ make_iterator_vertex_map(RandomAccessIterator iter, const PropertyGraph& g)
 //
 template < class RandomAccessIterator >
 inline iterator_property_map< RandomAccessIterator, identity_property_map,
-    typename std::iterator_traits< RandomAccessIterator >::value_type,
-    typename std::iterator_traits< RandomAccessIterator >::reference >
+    typename eastl::iterator_traits< RandomAccessIterator >::value_type,
+    typename eastl::iterator_traits< RandomAccessIterator >::reference >
 make_iterator_vertex_map(RandomAccessIterator iter)
 {
     return make_iterator_property_map(iter, identity_property_map());

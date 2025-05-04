@@ -58,7 +58,7 @@ void print_graph_layout(
             typename graph_traits< Graph >::vertex_iterator vi, vi_end;
             // Find vertex at this position
             typename graph_traits< Graph >::vertices_size_type index = 0;
-            for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end;
+            for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end;
                  ++vi, ++index)
             {
                 if ((int)position[*vi][0] == x && (int)position[*vi][1] == y)
@@ -81,7 +81,7 @@ void dump_graph_layout(std::string name, const Graph& g, PositionMap position)
     out << "graph " << name << " {" << std::endl;
 
     typename graph_traits< Graph >::vertex_iterator vi, vi_end;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
     {
         out << "  n" << get(vertex_index, g, *vi) << "[ pos=\""
             << (int)position[*vi][0] + 25 << ", " << (int)position[*vi][1] + 25
@@ -89,7 +89,7 @@ void dump_graph_layout(std::string name, const Graph& g, PositionMap position)
     }
 
     typename graph_traits< Graph >::edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
     {
         out << "  n" << get(vertex_index, g, source(*ei, g)) << " -- n"
             << get(vertex_index, g, target(*ei, g)) << ";\n";
@@ -205,11 +205,11 @@ template < typename Graph > void test_cube(Graph*)
 
     vertex_iterator vi, vi_end;
     int i = 0;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         put(vertex_index, g, *vi, i++);
 
     edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
     {
         put(edge_weight, g, *ei, 1.0);
         std::cerr << "(" << (char)(get(vertex_index, g, source(*ei, g)) + 'A')
@@ -277,11 +277,11 @@ template < typename Graph > void test_triangular(Graph*)
 
     vertex_iterator vi, vi_end;
     int i = 0;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         put(vertex_index, g, *vi, i++);
 
     edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
     {
         put(edge_weight, g, *ei, 1.0);
         std::cerr << "(" << (char)(get(vertex_index, g, source(*ei, g)) + 'A')
@@ -351,11 +351,11 @@ template < typename Graph > void test_disconnected(Graph*)
 
     vertex_iterator vi, vi_end;
     int i = 0;
-    for (boost::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
+    for (eastl::tie(vi, vi_end) = vertices(g); vi != vi_end; ++vi)
         put(vertex_index, g, *vi, i++);
 
     edge_iterator ei, ei_end;
-    for (boost::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
+    for (eastl::tie(ei, ei_end) = edges(g); ei != ei_end; ++ei)
     {
         put(edge_weight, g, *ei, 1.0);
         std::cerr << "(" << (char)(get(vertex_index, g, source(*ei, g)) + 'A')

@@ -11,7 +11,7 @@
 #ifndef BOOST_GRAPH_MINIMUM_DEGREE_ORDERING_HPP
 #define BOOST_GRAPH_MINIMUM_DEGREE_ORDERING_HPP
 
-#include <vector>
+#include <EASTL/vector.h>
 #include <boost/assert.hpp>
 #include <boost/config.hpp>
 #include <boost/pending/bucket_sorter.hpp>
@@ -33,12 +33,12 @@ namespace detail
     // Because of these restrictions, we can use one big array to
     // store all the stacks, intertwined with one another.
     // No allocation/deallocation happens in the push()/pop() methods
-    // so this is faster than using std::stack's.
+    // so this is faster than using eastl::stack's.
     //
     template < class SignedInteger > class Stacks
     {
         typedef SignedInteger value_type;
-        typedef typename std::vector< value_type >::size_type size_type;
+        typedef typename eastl::vector< value_type >::size_type size_type;
 
     public:
         Stacks(size_type n) : data(n) {}
@@ -46,7 +46,7 @@ namespace detail
         //: stack
         class stack
         {
-            typedef typename std::vector< value_type >::iterator Iterator;
+            typedef typename eastl::vector< value_type >::iterator Iterator;
 
         public:
             stack(Iterator _data, const value_type& head)
@@ -57,7 +57,7 @@ namespace detail
             // did not use default argument here to avoid internal compiler
             // error in g++.
             stack(Iterator _data)
-            : data(_data), current(-(std::numeric_limits< value_type >::max)())
+            : data(_data), current(-(eastl::numeric_limits< value_type >::max)())
             {
             }
 
@@ -73,7 +73,7 @@ namespace detail
             }
             bool empty()
             {
-                return current == -(std::numeric_limits< value_type >::max)();
+                return current == -(eastl::numeric_limits< value_type >::max)();
             }
             value_type& top() { return current; }
 
@@ -86,7 +86,7 @@ namespace detail
         stack make_stack() { return stack(data.begin()); }
 
     protected:
-        std::vector< value_type > data;
+        eastl::vector< value_type > data;
     };
 
     // marker class, a generalization of coloring.
@@ -105,17 +105,17 @@ namespace detail
     class Marker
     {
         typedef SignedInteger value_type;
-        typedef typename std::vector< value_type >::size_type size_type;
+        typedef typename eastl::vector< value_type >::size_type size_type;
 
         static value_type done()
         {
-            return (std::numeric_limits< value_type >::max)() / 2;
+            return (eastl::numeric_limits< value_type >::max)() / 2;
         }
 
     public:
         Marker(size_type _num, VertexIndexMap index_map)
-        : tag(1 - (std::numeric_limits< value_type >::max)())
-        , data(_num, -(std::numeric_limits< value_type >::max)())
+        : tag(1 - (eastl::numeric_limits< value_type >::max)())
+        , data(_num, -(eastl::numeric_limits< value_type >::max)())
         , id(index_map)
         {
         }
@@ -149,10 +149,10 @@ namespace detail
             ++tag;
             if (tag >= done())
             {
-                tag = 1 - (std::numeric_limits< value_type >::max)();
+                tag = 1 - (eastl::numeric_limits< value_type >::max)();
                 for (size_type i = 0; i < num; ++i)
                     if (data[i] < done())
-                        data[i] = -(std::numeric_limits< value_type >::max)();
+                        data[i] = -(eastl::numeric_limits< value_type >::max)();
             }
         }
 
@@ -163,11 +163,11 @@ namespace detail
 
             if (multiple_tag >= done())
             {
-                tag = 1 - (std::numeric_limits< value_type >::max)();
+                tag = 1 - (eastl::numeric_limits< value_type >::max)();
 
                 for (size_type i = 0; i < num; i++)
                     if (data[i] < done())
-                        data[i] = -(std::numeric_limits< value_type >::max)();
+                        data[i] = -(eastl::numeric_limits< value_type >::max)();
 
                 multiple_tag = tag + mdeg0;
             }
@@ -178,7 +178,7 @@ namespace detail
     protected:
         value_type tag;
         value_type multiple_tag;
-        std::vector< value_type > data;
+        eastl::vector< value_type > data;
         VertexIndexMap id;
     };
 
@@ -212,7 +212,7 @@ namespace detail
     {
     public:
         typedef SignedInteger value_type;
-        typedef typename std::vector< value_type >::size_type size_type;
+        typedef typename eastl::vector< value_type >::size_type size_type;
         degreelists_marker(size_type n, VertexIndexMap id) : marks(n, 0), id(id)
         {
         }
@@ -223,7 +223,7 @@ namespace detail
         void unmark(Vertex i) { marks[get(id, i)] = 0; }
 
     private:
-        std::vector< value_type > marks;
+        eastl::vector< value_type > marks;
         VertexIndexMap id;
     };
 
@@ -330,7 +330,7 @@ namespace detail
         VertexIndexMap vertex_index_map;
 
         // internal data-structures
-        std::vector< vertex_t > index_vertex_vec;
+        eastl::vector< vertex_t > index_vertex_vec;
         size_type n;
         IndexVertexMap index_vertex_map;
         DegreeLists degreelists;
@@ -361,13 +361,13 @@ namespace detail
         {
             typename graph_traits< Graph >::vertex_iterator v, vend;
             size_type vid = 0;
-            for (boost::tie(v, vend) = vertices(G); v != vend; ++v, ++vid)
+            for (eastl::tie(v, vend) = vertices(G); v != vend; ++v, ++vid)
                 index_vertex_vec[vid] = *v;
             index_vertex_map = IndexVertexMap(&index_vertex_vec[0]);
 
             // Initialize degreelists.  Degreelists organizes the nodes
             // according to their degree.
-            for (boost::tie(v, vend) = vertices(G); v != vend; ++v)
+            for (eastl::tie(v, vend) = vertices(G); v != vend; ++v)
             {
                 typename Traits::degree_size_type d = out_degree(*v, G);
                 put(degree, *v, d);
@@ -481,7 +481,7 @@ namespace detail
                 size_type e_id = element_neighbor.top();
                 vertex_t element = get(index_vertex_map, e_id);
                 adj_iter i, i_end;
-                for (boost::tie(i, i_end) = adjacent_vertices(element, G);
+                for (eastl::tie(i, i_end) = adjacent_vertices(element, G);
                      i != i_end; ++i)
                 {
                     vertex_t i_node = *i;
@@ -495,7 +495,7 @@ namespace detail
                 element_neighbor.pop();
             }
             adj_iter v, ve;
-            for (boost::tie(v, ve) = adjacent_vertices(node, G); v != ve; ++v)
+            for (eastl::tie(v, ve) = adjacent_vertices(node, G); v != ve; ++v)
             {
                 vertex_t v_node = *v;
                 if (!degree_lists_marker.need_update(v_node)
@@ -536,7 +536,7 @@ namespace detail
 
                 vertex_t current = get(index_vertex_map, llist.top());
                 adj_iter i, ie;
-                for (boost::tie(i, ie) = adjacent_vertices(current, G); i != ie;
+                for (eastl::tie(i, ie) = adjacent_vertices(current, G); i != ie;
                      ++i)
                 {
                     vertex_t i_node = *i;
@@ -578,7 +578,7 @@ namespace detail
                     if (numbering.is_numbered(neighbor))
                     {
                         adj_iter i, ie;
-                        for (boost::tie(i, ie) = adjacent_vertices(neighbor, G);
+                        for (eastl::tie(i, ie) = adjacent_vertices(neighbor, G);
                              i != ie; ++i)
                         {
                             const vertex_t i_node = *i;
@@ -636,7 +636,7 @@ namespace detail
                     marker.increment_tag();
                     deg = deg0;
                     adj_iter i, ie;
-                    for (boost::tie(i, ie) = adjacent_vertices(u_node, G);
+                    for (eastl::tie(i, ie) = adjacent_vertices(u_node, G);
                          i != ie; ++i)
                     {
                         vertex_t i_node = *i;
@@ -647,7 +647,7 @@ namespace detail
                         if (numbering.is_numbered(i_node))
                         {
                             adj_iter j, je;
-                            for (boost::tie(j, je)
+                            for (eastl::tie(j, je)
                                  = adjacent_vertices(i_node, G);
                                  j != je; ++j)
                             {

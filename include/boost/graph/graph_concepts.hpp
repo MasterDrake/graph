@@ -108,7 +108,7 @@ BOOST_concept(IncidenceGraph, (G)) : Graph< G >
         u = source(e, cg);
         v = target(e, cg);
     }
-    std::pair< out_edge_iterator, out_edge_iterator > p;
+    eastl::pair< out_edge_iterator, out_edge_iterator > p;
     typename graph_traits< G >::vertex_descriptor u, v;
     typename graph_traits< G >::edge_descriptor e;
     typename graph_traits< G >::degree_size_type n;
@@ -142,7 +142,7 @@ BOOST_concept(BidirectionalGraph, (G)) : IncidenceGraph< G >
         n = degree(v, cg);
         e = *p.first;
     }
-    std::pair< in_edge_iterator, in_edge_iterator > p;
+    eastl::pair< in_edge_iterator, in_edge_iterator > p;
     typename graph_traits< G >::vertex_descriptor v;
     typename graph_traits< G >::edge_descriptor e;
     typename graph_traits< G >::degree_size_type n;
@@ -168,7 +168,7 @@ BOOST_concept(AdjacencyGraph, (G)) : Graph< G >
         const_constraints(g);
     }
     void const_constraints(const G& cg) { p = adjacent_vertices(v, cg); }
-    std::pair< adjacency_iterator, adjacency_iterator > p;
+    eastl::pair< adjacency_iterator, adjacency_iterator > p;
     typename graph_traits< G >::vertex_descriptor v;
     G g;
 };
@@ -217,7 +217,7 @@ BOOST_concept(VertexListGraph, (G)) : Graph< G >
         v = *p.first;
         V = num_vertices(cg);
     }
-    std::pair< vertex_iterator, vertex_iterator > p;
+    eastl::pair< vertex_iterator, vertex_iterator > p;
     typename graph_traits< G >::vertex_descriptor v;
     G g;
     vertices_size_type V;
@@ -258,7 +258,7 @@ BOOST_concept(EdgeListGraph, (G)) : Graph< G >
         u = source(e, cg);
         v = target(e, cg);
     }
-    std::pair< edge_iterator, edge_iterator > p;
+    eastl::pair< edge_iterator, edge_iterator > p;
     typename graph_traits< G >::vertex_descriptor u, v;
     typename graph_traits< G >::edge_descriptor e;
     edges_size_type E;
@@ -285,7 +285,7 @@ BOOST_concept(EdgeMutableGraph, (G))
     }
     G g;
     edge_descriptor e;
-    std::pair< edge_descriptor, bool > p;
+    eastl::pair< edge_descriptor, bool > p;
     typename graph_traits< G >::vertex_descriptor u, v;
 };
 
@@ -357,7 +357,7 @@ BOOST_concept(EdgeMutablePropertyGraph, (G)) : EdgeMutableGraph< G >
 
     BOOST_CONCEPT_USAGE(EdgeMutablePropertyGraph) { p = add_edge(u, v, ep, g); }
     G g;
-    std::pair< edge_descriptor, bool > p;
+    eastl::pair< edge_descriptor, bool > p;
     typename graph_traits< G >::vertex_descriptor u, v;
     typename edge_property_type< G >::type ep;
 };
@@ -373,7 +373,7 @@ BOOST_concept(AdjacencyMatrix, (G)) : Graph< G >
     }
     void const_constraints(const G& cg) { p = edge(u, v, cg); }
     typename graph_traits< G >::vertex_descriptor u, v;
-    std::pair< edge_descriptor, bool > p;
+    eastl::pair< edge_descriptor, bool > p;
     G g;
 };
 
